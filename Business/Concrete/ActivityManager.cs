@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
-using Business.Constants;
-using Core.Utilities;
+using Business.Constants.Messages;
+using Core.Utilities.ExceptionHandle;
+using Core.Utilities.Results.Abstract;
+using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -16,9 +18,11 @@ namespace Business.Concrete
     public class ActivityManager : IActivityService
     {
         IActivityDal _activityDal;
-        public ActivityManager(IActivityDal activityDal)
+        //IMessage _message;
+        public ActivityManager(IActivityDal activityDal/*IMessage message*/)
         {
             _activityDal = activityDal;
+            //_message = message;
         }
 
 
@@ -26,7 +30,7 @@ namespace Business.Concrete
         {
             //Business code
 
-            _activityDal.Add(activity);
+
             return new SuccessResult(Message.ActivityAdded);
         }
 

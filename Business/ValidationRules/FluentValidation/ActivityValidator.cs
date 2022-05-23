@@ -15,6 +15,9 @@ namespace Business.ValidationRules.FluentValidation
             RuleFor(p => p.ActivityName).NotEmpty();
             RuleFor(p => p.ActivityName).MinimumLength(2);
             RuleFor(p => p.ActivityType).NotEmpty();
+            RuleFor(p => p.ActivityDate).NotEmpty();
+            RuleFor(p => p.CreatedTime).NotEmpty();
+            RuleFor(p => p.AppDeadLine).NotEmpty();
         }
     }
 }

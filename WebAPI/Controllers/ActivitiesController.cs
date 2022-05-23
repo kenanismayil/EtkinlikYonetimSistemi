@@ -66,7 +66,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("delete")]
+        [HttpDelete("delete")]
         public IActionResult Delete(Activity activity)
         {
             var result = _activityService.Delete(activity);
@@ -77,7 +77,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("deleteAll")]
+        [HttpDelete("deleteAll")]
         public IActionResult DeleteAll(Expression<Func<Activity, bool>> filter)
         {
             var result = _activityService.DeleteAll(filter);
@@ -88,7 +88,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         public IActionResult Update(Activity activity)
         {
             var result = _activityService.Update(activity);

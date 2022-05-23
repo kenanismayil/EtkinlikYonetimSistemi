@@ -55,7 +55,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("delete")]
+        [HttpDelete("delete")]
         public IActionResult Delete(Moderator moderator)
         {
             var result = _moderatorService.Delete(moderator);
@@ -66,7 +66,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("deleteAll")]
+        [HttpDelete("deleteAll")]
         public IActionResult DeleteAll(Expression<Func<Moderator, bool>> filter)
         {
             var result = _moderatorService.DeleteAll(filter);
@@ -77,7 +77,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         public IActionResult Update(Moderator moderator)
         {
             var result = _moderatorService.Update(moderator);

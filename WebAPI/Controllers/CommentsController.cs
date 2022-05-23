@@ -55,7 +55,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("delete")]
+        [HttpDelete("delete")]
         public IActionResult Delete(Comment comment)
         {
             var result = _commentService.Delete(comment);
@@ -66,7 +66,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("deleteAll")]
+        [HttpDelete("deleteAll")]
         public IActionResult DeleteAll(Expression<Func<Comment, bool>> filter)
         {
             var result = _commentService.DeleteAll(filter);
@@ -77,7 +77,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         public IActionResult Update(Comment comment)
         {
             var result = _commentService.Update(comment);

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Utilities
+namespace Business.Constants.Messages
 {
-    public interface IDataResult<T>:IResult
+    public class TurkishMessage : IMessage
     {
-        T Data { get; }
+        public string MaintenanceTime { get; set; }
+
     }
 }

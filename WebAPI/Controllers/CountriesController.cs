@@ -55,7 +55,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("delete")]
+        [HttpDelete("delete")]
         public IActionResult Delete(Country country)
         {
             var result = _countryService.Delete(country);
@@ -66,7 +66,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("deleteAll")]
+        [HttpDelete("deleteAll")]
         public IActionResult DeleteAll(Expression<Func<Country, bool>> filter)
         {
             var result = _countryService.DeleteAll(filter);
@@ -77,7 +77,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         public IActionResult Update(Country country)
         {
             var result = _countryService.Update(country);

@@ -12,7 +12,7 @@ namespace DataAccess.Context
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=localdb)\mssqllocaldb;Database=Activity;Trusted_Connection=True");
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Activity;Trusted_Connection=True");
         }
 
         //Tanimladigim nesnelerini Veritabani tablolarina baglama:
