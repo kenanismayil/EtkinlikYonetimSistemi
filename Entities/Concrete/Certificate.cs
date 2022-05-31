@@ -19,7 +19,7 @@ namespace Entities.Concrete
 
         //Foreign Key
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public virtual User User { get; set; }
 
         [ForeignKey("ActivityId")]
         public Activity Activity { get; set; }

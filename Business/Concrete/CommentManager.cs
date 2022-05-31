@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants.Messages;
+using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -23,55 +24,97 @@ namespace Business.Concrete
         public IResult Add(Comment comment)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _commentDal.Add(comment);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _commentDal.Add(comment);
-            return new SuccessResult(Message.CommentAdded);
+            return new SuccessResult(TurkishMessage.CommentAdded);
         }
 
         public IResult Delete(Comment comment)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _commentDal.Delete(comment);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _commentDal.Delete(comment);
-            return new SuccessResult(Message.CommentDeleted);
+            return new SuccessResult(TurkishMessage.CommentDeleted);
         }
 
         public IResult DeleteAll(Expression<Func<Comment, bool>> filter)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _commentDal.DeleteAll(filter);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _commentDal.DeleteAll(filter);
-            return new SuccessResult(Message.CommentDeleted);
+            return new SuccessResult(TurkishMessage.CommentDeleted);
         }
 
         public IDataResult<List<Comment>> GetAll()
         {
             //Business code
+            var result = ExceptionHandler.HandleWithReturnNoParameter<List<Comment>>(() =>
+            {
+                return _commentDal.GetAll();
+            });
+            if (!result.Success)
+            {
+                return new ErrorDataResult<List<Comment>>(TurkishMessage.ErrorMessage);
+            }
 
-            var data = _commentDal.GetAll();
-            return new SuccessDataResult<List<Comment>>(data, Message.ActivitiesListed);
+            return new SuccessDataResult<List<Comment>>(result.Data, TurkishMessage.ActivitiesListed);
         }
 
         public IDataResult<Comment> GetById(int id)
         {
             //Business code
-
-            if (DateTime.Now.Hour == 22)
+            var result = ExceptionHandler.HandleWithReturn<int, Comment>((int x) =>
             {
-                return new ErrorDataResult<Comment>(Message.MaintenanceTime);
+                return _commentDal.Get(c => c.Id == x);
+            }, id);
+            if (!result.Success)
+            {
+                return new ErrorDataResult<Comment>(TurkishMessage.ErrorMessage);
             }
 
-            var data = _commentDal.Get(c => c.Id == id);
-            return new SuccessDataResult<Comment>(data);
+            return new SuccessDataResult<Comment>(result.Data, TurkishMessage.SuccessMessage);
         }
 
 
         public IResult Update(Comment comment)
         {
             //Business code
+            if (DateTime.Now.Hour == 22)
+            {
+                return new ErrorResult(TurkishMessage.MaintenanceTime);
+            }
 
-            _commentDal.Update(comment);
-            return new SuccessResult(Message.CommentUpdated);
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _commentDal.Update(comment);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
+
+            return new SuccessResult(TurkishMessage.CommentUpdated);
         }
     }
 }

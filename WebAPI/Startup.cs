@@ -1,3 +1,8 @@
+using Business.Abstract;
+using Business.Concrete;
+using Business.DependencyResolvers.Extensions;
+using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +30,8 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Extensions classina ait AddCustomsServices methodunu services'le Startup'da ConfigureService icinden cagirdim.
+            services.AddCustomsServices();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

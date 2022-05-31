@@ -34,36 +34,36 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<ActivityManager>().As<IActivityService>().SingleInstance();
             builder.RegisterType<EfActivityDal>().As<IActivityDal>().SingleInstance();
 
-            //Registration icin IoC Container
-            builder.RegisterType<RegistrationManager>().As<IRegistrationService>().SingleInstance();
-            builder.RegisterType<EfRegistrationDal>().As<IRegistrationDal>().SingleInstance();
-
             //ActivityType icin IoC Container
             builder.RegisterType<ActivityTypeManager>().As<IActivityTypeService>().SingleInstance();
             builder.RegisterType<EfActivityTypeDal>().As<IActivityTypeDal>().SingleInstance();
+
+            //Registration icin IoC Container
+            builder.RegisterType<RegistrationManager>().As<IRegistrationService>().SingleInstance();
+            builder.RegisterType<EfRegistrationDal>().As<IRegistrationDal>().SingleInstance();
 
             //Certificate icin IoC Container
             builder.RegisterType<CertificateManager>().As<ICertificateService>().SingleInstance();
             builder.RegisterType<EfCertificateDal>().As<ICertificateDal>().SingleInstance();
 
             //City icin IoC Container
-            builder.RegisterType<CityManager>().As<IActivityTypeService>().SingleInstance();
+            builder.RegisterType<CityManager>().As<ICityService>().SingleInstance();
             builder.RegisterType<EfCityDal>().As<ICityDal>().SingleInstance();
 
             //Country icin IoC Container
-            builder.RegisterType<CountryManager>().As<IActivityService>().SingleInstance();
+            builder.RegisterType<CountryManager>().As<ICountryService>().SingleInstance();
             builder.RegisterType<EfCountryDal>().As<ICountryDal>().SingleInstance();
 
             //Comment icin IoC Container
-            builder.RegisterType<CommentManager>().As<IActivityTypeService>().SingleInstance();
+            builder.RegisterType<CommentManager>().As<ICommentService>().SingleInstance();
             builder.RegisterType<EfCommentDal>().As<ICommentDal>().SingleInstance();
 
             //Moderator icin IoC Container
-            builder.RegisterType<ModeratorManager>().As<IActivityService>().SingleInstance();
+            builder.RegisterType<ModeratorManager>().As<IModeratorService>().SingleInstance();
             builder.RegisterType<EfModeratorDal>().As<IModeratorDal>().SingleInstance();
 
             //User icin IoC Container
-            builder.RegisterType<UserManager>().As<IActivityTypeService>().SingleInstance();
+            builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
             builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
 
             //builder.RegisterType<TurkishMessage>().As<IMessage>().SingleInstance();

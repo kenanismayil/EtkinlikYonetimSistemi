@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Context
 {
-    public class ActivityContext:DbContext
+    public class ActivityContext : DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Activity;Trusted_Connection=True");
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=ActivityProject;Trusted_Connection=True");
         }
+
 
         //Tanimladigim nesnelerini Veritabani tablolarina baglama:
         public DbSet<Activity> Activities { get; set; }

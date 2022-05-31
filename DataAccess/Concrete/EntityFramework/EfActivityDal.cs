@@ -25,7 +25,7 @@ namespace DataAccess.Concrete.EntityFramework
                              select new ActivityDetailDto
                              {
                                  ActivityId = a.Id, ActivityName = a.ActivityName, ActivityDate = a.ActivityDate,
-                                 CityName = c.CityName, ActivityTypeName = t.ActivityName
+                                 CityName = c.CityName, ActivityTypeName = t.ActivityTypeName
                              };
                 return result.ToList();
 

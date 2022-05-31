@@ -17,6 +17,7 @@ namespace Entities.Concrete
         public DateTime AppDeadLine { get; set; }
         public DateTime ActivityDate { get; set; }
         public int CityId { get; set; }
+        //public int ModeratorId { get; set; }
 
         //Foreign key
         [ForeignKey("ActivityTypeId")]
@@ -25,5 +26,7 @@ namespace Entities.Concrete
         [ForeignKey("CityId")]
         public City City { get; set; }
 
+        //[ForeignKey("ModeratorId")]
+        //public virtual Moderator Moderator { get; set; }
     }
 }

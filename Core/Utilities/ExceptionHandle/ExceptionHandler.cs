@@ -26,7 +26,7 @@ namespace Core.Utilities.ExceptionHandle
             }
         }
         /// <summary>
-        /// Parametre alan ve geriye birdeğer döndüren fonksiyonlar için hata kontrolü yapar.
+        /// Parametre alan ve geriye bir değer döndüren fonksiyonlar için hata kontrolü yapar.
         /// </summary>
         /// <typeparam name="T1">Çalışacak fonksiyonun alacağı verinin türü</typeparam>
         /// <typeparam name="T2">Çalışacak fonksiyonun geri dönüş değeri</typeparam>

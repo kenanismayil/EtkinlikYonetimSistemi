@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants.Messages;
+using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -24,55 +25,97 @@ namespace Business.Concrete
         public IResult Add(Country country)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _countryDal.Add(country);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _countryDal.Add(country);
-            return new SuccessResult(Message.CountryAdded);
+            return new SuccessResult(TurkishMessage.CountryAdded);
         }
 
         public IResult Delete(Country country)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _countryDal.Delete(country);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _countryDal.Delete(country);
-            return new SuccessResult(Message.CountryDeleted);
+            return new SuccessResult(TurkishMessage.CountryDeleted);
         }
 
         public IResult DeleteAll(Expression<Func<Country, bool>> filter)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _countryDal.DeleteAll(filter);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _countryDal.DeleteAll(filter);
-            return new SuccessResult(Message.CountryDeleted);
+            return new SuccessResult(TurkishMessage.CountryDeleted);
         }
 
         public IDataResult<List<Country>> GetAll()
         {
             //Business code
+            var result = ExceptionHandler.HandleWithReturnNoParameter<List<Country>>(() =>
+            {
+                return _countryDal.GetAll();
+            });
+            if (!result.Success)
+            {
+                return new ErrorDataResult<List<Country>>(TurkishMessage.ErrorMessage);
+            }
 
-            var data = _countryDal.GetAll();
-            return new SuccessDataResult<List<Country>>(data, Message.CountriesListed);
+            return new SuccessDataResult<List<Country>>(result.Data, TurkishMessage.CountriesListed);
         }
 
         public IDataResult<Country> GetById(int id)
         {
             //Business code
-
-            if (DateTime.Now.Hour == 22)
+            var result = ExceptionHandler.HandleWithReturn<int, Country>((int x) =>
             {
-                return new ErrorDataResult<Country>(Message.MaintenanceTime);
+                return _countryDal.Get(c => c.Id == x);
+            }, id);
+            if (!result.Success)
+            {
+                return new ErrorDataResult<Country>(TurkishMessage.ErrorMessage);
             }
 
-            var data = _countryDal.Get(c => c.Id == id);
-            return new SuccessDataResult<Country>(data);
+            return new SuccessDataResult<Country>(result.Data, TurkishMessage.SuccessMessage);
         }
 
 
         public IResult Update(Country country)
         {
             //Business code
+            if (DateTime.Now.Hour == 22)
+            {
+                return new ErrorResult(TurkishMessage.MaintenanceTime);
+            }
 
-            _countryDal.Update(country);
-            return new SuccessResult(Message.CountryUpdated);
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _countryDal.Update(country);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
+
+            return new SuccessResult(TurkishMessage.CountryUpdated);
         }
     }
 }

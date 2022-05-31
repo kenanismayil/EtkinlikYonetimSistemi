@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants.Messages;
+using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -26,55 +27,97 @@ namespace Business.Concrete
         public IResult Add(City city)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _cityDal.Add(city);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _cityDal.Add(city);
-            return new SuccessResult(Message.CityAdded);
+            return new SuccessResult(TurkishMessage.CityAdded);
         }
 
         public IResult Delete(City city)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _cityDal.Delete(city);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _cityDal.Delete(city);
-            return new SuccessResult(Message.CityDeleted);
+            return new SuccessResult(TurkishMessage.CityDeleted);
         }
 
         public IResult DeleteAll(Expression<Func<City, bool>> filter)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _cityDal.DeleteAll(filter);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _cityDal.DeleteAll(filter);
-            return new SuccessResult(Message.CityDeleted);
+            return new SuccessResult(TurkishMessage.CityDeleted);
         }
 
         public IDataResult<List<City>> GetAll()
         {
             //Business code
+            var result = ExceptionHandler.HandleWithReturnNoParameter<List<City>>(() =>
+            {
+                return _cityDal.GetAll();
+            });
+            if (!result.Success)
+            {
+                return new ErrorDataResult<List<City>>(TurkishMessage.ErrorMessage);
+            }
 
-            var data = _cityDal.GetAll();
-            return new SuccessDataResult<List<City>>(data, Message.ActivitiesListed);
+            return new SuccessDataResult<List<City>>(result.Data, TurkishMessage.ActivitiesListed);
         }
 
         public IDataResult<City> GetById(int id)
         {
             //Business code
-
-            if (DateTime.Now.Hour == 22)
+            var result = ExceptionHandler.HandleWithReturn<int, City>((int x) =>
             {
-                return new ErrorDataResult<City>(Message.MaintenanceTime);
+                return _cityDal.Get(c => c.Id == x);
+            }, id);
+            if (!result.Success)
+            {
+                return new ErrorDataResult<City>(TurkishMessage.ErrorMessage);
             }
 
-            var data = _cityDal.Get(c => c.Id == id);
-            return new SuccessDataResult<City>(data);
+            return new SuccessDataResult<City>(result.Data, TurkishMessage.SuccessMessage);
         }
 
 
         public IResult Update(City city)
         {
             //Business code
+            if (DateTime.Now.Hour == 22)
+            {
+                return new ErrorResult(TurkishMessage.MaintenanceTime);
+            }
 
-            _cityDal.Update(city);
-            return new SuccessResult(Message.CityUpdated);
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _cityDal.Update(city);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
+
+            return new SuccessResult(TurkishMessage.CityUpdated);
         }
     }
 }

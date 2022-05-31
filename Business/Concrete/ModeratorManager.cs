@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants.Messages;
+using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -23,55 +24,98 @@ namespace Business.Concrete
         public IResult Add(Moderator moderator)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _moderatorDal.Add(moderator);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _moderatorDal.Add(moderator);
-            return new SuccessResult(Message.ModeratorAdded);
+            return new SuccessResult(TurkishMessage.ModeratorAdded);
         }
 
         public IResult Delete(Moderator moderator)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _moderatorDal.Delete(moderator);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _moderatorDal.Delete(moderator);
-            return new SuccessResult(Message.ModeratorDeleted);
+            return new SuccessResult(TurkishMessage.ModeratorDeleted);
         }
 
         public IResult DeleteAll(Expression<Func<Moderator, bool>> filter)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _moderatorDal.DeleteAll(filter);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _moderatorDal.DeleteAll(filter);
-            return new SuccessResult(Message.ModeratorDeleted);
+            return new SuccessResult(TurkishMessage.ModeratorDeleted);
         }
 
         public IDataResult<List<Moderator>> GetAll()
         {
             //Business code
+            var result = ExceptionHandler.HandleWithReturnNoParameter<List<Moderator>>(() =>
+            {
+                return _moderatorDal.GetAll();
+            });
+            if (!result.Success)
+            {
+                return new ErrorDataResult<List<Moderator>>(TurkishMessage.ErrorMessage);
+            }
 
-            var data = _moderatorDal.GetAll();
-            return new SuccessDataResult<List<Moderator>>(data, Message.ModeratorsListed);
+            return new SuccessDataResult<List<Moderator>>(result.Data, TurkishMessage.ModeratorsListed);
         }
 
         public IDataResult<Moderator> GetById(int id)
         {
             //Business code
-
-            if (DateTime.Now.Hour == 22)
+            var result = ExceptionHandler.HandleWithReturn<int, Moderator>((int x) =>
             {
-                return new ErrorDataResult<Moderator>(Message.MaintenanceTime);
+                return _moderatorDal.Get(m => m.Id == x);
+            }, id);
+            if (!result.Success)
+            {
+                return new ErrorDataResult<Moderator>(TurkishMessage.ErrorMessage);
             }
 
-            var data = _moderatorDal.Get(c => c.Id == id);
-            return new SuccessDataResult<Moderator>(data);
+
+            return new SuccessDataResult<Moderator>(result.Data, TurkishMessage.SuccessMessage);
         }
 
 
         public IResult Update(Moderator moderator)
         {
             //Business code
+            if (DateTime.Now.Hour == 22)
+            {
+                return new ErrorResult(TurkishMessage.MaintenanceTime);
+            }
 
-            _moderatorDal.Update(moderator);
-            return new SuccessResult(Message.ModeratorUpdated);
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _moderatorDal.Update(moderator);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
+
+            return new SuccessResult(TurkishMessage.ModeratorUpdated);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants.Messages;
+using Core.BusinessRuleHandle;
+using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -23,55 +25,135 @@ namespace Business.Concrete
         public IResult Add(User user)
         {
             //Business code
+            var ruleExceptions = BusinessRuleHandler.CheckTheRules(UserEmailControl(user), UserPhoneControl(user));
+            if (!ruleExceptions.Success)
+            {
+                return new ErrorResult(ruleExceptions.Message);
+            }
 
-            _userDal.Add(user);
-            return new SuccessResult(Message.UserAdded);
+
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _userDal.Add(user);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
+
+            return new SuccessResult(TurkishMessage.UserAdded);
         }
 
         public IResult Delete(User user)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _userDal.Delete(user);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _userDal.Delete(user);
-            return new SuccessResult(Message.UserDeleted);
+            return new SuccessResult(TurkishMessage.UserDeleted);
         }
 
         public IResult DeleteAll(Expression<Func<User, bool>> filter)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _userDal.DeleteAll(filter);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _userDal.DeleteAll(filter);
-            return new SuccessResult(Message.UserDeleted);
+            return new SuccessResult(TurkishMessage.UserDeleted);
         }
 
         public IDataResult<List<User>> GetAll()
         {
             //Business code
+            var result = ExceptionHandler.HandleWithReturnNoParameter<List<User>>(() =>
+            {
+                return _userDal.GetAll();
+            });
+            if (!result.Success)
+            {
+                return new ErrorDataResult<List<User>>(TurkishMessage.ErrorMessage);
+            }
 
-            var data = _userDal.GetAll();
-            return new SuccessDataResult<List<User>>(data, Message.ActivitiesListed);
+            return new SuccessDataResult<List<User>>(result.Data, TurkishMessage.ActivitiesListed);
         }
 
         public IDataResult<User> GetById(int id)
         {
             //Business code
-
-            if (DateTime.Now.Hour == 22)
+            var result = ExceptionHandler.HandleWithReturn<int, User>((int x) =>
             {
-                return new ErrorDataResult<User>(Message.MaintenanceTime);
+                return _userDal.Get(u => u.Id == x);
+            }, id);
+            if (!result.Success)
+            {
+                return new ErrorDataResult<User>(TurkishMessage.ErrorMessage);
             }
 
-            var data = _userDal.Get(c => c.Id == id);
-            return new SuccessDataResult<User>(data);
+            return new SuccessDataResult<User>(result.Data, TurkishMessage.SuccessMessage);
         }
 
 
         public IResult Update(User user)
         {
-            //Business code
-            
-            _userDal.Update(user);
-            return new SuccessResult(Message.UserUpdated);
+            //Business codes
+            if (DateTime.Now.Hour == 22)
+            {
+                return new ErrorResult(TurkishMessage.MaintenanceTime);
+            }
+
+            var ruleExceptions = BusinessRuleHandler.CheckTheRules(UserEmailControl(user), UserPhoneControl(user));
+            if (!ruleExceptions.Success)
+            {
+                return new ErrorResult(ruleExceptions.Message);
+            }
+
+            //Central Error Management
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _userDal.Update(user);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
+
+            return new SuccessResult(TurkishMessage.UserUpdated);
         }
+
+        private IResult UserEmailControl(User user)
+        {
+            var users = _userDal.Get(u => u.Email == user.Email);
+            if (users != null)
+            {
+                return new ErrorResult("Sisteme varolan kullanici emaili eklenemez");
+            }
+
+            return new SuccessResult(TurkishMessage.SuccessMessage);
+        }
+
+        private IResult UserPhoneControl(User user)
+        {
+            var users = _userDal.Get(u => u.Phone == user.Phone);
+            if (users != null)
+            {
+                return new ErrorResult("Sisteme varolan kullanici numarasi eklenemez");
+            }
+
+            return new SuccessResult(TurkishMessage.SuccessMessage);
+        }
+
+        
     }
 }

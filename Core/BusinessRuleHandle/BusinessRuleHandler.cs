@@ -1,4 +1,5 @@
 ﻿using Core.Utilities.Results.Abstract;
+using Core.Utilities.Results.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,20 +13,29 @@ namespace Core.BusinessRuleHandle
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="rules">İş sınıfındaki tüm iş kurallarını denetleyen fonksiyonlar</param>
+        /// <param name="rules"></param>
         /// <returns>Hatalı kullanımlarla ilgili bilgi.</returns>
         
-        public static List<IResult> CheckTheRules(params IResult[] rules)
+        public static IResult CheckTheRules(params IResult[] rules)
         {
-            var listOfErrors = new List<IResult>();
+            int count = 0;
+            string message = "";
             foreach (var rule in rules)
             {
                 if (!rule.Success)
                 {
-                    listOfErrors.Add(rule);
+                    message += rule.Message;
+                    message += "/n";
+                    count++;
                 }
             }
-            return listOfErrors;
+
+            if (count != 0)
+            {
+                return new ErrorResult(message);
+            }
+
+            return new SuccessResult(message);
         }
     }
 }

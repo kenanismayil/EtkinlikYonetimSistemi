@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants.Messages;
+using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -25,59 +26,101 @@ namespace Business.Concrete
         public IResult Add(ActivityType activityType)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _activityTypeDal.Add(activityType);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _activityTypeDal.Add(activityType);
-            return new SuccessResult(Message.ActivityTypeAdded);
+            return new SuccessResult(TurkishMessage.ActivityTypeAdded);
         }
 
         //Validation
         public IResult Delete(ActivityType activityType)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _activityTypeDal.Delete(activityType);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _activityTypeDal.Delete(activityType);
-            return new SuccessResult(Message.ActivityDeleted);
+            return new SuccessResult(TurkishMessage.ActivityDeleted);
         }
 
         //Validation
         public IResult DeleteAll(Expression<Func<ActivityType, bool>> filter)
         {
             //Business code
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _activityTypeDal.DeleteAll(filter);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
 
-            _activityTypeDal.DeleteAll(filter);
-            return new SuccessResult(Message.ActivityTypeDeleted);
+            return new SuccessResult(TurkishMessage.ActivityTypeDeleted);
         }
 
         //Validation
         public IDataResult<List<ActivityType>> GetAll()
         {
             //Business code
+            var result = ExceptionHandler.HandleWithReturnNoParameter<List<ActivityType>>(() =>
+            {
+                return _activityTypeDal.GetAll();
+            });
+            if (!result.Success)
+            {
+                return new ErrorDataResult<List<ActivityType>>(TurkishMessage.ErrorMessage);
+            }
 
-            var data = _activityTypeDal.GetAll();
-            return new SuccessDataResult<List<ActivityType>>(data, Message.ActivitiesListed);
+            return new SuccessDataResult<List<ActivityType>>(result.Data, TurkishMessage.ActivitiesListed);
         }
 
         //Validation
         public IDataResult<ActivityType> GetById(int id)
         {
             //Business code
-
-            if (DateTime.Now.Hour == 22)
+            var result = ExceptionHandler.HandleWithReturn<int, ActivityType>((x) =>
             {
-                return new ErrorDataResult<ActivityType>(Message.MaintenanceTime);
+                return _activityTypeDal.Get(a => a.Id == x);
+            }, id);
+            if (!result.Success)
+            {
+                return new ErrorDataResult<ActivityType>(TurkishMessage.ErrorMessage);
             }
 
-            var data = _activityTypeDal.Get(c => c.Id == id);
-            return new SuccessDataResult<ActivityType>(data);
+            return new SuccessDataResult<ActivityType>(result.Data, TurkishMessage.SuccessMessage);
         }
 
         //Validation
         public IResult Update(ActivityType activityType)
         {
             //Business code
+            if (DateTime.Now.Hour == 22)
+            {
+                return new ErrorResult(TurkishMessage.MaintenanceTime);
+            }
 
-            _activityTypeDal.Update(activityType);
-            return new SuccessResult(Message.ActivityUpdated);
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _activityTypeDal.Update(activityType);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
+
+            return new SuccessResult(TurkishMessage.ActivityUpdated);
         }
     }
 }
