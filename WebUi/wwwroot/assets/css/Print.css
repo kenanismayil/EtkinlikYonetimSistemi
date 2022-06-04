@@ -1,0 +1,92 @@
+﻿
+
+/* =============================================================
+   GENERAL STYLES
+ ============================================================ */
+.pad-top-botm {
+    padding-bottom: 0px;
+    padding-top: 11px;
+}
+/* =============================================================
+   PAGE STYLES
+ ============================================================ */
+
+.contact-info span {
+    font-size: 14px;
+    padding: 0px 50px 0px 50px;
+}
+
+.contact-info hr {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.client-info {
+    font-size: 15px;
+}
+
+.ttl-amts {
+    text-align: right;
+    padding-right: 50px;
+}
+
+.table td, .table th {
+    padding: 3px 8px;
+}
+
+.table-bordered td, .table-bordered th {
+    border: 1px solid #000000;
+}
+
+@media print {
+    html, body {
+        /*changing width to 100% causes huge overflow and wrap*/
+        height: 100%;
+        /*overflow: hidden;*/
+        background: #FFF;
+        font-size: 9.5pt;
+    }
+
+    .table td, .table th {
+        padding: 0px 8px;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0,0,0,.05);
+    }
+
+    .card-header {
+        background-color: #f5f5f5 !important;
+    }
+
+    .table-bordered td, .table-bordered th {
+        border: 1px solid #000000 !important;
+    }
+}
+
+.footer span {
+    margin-top: 7px;
+}
+
+.card-header {
+    text-align: center;
+    font-size: 18px;
+    border: none;
+    font-weight: bold;
+}
+
+.container {
+    position: relative;
+    min-height: 26cm;
+    padding: 0px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+}
+
+.pagebreak {
+    page-break-after: always;
+}

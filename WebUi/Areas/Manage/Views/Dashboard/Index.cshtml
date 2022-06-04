@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewData["Title"] = "Menegment";
+    Layout = "~/Areas/Manage/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-4">
+                    <span class="badge badge-soft-primary float-right">Bu Gün</span>
+                    <h5 class="card-title mb-0">Tamamlanan sifariş sayı</h5>
+                </div>
+                <div class="row d-flex align-items-center mb-4">
+                    <div class="col-8">
+                        <h2 class="d-flex align-items-center mb-0">
+                            1
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="progress shadow-sm" style="height: 5px;">
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 100%;">
+                    </div>
+                </div>
+            </div>
+            <!--end card body-->
+        </div><!-- end card-->
+    </div> <!-- end col-->
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-4">
+                    <span class="badge badge-soft-primary float-right">Bu Gün</span>
+                    <h5 class="card-title mb-0">Tamamlanan sifariş məbləği</h5>
+                </div>
+                <div class="row d-flex align-items-center mb-4">
+                    <div class="col-8">
+                        <h2 class="d-flex align-items-center mb-0">
+                            ‎Azn 20
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="progress shadow-sm" style="height: 5px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%;">
+                    </div>
+                </div>
+            </div>
+            <!--end card body-->
+        </div><!-- end card-->
+    </div> <!-- end col-->
+
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-4">
+                    <span class="badge badge-soft-primary float-right">Bu Gün</span>
+                    <h5 class="card-title mb-0">Ödəmələr</h5><br />
+                </div>
+                <div class="row d-flex align-items-center mb-4">
+                    <div class="col-8">
+                        <h2 class="d-flex align-items-center mb-0">
+                            ‎Azn 10
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="progress shadow-sm" style="height: 5px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%;">
+                    </div>
+                </div>
+            </div>
+            <!--end card body-->
+        </div>
+        <!--end card-->
+    </div> <!-- end col-->
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-4">
+                    <span class="badge badge-soft-primary float-right">Bu Gün</span>
+                    <h5 class="card-title mb-0">Geri qaytarılan material məbləği</h5>
+                </div>
+                <div class="row d-flex align-items-center mb-4">
+                    <div class="col-8">
+                        <h2 class="d-flex align-items-center mb-0">
+                            ‎Azn 10
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="progress shadow-sm" style="height: 5px;">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: 100%;">
+                    </div>
+                </div>
+            </div>
+            <!--end card body-->
+        </div><!-- end card-->
+    </div> <!-- end col-->
+</div>
+
+
+<!--end row-->
+@section scripts{
+    <script src="assets/plugins/jquery-sparkline/jquery.sparkline.min.js"></script>
+    <script src="assets/plugins/jquery-knob/jquery.knob.min.js"></script>
+    <script src="assets/pages/knob-chart-demo.js"></script>
+    <script src="assets/plugins/morris-js/morris.min.js"></script>
+    <script src="assets/plugins/raphael/raphael.min.js"></script>
+    <script src="assets/pages/dashboard-demo.js"></script>
+}
