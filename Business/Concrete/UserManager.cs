@@ -113,11 +113,11 @@ namespace Business.Concrete
                 return new ErrorResult(TurkishMessage.MaintenanceTime);
             }
 
-            var ruleExceptions = BusinessRuleHandler.CheckTheRules(UserEmailControl(user), UserPhoneControl(user));
-            if (!ruleExceptions.Success)
-            {
-                return new ErrorResult(ruleExceptions.Message);
-            }
+            //var ruleExceptions = BusinessRuleHandler.CheckTheRules(UserEmailControl(user), UserPhoneControl(user));
+            //if (!ruleExceptions.Success)
+            //{
+            //    return new ErrorResult(ruleExceptions.Message);
+            //}
 
             //Central Error Management
             var result = ExceptionHandler.HandleWithNoReturn(() =>

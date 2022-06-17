@@ -50,7 +50,14 @@ namespace WebUi.Areas.Manage.Controllers
                     TempData["ToastError"] = "Creating country is failed  !";
                     return View(country);
                 }
-                _countryService.Add(country);
+
+                var result = _countryService.Add(country);
+                //ulkenin basari kontrolu
+                if (!result.Success)
+                {
+                    TempData["Toast"] = "creating country is not successfully";
+                    return RedirectToAction(nameof(Index));
+                }
 
                 TempData["Toast"] = "creating country is successfully";
                 return RedirectToAction(nameof(Index));

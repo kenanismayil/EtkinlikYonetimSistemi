@@ -1,7 +1,7 @@
-﻿@model IEnumerable<Entities.Concrete.Activity>
+﻿@model IEnumerable<Entities.Concrete.City>
 
 @{
-    ViewData["Title"] = "Activities";
+    ViewData["Title"] = "Cities";
     string breadcrumb = ViewBag.Breadcrumb as string;
 }
 
@@ -15,7 +15,7 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.ActivityName)
+                    @Html.DisplayNameFor(model => model.CityName)
                 </th>
                 <th>Operation</th>
             </tr>
@@ -25,7 +25,7 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.ActivityName)
+                        @Html.DisplayFor(modelItem => item.CityName)
                     </td>
                     <td class="d-flex justify-content-center">
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-info mr-1"><i class="fas fa-edit"></i></a>
@@ -34,14 +34,12 @@
                 </tr>
             }
         </tbody>
-
-
     </table>
 }
 else
 {
     <div class="alert alert-warning" role="alert">
-        Have not activities !
+        Have not countries !
     </div>
 }
 @section Style{

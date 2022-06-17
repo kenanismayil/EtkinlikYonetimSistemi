@@ -10,20 +10,19 @@ using System.Threading.Tasks;
 namespace WebUi.Areas.Manage.Controllers
 {
     [Area("Manage")]
-    public class ActivitiesController : Controller
+    public class CitiesController : Controller
     {
-
-        IActivityService _activityService;        //interface'ler referans tutar.
+        ICityService _cityService;        //interface'ler referans tutar.
 
         //IoC Container
-        public ActivitiesController(IActivityService activityService)
+        public CitiesController(ICityService cityService)
         {
-            _activityService = activityService;
+            _cityService = cityService;
         }
         public IActionResult Index()
         {
             ViewBag.Breadcrumb = "Activities";
-            return View(_activityService.GetAll().Data.OrderByDescending(x => x.Id).ToList());
+            return View(_cityService.GetAll().Data.OrderByDescending(x => x.Id).ToList());
         }
 
         // GET: Panel/Companies/Create
@@ -35,24 +34,24 @@ namespace WebUi.Areas.Manage.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("ActivityName,Id")] Activity activity)
+        public IActionResult Create([Bind("ActivityName,Id")] City city)
         {
             ViewBag.Breadcrumb = "New activity";
 
             if (ModelState.IsValid)
             {
-                if (_activityService.GetAll().Data.Any(x => x.ActivityName == activity.ActivityName))
+                if (_cityService.GetAll().Data.Any(x => x.CityName == city.CityName))
                 {
-                    ModelState.AddModelError("ActivityName", $"{activity.ActivityName} name is exist");
+                    ModelState.AddModelError("CityName", $"{city.CityName} name is exist");
                     TempData["ToastError"] = "Creating activity is failed  !";
-                    return View(activity);
+                    return View(city);
                 }
 
-                var result =_activityService.Add(activity);
-                //aktivitenin basari kontrolu
+                var result = _cityService.Add(city);
+                //sehirin basari kontrolu
                 if (!result.Success)
                 {
-                    TempData["Toast"] = "creating activity is not successfully";
+                    TempData["Toast"] = "creating city is not successfully";
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -60,7 +59,7 @@ namespace WebUi.Areas.Manage.Controllers
                 return RedirectToAction(nameof(Index));
             }
             TempData["ToastError"] = "Creating activity is failed !";
-            return View(activity);
+            return View(city);
         }
 
         public IActionResult Edit(int? id, bool status = true)
@@ -70,8 +69,8 @@ namespace WebUi.Areas.Manage.Controllers
                 return NotFound();
             }
 
-            var activity = _activityService.GetById(id ?? 0).Data;
-            if (activity == null)
+            var city = _cityService.GetById(id ?? 0).Data;
+            if (city == null)
             {
                 return NotFound();
             }
@@ -80,14 +79,14 @@ namespace WebUi.Areas.Manage.Controllers
                 return Json(new { res = true });
             }
             ViewBag.Breadcrumb = "Update activity";
-            return View(activity);
+            return View(city);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("ActivityName,Id")] Activity activity)
+        public IActionResult Edit(int id, [Bind("CityName,Id")] City city)
         {
-            if (id != activity.Id)
+            if (id != city.Id)
             {
                 return NotFound();
             }
@@ -96,19 +95,19 @@ namespace WebUi.Areas.Manage.Controllers
 
             if (ModelState.IsValid)
             {
-                if (_activityService.GetAll().Data.Any(x => x.ActivityName == activity.ActivityName && x.Id != activity.Id))
+                if (_cityService.GetAll().Data.Any(x => x.CityName == city.CityName && x.Id != city.Id))
                 {
-                    ModelState.AddModelError("ActivityName", $"{activity.ActivityName} name is exist");
+                    ModelState.AddModelError("ActivityName", $"{city.CityName} name is exist");
                     TempData["ToastError"] = "Creating activity is failed  !";
-                    return View(activity);
+                    return View(city);
                 }
                 try
                 {
-                    _activityService.Update(activity);
+                    _cityService.Update(city);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ActivityExists(activity.Id))
+                    if (!CityExists(city.Id))
                     {
                         return NotFound();
                     }
@@ -117,12 +116,12 @@ namespace WebUi.Areas.Manage.Controllers
                         throw;
                     }
                 }
-                TempData["Toast"] = "Updating Activity is successfully";
+                TempData["Toast"] = "Updating City is successfully";
                 return RedirectToAction(nameof(Index));
             }
-            TempData["ToastError"] = "Updating activity is failed !";
-            ViewBag.Breadcrumb = "update activity";
-            return View(activity);
+            TempData["ToastError"] = "Updating city is failed !";
+            ViewBag.Breadcrumb = "update city";
+            return View(city);
         }
 
         public IActionResult Delete(int? id)
@@ -132,23 +131,21 @@ namespace WebUi.Areas.Manage.Controllers
                 return NotFound();
             }
 
-            var activity = _activityService.GetById(id ?? 0);
-            if (activity == null)
+            var city = _cityService.GetById(id ?? 0);
+            if (city == null)
             {
                 return NotFound();
             }
-            _activityService.Delete(activity.Data);
+            _cityService.Delete(city.Data);
             return RedirectToAction(nameof(Index));
         }
 
         #region Private metods
 
-        private bool ActivityExists(int id)
+        private bool CityExists(int id)
         {
-            return _activityService.GetAll().Data.Any(a => a.Id == id);
+            return _cityService.GetAll().Data.Any(c => c.Id == id);
         }
-
-
         #endregion
     }
 }

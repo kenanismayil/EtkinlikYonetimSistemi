@@ -41,7 +41,7 @@
                     <div class="dropdown d-inline-block ml-2">
                         <button type="button" class="btn header-item waves-effect"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                           
+
                             <span class="d-none d-sm-inline-block ml-1">Yonetim</span>
                         </button>
                     </div>
@@ -57,7 +57,7 @@
 
                 <div class="navbar-brand-box">
                     <a asp-action="index" asp-controller="dashboard" class="logo" style="line-height:0">
-                        <img src="~/uploads/no-avatar.png" height="90" width="200" style="object-fit:contain" />
+                        <img src="~/uploads/eys.jpg" height="30" width="150" style="object-fit:contain" />
                         <span>
                             Etkinlik Yonetim Sistemi
                         </span>
@@ -76,6 +76,23 @@
                             </a>
                         </li>
 
+                        <!-- Activities -->
+                        <li>
+                            <a asp-controller="activities" asp-action="index" class="waves-effect">
+                                <i class="fas fa-luggage-cart text-success"></i>
+                                <span>Actvities</span>
+                            </a>
+                        </li>
+
+                        <!-- ActivitiesType -->
+                        <li>
+                            <a asp-controller="activitiestype" asp-action="index" class="waves-effect">
+                                <i class="fas fa-luggage-cart text-success"></i>
+                                <span>Activity Types</span>
+                            </a>
+                        </li>
+
+                        <!-- Countries -->
                         <li>
                             <a asp-controller="countries" asp-action="index" class="waves-effect">
                                 <i class="fas fa-luggage-cart text-success"></i>
@@ -83,12 +100,37 @@
                             </a>
                         </li>
 
-                        <li>
-                            <a asp-controller="activities" asp-action="index" class="waves-effect">
-                                <i class="fa-solid fa-bong text-success"></i>
-                                <span>Actvities</span>
-                            </a>
 
+                        <!-- Cities -->
+                        <li>
+                            <a asp-controller="cities" asp-action="index" class="waves-effect">
+                                <i class="fas fa-luggage-cart text-success"></i>
+                                <span>Cities</span>
+                            </a>
+                        </li>
+
+                        <!-- Users -->
+                        <li>
+                            <a asp-controller="users" asp-action="index" class="waves-effect">
+                                <i class="fas fa-luggage-cart text-success"></i>
+                                <span>Users</span>
+                            </a>
+                        </li>
+
+                        <!-- Registrations -->
+                        <li>
+                            <a asp-controller="registrations" asp-action="index" class="waves-effect">
+                                <i class="fas fa-luggage-cart text-success"></i>
+                                <span>Registrations</span>
+                            </a>
+                        </li>
+
+                        <!-- Comments -->
+                        <li>
+                            <a asp-controller="comments" asp-action="index" class="waves-effect">
+                                <i class="fas fa-luggage-cart text-success"></i>
+                                <span>Comments</span>
+                            </a>
                         </li>
 
                     </ul>
