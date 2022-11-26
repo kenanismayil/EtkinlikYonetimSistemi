@@ -13,10 +13,11 @@ namespace WebAPI.Controllers
     public class AuthController : Controller
     {
         private IAuthService _authService;
-
-        public AuthController(IAuthService authService)
+        private IUserService _userService;
+        public AuthController(IAuthService authService, IUserService userService)
         {
             _authService = authService;
+            _userService = userService;
         }
 
         [HttpPost("login")]
@@ -29,10 +30,14 @@ namespace WebAPI.Controllers
             }
 
             var result = _authService.CreateAccessToken(userToLogin.Data);
+            var user = _userService.GetUserDetails();
+
+
             if (result.Success)
             {
                 return Ok(result.Data);
             }
+
 
             return BadRequest(result.Message);
         }
