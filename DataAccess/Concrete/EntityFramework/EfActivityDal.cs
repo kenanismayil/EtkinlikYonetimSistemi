@@ -17,18 +17,28 @@ namespace DataAccess.Concrete.EntityFramework
         {
             using (ActivityContext context = new ActivityContext())
             {
-                var result = from t in context.ActivityTypes
-                             join a in context.Activities 
-                             on t.Id equals a.ActivityTypeId
-                             join c in context.Cities
-                             on a.CityId equals c.Id
+                
+                var result = from a in context.Activities
+                             join t in context.ActivityTypes
+                             on a.ActivityTypeId equals t.Id
+                             join loc in context.Locations
+                             on a.LocationId equals loc.Id
+                             join city in context.Cities
+                             on loc.CityId equals city.Id
+                             join country in context.Countries
+                             on city.CountryId equals country.Id
+                             join user in context.Users
+                             on a.UserId equals user.Id
                              select new ActivityDetailDto
                              {
-                                 ActivityId = a.Id, ActivityName = a.ActivityName, ActivityDate = a.ActivityDate,
-                                 CityName = c.CityName, ActivityTypeName = t.ActivityTypeName
+                                 ActivityId = a.Id, ActivityName = a.ActivityName, 
+                                 CreatedTime = a.CreatedTime, AppDeadLine = a.AppDeadLine, ActivityDate = a.ActivityDate, 
+                                 ActivityTypeName = t.ActivityTypeName,
+                                 CountryName = country.CountryName,
+                                 CityName = city.CityName,
+                                 LocationName = loc.Name,
                              };
                 return result.ToList();
-
             }
         }
     }

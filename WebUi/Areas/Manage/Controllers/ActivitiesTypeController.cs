@@ -73,6 +73,8 @@ namespace WebUi.Areas.Manage.Controllers
                 return NotFound();
             }
 
+
+
             var activityType = _activityTypeService.GetById(id ?? 0).Data;
             if (activityType == null)
             {

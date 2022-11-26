@@ -14,7 +14,7 @@ namespace Business.ValidationRules.FluentValidation
         {
             RuleFor(a => a.ActivityName).NotEmpty().WithMessage("Aktivite ismi boş bırakılamaz");
             RuleFor(a => a.ActivityName).Length(2, 50);  
-            RuleFor(a => a.ActivityTypeId).NotNull().WithMessage("AktiviteTypeId boş olamaz");
+            //RuleFor(a => a.ActivityTypeId).NotNull().WithMessage("AktiviteTypeId boş olamaz");
             RuleFor(a => a.ActivityDate).NotEmpty().WithMessage("Aktivite tarihi boş bırakılamaz");
             RuleFor(a => a.CreatedTime).NotEmpty().WithMessage("Aktivite oluşturulma tarihi boş bırakılamaz");
             RuleFor(a => a.AppDeadLine).NotEmpty().WithMessage("Aktivite son bulma tarihi boş bırakılamaz");

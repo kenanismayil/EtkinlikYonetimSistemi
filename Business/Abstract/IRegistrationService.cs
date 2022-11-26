@@ -15,7 +15,7 @@ namespace Business.Abstract
         IDataResult<Registration> GetById(int id);
         IResult Add(Registration registration);
         IResult Delete(Registration registration);
-        IResult DeleteAll(Expression<Func<Registration, bool>> filter);
+        //IResult DeleteAll(Expression<Func<Registration, bool>> filter);
         IResult Update(Registration registration);
     }
 }

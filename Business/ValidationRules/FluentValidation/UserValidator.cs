@@ -1,4 +1,4 @@
-﻿using Entities.Concrete;
+﻿using Core.Entities.Concrete;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -18,6 +18,7 @@ namespace Business.ValidationRules.FluentValidation
             RuleFor(u => u.LastName).Length(2, 50);
             RuleFor(u => u.Email).NotNull().WithMessage("Email boş bırakılamaz");
             RuleFor(u => u.Email).Length(8, 50);
+            //RuleFor(u => u.DateOfBirth).NotNull().WithMessage("Doğum tarihi boş bırakılamaz");
         }
     }
 }

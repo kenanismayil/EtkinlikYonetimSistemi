@@ -15,9 +15,24 @@
                 <input asp-for="ActivityName" class="form-control" placeholder="Enter" />
                 <span asp-validation-for="ActivityName" class="text-danger"></span>
             </div>
-            <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <label asp-for="ActivityTypeId">
+                </label>
+                <select asp-for="ActivityTypeId"
+                        asp-items="@ViewBag.ActivityTypeId"
+                        class="form-control"></select>
+                <input hidden name="ActivityTypeId" value="@Model.ActivityTypeId">
+            </div>
+            <div class="form-group">
+                <label asp-for="CityId">
+                </label>
+                <select asp-for="CityId"
+                        asp-items="@ViewBag.CityId"
+                        class="form-control"></select>
+                <input hidden name="CityId" value="@Model.CityId">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit" class="btn btn-success" />
             </div>
         </form>
     </div>

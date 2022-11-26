@@ -1,5 +1,10 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspcets.Autofac;
 using Business.Constants.Messages;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
@@ -21,25 +26,41 @@ namespace Business.Concrete
             _countryDal = countryDal;
         }
 
-
+        [ValidationAspect(typeof(CountryValidator))]
+        [CacheRemoveAspect("ICountryService.Get")]
         public IResult Add(Country country)
         {
             //Business code
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
+
+            IResult result = BusinessRules.Run(CheckIfCountryNameExists(country.CountryName));
+            if (result != null)
             {
-                _countryDal.Add(country);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
+                return new ErrorResult(TurkishMessage.CountryNameAlreadyExists);
             }
 
+            _countryDal.Add(country);
             return new SuccessResult(TurkishMessage.CountryAdded);
+
+
+            //Central Management System
+            //var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //{
+            //    _countryDal.Add(country);
+            //});
+            //if (!result)
+            //{
+            //    return new ErrorResult(TurkishMessage.ErrorMessage);
+            //}
+
+            //return new SuccessResult(TurkishMessage.CountryAdded);
         }
 
+        [CacheRemoveAspect("ICountryService.Get")]
         public IResult Delete(Country country)
         {
             //Business code
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
                 _countryDal.Delete(country);
@@ -52,24 +73,28 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.CountryDeleted);
         }
 
-        public IResult DeleteAll(Expression<Func<Country, bool>> filter)
-        {
-            //Business code
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
-            {
-                _countryDal.DeleteAll(filter);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
-            }
+        //public IResult DeleteAll(Expression<Func<Country, bool>> filter)
+        //{
+        //    //Business code
+        //    var result = ExceptionHandler.HandleWithNoReturn(() =>
+        //    {
+        //        _countryDal.DeleteAll(filter);
+        //    });
+        //    if (!result)
+        //    {
+        //        return new ErrorResult(TurkishMessage.ErrorMessage);
+        //    }
 
-            return new SuccessResult(TurkishMessage.CountryDeleted);
-        }
+        //    return new SuccessResult(TurkishMessage.CountryDeleted);
+        //}
 
+        [CacheAspect]
         public IDataResult<List<Country>> GetAll()
         {
             //Business code
+
+            
+            //Central Management System
             var result = ExceptionHandler.HandleWithReturnNoParameter<List<Country>>(() =>
             {
                 return _countryDal.GetAll();
@@ -82,9 +107,12 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Country>>(result.Data, TurkishMessage.CountriesListed);
         }
 
+        [CacheAspect]
         public IDataResult<Country> GetById(int id)
         {
             //Business code
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithReturn<int, Country>((int x) =>
             {
                 return _countryDal.Get(c => c.Id == x);
@@ -97,15 +125,14 @@ namespace Business.Concrete
             return new SuccessDataResult<Country>(result.Data, TurkishMessage.SuccessMessage);
         }
 
-
+        [ValidationAspect(typeof(CountryValidator))]
+        [CacheRemoveAspect("ICountryService.Get")]
         public IResult Update(Country country)
         {
             //Business code
-            if (DateTime.Now.Hour == 22)
-            {
-                return new ErrorResult(TurkishMessage.MaintenanceTime);
-            }
 
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
                 _countryDal.Update(country);
@@ -116,6 +143,21 @@ namespace Business.Concrete
             }
 
             return new SuccessResult(TurkishMessage.CountryUpdated);
+        }
+
+
+
+
+        //İş kuralları
+        private IResult CheckIfCountryNameExists(string countryName)
+        {
+            //Aynı isimde şehir eklenemez
+            var result = _countryDal.GetAll(a => a.CountryName == countryName).Any();
+            if (result)
+            {
+                return new ErrorResult(TurkishMessage.CountryNameAlreadyExists);
+            }
+            return new SuccessResult();
         }
     }
 }

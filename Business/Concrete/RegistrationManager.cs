@@ -1,5 +1,9 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspcets.Autofac;
 using Business.Constants.Messages;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Validation;
 using Core.BusinessRuleHandle;
 using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
@@ -18,33 +22,42 @@ namespace Business.Concrete
     public class RegistrationManager : IRegistrationService
     {
         IRegistrationDal _registrationDal;
+
+
         public RegistrationManager(IRegistrationDal registrationDal)
         {
             _registrationDal = registrationDal;
+
         }
 
+
+        [ValidationAspect(typeof(RegistrationValidator))]
+        [CacheRemoveAspect("IRegistrationService.Get")]
         public IResult Add(Registration registration)
         {
             //Business code
-            var ruleExceptions = BusinessRuleHandler.CheckTheRules(MustUser(registration));
-            if (!ruleExceptions.Success)
+            IResult result = BusinessRuleHandler.
+                CheckTheRules(CheckIfUserLimitsExceeded(registration.User.Id, registration.Activity.Id));
+            if (result != null)
             {
-                return new ErrorResult(ruleExceptions.Message);
+                return result;
             }
 
             //Central Management System
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
-            {
-                _registrationDal.Add(registration);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
-            }
+            //var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //{
+            //    _registrationDal.Add(registration);
+            //});
+            //if (!result)
+            //{
+            //    return new ErrorResult(TurkishMessage.ErrorMessage);
+            //}
 
+            _registrationDal.Add(registration);
             return new SuccessResult(TurkishMessage.RegistrationAdded);
         }
 
+        [CacheRemoveAspect("IRegistrationService.Get")]
         public IResult Delete(Registration registration)
         {
             //Business code
@@ -60,20 +73,6 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.RegistrationDeleted);
         }
 
-        public IResult DeleteAll(Expression<Func<Registration, bool>> filter)
-        {
-            //Business code
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
-            {
-                _registrationDal.DeleteAll(filter);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
-            }
-
-            return new SuccessResult(TurkishMessage.RegistrationDeleted);
-        }
 
         public IDataResult<List<Registration>> GetAll()
         {
@@ -87,12 +86,15 @@ namespace Business.Concrete
                 return new ErrorDataResult<List<Registration>>(TurkishMessage.ErrorMessage);
             }
 
-            return new SuccessDataResult<List<Registration>>(result.Data, TurkishMessage.ActivitiesListed);
+            return new SuccessDataResult<List<Registration>>(result.Data, TurkishMessage.RegistrationListed);
         }
 
         public IDataResult<Registration> GetById(int id)
         {
             //Business code
+
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithReturn<int, Registration>((int x) =>
             {
                 return _registrationDal.Get(r => r.Id == x);
@@ -106,14 +108,14 @@ namespace Business.Concrete
         }
 
 
+        [ValidationAspect(typeof(RegistrationValidator))]
+        [CacheRemoveAspect("IRegistrationService.Get")]
         public IResult Update(Registration registration)
         {
             //Business code
-            if (DateTime.Now.Hour == 22)
-            {
-                return new ErrorResult(TurkishMessage.MaintenanceTime);
-            }
 
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
                 _registrationDal.Update(registration);
@@ -127,16 +129,20 @@ namespace Business.Concrete
         }
 
 
-        private IResult MustUser(Registration registration)
+        //İŞ KURALLARI
+        private IResult CheckIfUserLimitsExceeded(int userId, int activityId)
         {
-            var registers = _registrationDal.Get(r => r.UserId == registration.ActivityId);
-            if (registers != null)
+            var register = _registrationDal.Get(r => r.UserId == userId);
+            if (register.ActivityId == activityId)
             {
                 return new ErrorResult("Bir kullanici ayni aktiviteye tekrar kayit yapamaz");
             }
 
             return new SuccessResult(TurkishMessage.SuccessMessage);
         }
+
+
+
 
 
     }

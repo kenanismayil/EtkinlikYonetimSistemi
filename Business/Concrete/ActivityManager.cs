@@ -1,12 +1,21 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspcets.Autofac;
+using Business.CCS;
 using Business.Constants.Messages;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Transaction;
+using Core.Aspects.Autofac.Validation;
 using Core.BusinessRuleHandle;
+using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,38 +27,58 @@ namespace Business.Concrete
 {
     public class ActivityManager : IActivityService
     {
+        //Bir entity manager, kendi Dal'ı hariç başka bir Dal'ı enjekte edemez!
         IActivityDal _activityDal;
-        IModeratorDal _moderatorDal;
-        public ActivityManager(IActivityDal activityDal, IModeratorDal moderatorDal)
+        IActivityTypeService _activityTypeService;  //aktivite tipi tablosunu ilgilendiren bir kural olduğu için bu servisi enjekte deriz, Dal'ı değil!
+
+        public ActivityManager(IActivityDal activityDal, IActivityTypeService activityTypeService)
         {
             _activityDal = activityDal;
-            _moderatorDal = moderatorDal;
+            _activityTypeService = activityTypeService;
         }
-  
-        //Validation
+
+        //Validation -> Add metotunu ActivityValidator'daki kurallara göre doğrulanması
+        //Claim -> admin, activity.add,super_admin.  activity.add -> operasyon bazlı yapılarda kullanılır. 
+        [ValidationAspect(typeof(ActivityValidator))]
+        [CacheRemoveAspect("IActivityService.Get")]
         public IResult Add(Activity activity)
         {
-            //Business codes
-            //var ruleExceptions = BusinessRuleHandler.CheckTheRules(MustModerator(activity));
-            //if (!ruleExceptions.Success)
-            //{
-            //    return new ErrorResult(ruleExceptions.Message);
-            //}
+            //Business codes -> Polymorphism yaptım.
+            IResult result = BusinessRules.Run(CheckIfActivityCountOfTypeCorrect(activity.ActivityTypeId), 
+                CheckIfActivityNameExists(activity.ActivityName), CheckIfActivityTypeLimitExceded());
 
-            //Central Management System
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //result -> kurala uymayan
+            //result null değilse, yani kurala uymayan bir durum oluşmuşsa, o zaman result kendisi döner. ErrorResult dönecektir.
+            if (result != null)
             {
-                _activityDal.Add(activity);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
+                return result;
             }
 
+            //Kurala uymayan bir durum oluşmamışsa aktivite veritabanına başarılı şekilde eklenir.
+            _activityDal.Add(activity);
             return new SuccessResult(TurkishMessage.ActivityAdded);
+
         }
 
-        //Validation
+        //[TransactionScopeAspect]
+        //public IResult AddTransactionalTest(Activity activity)
+        //{
+        //    Add(activity);
+        //    if (activity.CreatedTime < activity.AppDeadLine)
+        //    {
+        //        if (activity.CreatedTime < activity.ActivityDate)
+        //        {
+        //            if (activity.ActivityDate < activity.AppDeadLine)
+        //            {
+        //                throw new Exception("Tarih girişlerinde hata vardır!");
+        //            }
+        //        }
+        //    }
+        //    Add(activity);
+        //    return null;
+        //}
+
+        [CacheRemoveAspect("IActivityService.Get")]
         public IResult Delete(Activity activity)
         {
             //Business codes
@@ -72,7 +101,7 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.ActivityDeleted);
         }
 
-        //Validation
+        [CacheRemoveAspect("IActivityService.Get")]
         public IResult DeleteAll(Expression<Func<Activity, bool>> filter)
         {
             //Business code
@@ -91,10 +120,13 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.ActivityDeleted);
         }
 
-        //Validation
+        [CacheAspect]
         public IDataResult<List<ActivityDetailDto>> GetActivityDetails()
         {
-            //business code
+            //Business code
+
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithReturnNoParameter<List<ActivityDetailDto>>(() =>
             {
                 return _activityDal.GetActivityDetails();
@@ -103,11 +135,12 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<List<ActivityDetailDto>>(TurkishMessage.ErrorMessage);
             }
-            
+
             return new SuccessDataResult<List<ActivityDetailDto>>(result.Data, TurkishMessage.ActivitiesListed);
         }
 
-        //Validation
+        //Cachlemek istediğimiz bir datayı bellekte Key,Value olarak tutuyoruz.
+        [CacheAspect]
         public IDataResult<List<Activity>> GetAll()
         {
             //Business code
@@ -123,14 +156,14 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Activity>>(result.Data, TurkishMessage.ActivitiesListed);
         }
 
-        //Validation
-        public IDataResult<Activity> GetById(int id)
+        [CacheAspect]
+        public IDataResult<Activity> GetById(int activityId)
         {
             //Business code
             var result = ExceptionHandler.HandleWithReturn<int, Activity>((x) =>
             {
                 return _activityDal.Get(a => a.Id == x);
-            }, id);
+            }, activityId);
             if (!result.Success)
             {
                 return new ErrorDataResult<Activity>(TurkishMessage.ErrorMessage);
@@ -140,42 +173,68 @@ namespace Business.Concrete
         }
 
         //Validation
+        [ValidationAspect(typeof(ActivityValidator))]
+        [CacheRemoveAspect("IActivityService.Get")]
         public IResult Update(Activity activity)
         {
             //Business code
-            if (DateTime.Now.Hour == 22)
-            {
-                return new ErrorDataResult<Activity>(TurkishMessage.MaintenanceTime);
-            }
-
-            
-            //var ruleExceptions = BusinessRuleHandler.CheckTheRules(MustModerator(activity));
-            //if (!ruleExceptions.Success)
-            //{
-            //    return new ErrorResult(ruleExceptions.Message);
-            //}
-
-            //Central Management System
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            if (CheckIfActivityCountOfTypeCorrect(activity.ActivityTypeId).Success)
             {
                 _activityDal.Update(activity);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
+                return new SuccessResult(TurkishMessage.ActivityUpdated);
             }
+            return new ErrorResult();
 
-            return new SuccessResult(TurkishMessage.ActivityUpdated);
+            //Central Management System
+            //var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //{
+            //    _activityDal.Update(activity);
+            //});
+            //if (!result)
+            //{
+            //    return new ErrorResult(TurkishMessage.ErrorMessage);
+            //}
+            //return new SuccessResult(TurkishMessage.ActivityUpdated);
         }
 
-        //private IResult MustModerator(Activity activity)
-        //{
-        //    var moderator = _moderatorDal.Get(x => x.Id == activity.ModeratorId);
-        //    if(moderator == null)
-        //    {
-        //        return new ErrorResult("Aktivite üzerinde sadece moderator işlem yapabilir");
-        //    }
-        //    return new SuccessResult(TurkishMessage.SuccessMessage);
-        //}
+
+        //İş kuralı parçacığı olduğu için ve sadece bu manager altında kullanacağım iş kuralı parçacığını buraya yazıyorum. Ekleme ve güncellemede kod tekrarlılığını önlemiş oldum.
+        private IResult CheckIfActivityCountOfTypeCorrect(int activityTypeId)
+        {
+            //Aktivite eklemek istediğimizde eklemek istediğimiz aktivitenin tipinde maksimum 10 aktivite olabilir.
+            //Yani bir aktivite tipinde en fazla 10 tane aktivite olabilir.
+            //_activityDal.GetAll(a => a.ActivityTypeId == activityTypeId).Count -> Bizim için arka planda bir Linq Query oluşturuyor ve bu query'yi veritabanına yolluyor.
+            //Select count(*) from Activities where activityTypeId=1 -> bu query arka planda bu sorguyu çalıştırır.
+            var result = _activityDal.GetAll(a => a.ActivityTypeId == activityTypeId).Count;
+            if (result >= 10)
+            {
+                return new ErrorResult(TurkishMessage.ActivityCountOfTypeError);
+            }
+            return new SuccessResult();
+        }
+
+
+        private IResult CheckIfActivityNameExists(string activityName)
+        {
+            //Aynı isimde aktivite eklenemez
+            //Any() -> _activityDal.GetAll(a => a.ActivityName == activityName)'e uyan kayıt var mı anlamına gelen metottur.
+            var result = _activityDal.GetAll(a => a.ActivityName == activityName).Any();
+            if (result)
+            {
+                return new ErrorResult(TurkishMessage.ActivityNameAlreadyExists);
+            }
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfActivityTypeLimitExceded()
+        {
+            //Eğer mevcut aktivite tipi sayısı 15'i geçmişse sisteme yeni aktivite eklenemez.
+            var result = _activityTypeService.GetAll();
+            if (result.Data.Count > 15)
+            {
+                return new ErrorResult(TurkishMessage.ActivityTypeLimitExceded); 
+            }
+            return new SuccessResult();
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants.Messages;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
@@ -21,9 +23,14 @@ namespace Business.Concrete
             _commentDal = commentDal;
         }
 
+        [ValidationAspect(typeof(CommentValidator))]
         public IResult Add(Comment comment)
         {
             //Business code
+
+
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
                 _commentDal.Add(comment);
@@ -39,6 +46,9 @@ namespace Business.Concrete
         public IResult Delete(Comment comment)
         {
             //Business code
+
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
                 _commentDal.Delete(comment);
@@ -51,24 +61,15 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.CommentDeleted);
         }
 
-        public IResult DeleteAll(Expression<Func<Comment, bool>> filter)
-        {
-            //Business code
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
-            {
-                _commentDal.DeleteAll(filter);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
-            }
 
-            return new SuccessResult(TurkishMessage.CommentDeleted);
-        }
 
         public IDataResult<List<Comment>> GetAll()
         {
             //Business code
+
+
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithReturnNoParameter<List<Comment>>(() =>
             {
                 return _commentDal.GetAll();
@@ -78,16 +79,20 @@ namespace Business.Concrete
                 return new ErrorDataResult<List<Comment>>(TurkishMessage.ErrorMessage);
             }
 
-            return new SuccessDataResult<List<Comment>>(result.Data, TurkishMessage.ActivitiesListed);
+            return new SuccessDataResult<List<Comment>>(result.Data, TurkishMessage.CommentsListed);
         }
 
-        public IDataResult<Comment> GetById(int id)
+        public IDataResult<Comment> GetById(int commentId)
         {
             //Business code
+
+
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithReturn<int, Comment>((int x) =>
             {
                 return _commentDal.Get(c => c.Id == x);
-            }, id);
+            }, commentId);
             if (!result.Success)
             {
                 return new ErrorDataResult<Comment>(TurkishMessage.ErrorMessage);
@@ -97,14 +102,13 @@ namespace Business.Concrete
         }
 
 
+        [ValidationAspect(typeof(CommentValidator))]
         public IResult Update(Comment comment)
         {
             //Business code
-            if (DateTime.Now.Hour == 22)
-            {
-                return new ErrorResult(TurkishMessage.MaintenanceTime);
-            }
 
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
                 _commentDal.Update(comment);

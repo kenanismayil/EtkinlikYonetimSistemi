@@ -15,7 +15,7 @@ namespace Business.Abstract
         IDataResult<City> GetById(int id);
         IResult Add(City city);
         IResult Delete(City city);
-        IResult DeleteAll(Expression<Func<City, bool>> filter);
+        //IResult DeleteAll(Expression<Func<City, bool>> filter);
         IResult Update(City city);
     }
 }

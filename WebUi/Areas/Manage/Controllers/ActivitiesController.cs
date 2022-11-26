@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,14 @@ namespace WebUi.Areas.Manage.Controllers
     {
 
         IActivityService _activityService;        //interface'ler referans tutar.
-
+        IActivityTypeService _activityTypeService;
+        ICityService _cityService;
         //IoC Container
-        public ActivitiesController(IActivityService activityService)
+        public ActivitiesController(IActivityService activityService,IActivityTypeService activityTypeService, ICityService cityService)
         {
             _activityService = activityService;
+            _activityTypeService = activityTypeService;
+            _cityService = cityService;
         }
         public IActionResult Index()
         {
@@ -30,14 +34,19 @@ namespace WebUi.Areas.Manage.Controllers
         public IActionResult Create()
         {
             ViewBag.Breadcrumb = "New activity";
-            return View();
+            ViewData["ActivityTypeId"] = new SelectList(_activityTypeService.GetAll().Data, "Id", "ActivityTypeName");
+            ViewData["CityId"] = new SelectList(_cityService.GetAll().Data, "Id", "CityName");
+
+            return View(new Activity());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("ActivityName,Id")] Activity activity)
+        public IActionResult Create (Activity activity)
         {
             ViewBag.Breadcrumb = "New activity";
+            ViewData["ActivityTypeId"] = new SelectList(_activityTypeService.GetAll().Data, "Id", "ActivityTypeName");
+            ViewData["CityId"] = new SelectList(_cityService.GetAll().Data, "Id", "CityName");
 
             if (ModelState.IsValid)
             {
@@ -70,6 +79,9 @@ namespace WebUi.Areas.Manage.Controllers
                 return NotFound();
             }
 
+            ViewData["ActivityTypeId"] = new SelectList(_activityTypeService.GetAll().Data, "Id", "ActivityTypeName");
+            ViewData["CityId"] = new SelectList(_cityService.GetAll().Data, "Id", "CityName");
+
             var activity = _activityService.GetById(id ?? 0).Data;
             if (activity == null)
             {
@@ -85,14 +97,18 @@ namespace WebUi.Areas.Manage.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("ActivityName,Id")] Activity activity)
+        public IActionResult Edit(int id, Activity activity)
         {
+
+
             if (id != activity.Id)
             {
                 return NotFound();
             }
 
             ViewBag.Breadcrumb = "Update activity";
+            ViewData["ActivityTypeId"] = new SelectList(_activityTypeService.GetAll().Data, "Id", "ActivityTypeName");
+            ViewData["CityId"] = new SelectList(_cityService.GetAll().Data, "Id", "CityName");
 
             if (ModelState.IsValid)
             {

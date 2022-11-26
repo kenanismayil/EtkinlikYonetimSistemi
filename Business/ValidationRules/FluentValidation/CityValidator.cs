@@ -14,8 +14,6 @@ namespace Business.ValidationRules.FluentValidation
         {
             RuleFor(c => c.CityName).NotNull().WithMessage("Şehir ismi boş bırakılamaz");
             RuleFor(c => c.CityName).MinimumLength(3).WithMessage("Şehir isminin minimum uzunluğu 3 olmalıdır");
-            RuleFor(c => c.Country).NotNull().WithMessage("Ülke ismi boş bırakılamaz");
-            RuleFor(c => c.CountryId).NotNull().WithMessage("ÜlkeId boş olamaz");
         }
     }
 }

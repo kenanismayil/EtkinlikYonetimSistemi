@@ -1,5 +1,9 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspcets.Autofac;
 using Business.Constants.Messages;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Validation;
 using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
@@ -23,10 +27,13 @@ namespace Business.Concrete
             _certificateDal = certificateDal;
         }
 
-        //Validation
+        [ValidationAspect(typeof(CertificateValidator))]
+        [CacheRemoveAspect("ICertificateService.Get")]
         public IResult Add(Certificate certificate)
         {
             //Business code
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
                 _certificateDal.Add(certificate);
@@ -40,10 +47,12 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.CertificateAdded);
         }
 
-        //Validation
+        [CacheRemoveAspect("ICertificateService.Get")]
         public IResult Delete(Certificate certificate)
         {
             //Business code
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
                 _certificateDal.Delete(certificate);
@@ -53,25 +62,29 @@ namespace Business.Concrete
                 return new ErrorResult(TurkishMessage.ErrorMessage);
             }
 
-            return new SuccessResult(TurkishMessage.ActivityDeleted);
+            return new SuccessResult(TurkishMessage.CertificateDeleted);
         }
 
-        //Validation
+        [CacheRemoveAspect("ICertificateService.Get")]
         public IResult DeleteAll(Expression<Func<Certificate, bool>> filter)
         {
             //Business code
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
                 _certificateDal.DeleteAll(filter);
             });
 
-            return new SuccessResult(TurkishMessage.ActivityDeleted);
+            return new SuccessResult(TurkishMessage.CertificateDeleted);
         }
 
-        //Validation
+        [CacheAspect]
         public IDataResult<List<Certificate>> GetAll()
         {
             //Business code
+
+            //Central Management System
             var result = ExceptionHandler.HandleWithReturnNoParameter<List<Certificate>>(() =>
             {
                 return _certificateDal.GetAll();
@@ -82,10 +95,10 @@ namespace Business.Concrete
             }
 
 
-            return new SuccessDataResult<List<Certificate>>(result.Data, TurkishMessage.ActivitiesListed);
+            return new SuccessDataResult<List<Certificate>>(result.Data, TurkishMessage.CertificateListed);
         }
 
-        //Validation
+        [CacheAspect]
         public IDataResult<Certificate> GetById(int id)
         {
             //Business code
@@ -103,15 +116,13 @@ namespace Business.Concrete
             return new SuccessDataResult<Certificate>(result.Data, TurkishMessage.SuccessMessage);
         }
 
-        //Validation
+        [ValidationAspect(typeof(CertificateValidator))]
+        [CacheRemoveAspect("ICertificateService.Get")]
         public IResult Update(Certificate certificate)
         {
             //Business code
-            if (DateTime.Now.Hour == 22)
-            {
-                return new ErrorResult(TurkishMessage.MaintenanceTime);
-            }
 
+            //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
                 _certificateDal.Update(certificate);
@@ -121,9 +132,10 @@ namespace Business.Concrete
                 return new ErrorResult(TurkishMessage.ErrorMessage);
             }
 
-            return new SuccessResult(TurkishMessage.ActivityUpdated);
+            return new SuccessResult(TurkishMessage.CertificateUpdate);
         }
 
 
+        //İş kuralları
     }
 }

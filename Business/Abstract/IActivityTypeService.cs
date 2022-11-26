@@ -12,7 +12,7 @@ namespace Business.Abstract
     public interface IActivityTypeService
     {
         IDataResult<List<ActivityType>> GetAll();
-        IDataResult<ActivityType> GetById(int id);
+        IDataResult<ActivityType> GetById(int activityTypeId);
         IResult Add(ActivityType activity);
         IResult Delete(ActivityType activity);
         IResult DeleteAll(Expression<Func<ActivityType, bool>> filter);

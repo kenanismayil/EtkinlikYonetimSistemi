@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "admin, super_admin")]
     public class ActivitiesController : Controller
     {
         IActivityService _activityService;        //interface'ler referans tutar.
@@ -21,6 +23,7 @@ namespace WebAPI.Controllers
             _activityService = activityService;
         }
 
+        [AllowAnonymous]
         [HttpGet("getAll")]
         public IActionResult GetAll()
         {
@@ -32,12 +35,12 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
-   
 
+        [AllowAnonymous]
         [HttpGet("getById")]
-        public IActionResult GetById(int id)
+        public IActionResult GetById(int activityId)
         {
-            var result = _activityService.GetById(id);
+            var result = _activityService.GetById(activityId);
             if (result.Success)
             {
                 return Ok(result);
@@ -45,6 +48,8 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+
+        [AllowAnonymous]
         [HttpGet("activityDetailDto")]
         public IActionResult GetActivityDetails()
         {

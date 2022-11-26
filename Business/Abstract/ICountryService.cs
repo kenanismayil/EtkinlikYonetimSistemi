@@ -15,7 +15,7 @@ namespace Business.Abstract
         IDataResult<Country> GetById(int id);
         IResult Add(Country country);
         IResult Delete(Country country);
-        IResult DeleteAll(Expression<Func<Country, bool>> filter);
+        //IResult DeleteAll(Expression<Func<Country, bool>> filter);
         IResult Update(Country country);
     }
 }

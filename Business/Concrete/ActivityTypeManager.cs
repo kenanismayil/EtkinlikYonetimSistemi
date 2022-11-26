@@ -1,5 +1,10 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspcets.Autofac;
 using Business.Constants.Messages;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
@@ -22,23 +27,34 @@ namespace Business.Concrete
             _activityTypeDal = activityTypeDal;
         }
 
-        //Validation
+        [ValidationAspect(typeof(ActivityTypeValidator))]
+        [CacheRemoveAspect("IActivityTypeService.Get")]
         public IResult Add(ActivityType activityType)
         {
-            //Business code
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //Business codes
+            IResult result = BusinessRules.Run(CheckIfActivityTypeNameExists(activityType.ActivityTypeName));
+            if (result != null)
             {
-                _activityTypeDal.Add(activityType);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
+                return result;
             }
 
+            _activityTypeDal.Add(activityType);
             return new SuccessResult(TurkishMessage.ActivityTypeAdded);
+
+
+            //var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //{
+            //    _activityTypeDal.Add(activityType);
+            //});
+            //if (!result)
+            //{
+            //    return new ErrorResult(TurkishMessage.ErrorMessage);
+            //}
+
+            //return new SuccessResult(TurkishMessage.ActivityTypeAdded);
         }
 
-        //Validation
+        [CacheRemoveAspect("IActivityTypeService.Get")]
         public IResult Delete(ActivityType activityType)
         {
             //Business code
@@ -54,7 +70,7 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.ActivityDeleted);
         }
 
-        //Validation
+        [CacheRemoveAspect("IActivityTypeService.Get")]
         public IResult DeleteAll(Expression<Func<ActivityType, bool>> filter)
         {
             //Business code
@@ -70,7 +86,7 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.ActivityTypeDeleted);
         }
 
-        //Validation
+        [CacheAspect]
         public IDataResult<List<ActivityType>> GetAll()
         {
             //Business code
@@ -83,17 +99,17 @@ namespace Business.Concrete
                 return new ErrorDataResult<List<ActivityType>>(TurkishMessage.ErrorMessage);
             }
 
-            return new SuccessDataResult<List<ActivityType>>(result.Data, TurkishMessage.ActivitiesListed);
+            return new SuccessDataResult<List<ActivityType>>(result.Data, TurkishMessage.ActivityTypesListed);
         }
 
-        //Validation
-        public IDataResult<ActivityType> GetById(int id)
+        [CacheAspect]
+        public IDataResult<ActivityType> GetById(int activityTypeId)
         {
             //Business code
             var result = ExceptionHandler.HandleWithReturn<int, ActivityType>((x) =>
             {
                 return _activityTypeDal.Get(a => a.Id == x);
-            }, id);
+            }, activityTypeId);
             if (!result.Success)
             {
                 return new ErrorDataResult<ActivityType>(TurkishMessage.ErrorMessage);
@@ -102,15 +118,14 @@ namespace Business.Concrete
             return new SuccessDataResult<ActivityType>(result.Data, TurkishMessage.SuccessMessage);
         }
 
-        //Validation
+
+        [ValidationAspect(typeof(ActivityTypeValidator))]
+        [CacheRemoveAspect("IActivityTypeService.Get")]
         public IResult Update(ActivityType activityType)
         {
             //Business code
-            if (DateTime.Now.Hour == 22)
-            {
-                return new ErrorResult(TurkishMessage.MaintenanceTime);
-            }
 
+            //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
                 _activityTypeDal.Update(activityType);
@@ -122,5 +137,20 @@ namespace Business.Concrete
 
             return new SuccessResult(TurkishMessage.ActivityUpdated);
         }
+
+
+
+        //İş kuralları
+        private IResult CheckIfActivityTypeNameExists(string activityTypeName)
+        {
+            //Aynı isimde aktivite tipi eklenemez
+            var result = _activityTypeDal.GetAll(a => a.ActivityTypeName == activityTypeName).Any();
+            if (result)
+            {
+                return new ErrorResult(TurkishMessage.ActivityTypeNameAlreadyExists);
+            }
+            return new SuccessResult();
+        }
+
     }
 }

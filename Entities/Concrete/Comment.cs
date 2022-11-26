@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,13 +12,13 @@ namespace Entities.Concrete
     public class Comment:IEntity
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public int ActivityId { get; set; }
-        public string CommentText { get; set; }
+        public string Content { get; set; }
 
         //Foreign key
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public virtual User User { get; set; }
 
         [ForeignKey("ActivityId")]
         public Activity Activity { get; set; }

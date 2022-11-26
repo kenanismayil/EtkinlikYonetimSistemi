@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
-using Entities.Concrete;
+using Core.Entities.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "admin, super_admin")]
     public class UsersController : Controller
     {
         IUserService _userService;        //interface'ler referans tutar.
@@ -19,29 +21,6 @@ namespace WebAPI.Controllers
         public UsersController(IUserService userService)
         {
             _userService = userService;
-        }
-
-        [HttpGet("getAll")]
-        public IActionResult GetAll()
-        {
-            var result = _userService.GetAll();
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
-        }
-
-        [HttpGet("getById")]
-        public IActionResult GetById(int id)
-        {
-            var result = _userService.GetById(id);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
         }
 
         [HttpPost("add")]
@@ -55,10 +34,10 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpDelete("delete")]
-        public IActionResult Delete(User user)
+        [HttpGet("getByEmail")]
+        public IActionResult GetByMail(string email)
         {
-            var result = _userService.Delete(user);
+            var result = _userService.GetByMail(email);
             if (result.Success)
             {
                 return Ok(result);
@@ -66,10 +45,11 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpDelete("deleteAll")]
-        public IActionResult DeleteAll(Expression<Func<User, bool>> filter)
+        [Authorize(Roles = "user")]
+        [HttpGet("userDetailDto")]
+        public IActionResult GetUserDetails()
         {
-            var result = _userService.DeleteAll(filter);
+            var result = _userService.GetUserDetails();
             if (result.Success)
             {
                 return Ok(result);
@@ -77,10 +57,10 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPut("update")]
-        public IActionResult Update(User user)
+        [HttpGet("getClaims")]
+        public IActionResult GetClaims(User user)
         {
-            var result = _userService.Update(user);
+            var result = _userService.GetClaims(user);
             if (result.Success)
             {
                 return Ok(result);

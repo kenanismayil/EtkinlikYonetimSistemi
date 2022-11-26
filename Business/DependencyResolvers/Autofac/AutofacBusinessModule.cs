@@ -12,6 +12,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Business.CCS;
+using Core.Utilities.Security.JWT;
+using Microsoft.AspNetCore.Http;
 
 namespace Business.DependencyResolvers.Autofac
 {
@@ -29,6 +32,8 @@ namespace Business.DependencyResolvers.Autofac
             //ekledigimizde sorun olusmamasi icin Business katmaninda DependencyResolver klasorunde olusturulur.
 
             //Startup'daki services.AddSingleton<IProductService, ActivityManager>(); ' a karsilik gelir.
+
+            //builder.RegisterType<FileLogger>().As<ILogger>().SingleInstance();
 
             //Activity icin IoC Container
             builder.RegisterType<ActivityManager>().As<IActivityService>().SingleInstance();
@@ -58,23 +63,34 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<CommentManager>().As<ICommentService>().SingleInstance();
             builder.RegisterType<EfCommentDal>().As<ICommentDal>().SingleInstance();
 
-            //Moderator icin IoC Container
-            builder.RegisterType<ModeratorManager>().As<IModeratorService>().SingleInstance();
-            builder.RegisterType<EfModeratorDal>().As<IModeratorDal>().SingleInstance();
-
             //User icin IoC Container
             builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
             builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
 
+
+            //ActivityImage icin IoC Container
+            builder.RegisterType<ActivityImageManager>().As<IActivityImageService>().SingleInstance();
+            builder.RegisterType<EfActivityImageDal>().As<IActivityImageDal>().SingleInstance();
+
+            //Auth icin IoC Container
+            builder.RegisterType<AuthManager>().As<IAuthService>();
+
+            //JWT icin IoC Container
+            builder.RegisterType<JwtHelper>().As<ITokenHelper>();
+
             //builder.RegisterType<TurkishMessage>().As<IMessage>().SingleInstance();
 
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            //.net mimarisinde de autofac vardır ama Autofac, aynı zamanda bize Interceptor özelliği verir. 
 
-            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();   //Uygulamayı çalıştırır.
+
+            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()   //Çalışan uygulama içerisinde implemente edilmiş interface'leri bulur ve onlar için AspectInterceptorSelector()'u çağır.
                 .EnableInterfaceInterceptors(new ProxyGenerationOptions()
                 {
                     Selector = new AspectInterceptorSelector()
                 }).SingleInstance();
+
+            //Kısacası, Autofac yukarıda register yaptığımız bütün sınıflarımız için önce AspectInterceptorSelector()'u çalıştırır. Bu sınıfların bir aspect'i var mı ona bakıyor.
 
         }
     }

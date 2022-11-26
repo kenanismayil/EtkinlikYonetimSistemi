@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "admin, super_admin")]
     public class RegistrationsController : Controller
     {
         IRegistrationService _registrationService;        //interface'ler referans tutar.
@@ -21,6 +23,7 @@ namespace WebAPI.Controllers
             _registrationService = registrationService;
         }
 
+        [AllowAnonymous]
         [HttpGet("getAll")]
         public IActionResult GetAll()
         {
@@ -33,6 +36,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [AllowAnonymous]
         [HttpGet("getById")]
         public IActionResult GetById(int id)
         {
@@ -66,16 +70,16 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpDelete("deleteAll")]
-        public IActionResult DeleteAll(Expression<Func<Registration, bool>> filter)
-        {
-            var result = _registrationService.DeleteAll(filter);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
+        //[HttpDelete("deleteAll")]
+        //public IActionResult DeleteAll(Expression<Func<Registration, bool>> filter)
+        //{
+        //    var result = _registrationService.DeleteAll(filter);
+        //    if (result.Success)
+        //    {
+        //        return Ok(result);
+        //    }
+        //    return BadRequest(result);
+        //}
 
         [HttpPut("update")]
         public IActionResult Update(Registration registration)

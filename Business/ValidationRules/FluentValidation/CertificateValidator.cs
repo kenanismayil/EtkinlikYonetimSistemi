@@ -13,11 +13,9 @@ namespace Business.ValidationRules.FluentValidation
         public CertificateValidator()
         {
             RuleFor(c => c.CertificateName).NotEmpty().WithMessage("Sertifika ismi boş bırakılamaz");
+            RuleFor(c => c.GivenDate).NotEmpty().WithMessage("Sertifika verilme tarihi boş bırakılamaz");
+            RuleFor(c => c.ExpiryDate).NotEmpty().WithMessage("Sertifika geçerlilik tarihi boş bırakılamaz");
             RuleFor(c => c.CertificateName).Length(2, 50);
-            RuleFor(c => c.GivenDate).NotEmpty().WithMessage("Aktivite tipi boş bırakılamaz");
-            RuleFor(c => c.ExpiryDate).NotEmpty().WithMessage("Aktivite tarihi boş bırakılamaz");
-            RuleFor(c => c.UserId).NotNull().WithMessage("UserId boş bırakılamaz");
-            RuleFor(c => c.ActivityId).NotNull().WithMessage("AktiviteId boş bırakılamaz");
         }
     }
 }

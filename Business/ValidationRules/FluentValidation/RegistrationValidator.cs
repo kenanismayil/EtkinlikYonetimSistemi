@@ -13,8 +13,6 @@ namespace Business.ValidationRules.FluentValidation
         public RegistrationValidator()
         {
             RuleFor(r => r.Date).NotNull().WithMessage("Kayit tatihi boş bırakılamaz");
-            RuleFor(r => r.ActivityId).NotNull().WithMessage("Aktivite ismi boş olamaz");
-            RuleFor(r => r.UserId).NotNull().WithMessage("UserId boş olamaz");
         }
     }
 }

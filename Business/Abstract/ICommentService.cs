@@ -12,10 +12,9 @@ namespace Business.Abstract
     public interface ICommentService
     {
         IDataResult<List<Comment>> GetAll();
-        IDataResult<Comment> GetById(int id);
+        IDataResult<Comment> GetById(int commentId);
         IResult Add(Comment comment);
         IResult Delete(Comment comment  );
-        IResult DeleteAll(Expression<Func<Comment, bool>> filter);
         IResult Update(Comment comment);
     }
 }

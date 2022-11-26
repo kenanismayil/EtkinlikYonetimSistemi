@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Concrete;
+using Core.Utilities.FileHelper;
+using Core.Utilities.Security.JWT;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,12 +46,27 @@ namespace Business.DependencyResolvers.Extensions
             services.AddSingleton<ICommentDal, EfCommentDal>();
 
             //Moderator icin IoC Container
-            services.AddSingleton<IModeratorService, ModeratorManager>();
-            services.AddSingleton<IModeratorDal, EfModeratorDal>();
+            //services.AddSingleton<IModeratorService, ModeratorManager>();
+            //services.AddSingleton<IModeratorDal, EfModeratorDal>();
 
             //User icin IoC Container
             services.AddSingleton<IUserService, UserManager>();
             services.AddSingleton<IUserDal, EfUserDal>();
+
+
+
+            //ActivityImage icin IoC Container
+            services.AddSingleton<IActivityImageService, ActivityImageManager>();
+            services.AddSingleton<IActivityImageDal, EfActivityImageDal>();
+
+            services.AddSingleton<IFileHelper, FileHelperManager>();
+
+
+            //Auth icin IoC Container
+            services.AddSingleton<IAuthService, AuthManager>();
+
+            //JWT icin IoC Container
+            services.AddSingleton<ITokenHelper, JwtHelper>();
 
             return services;
         }

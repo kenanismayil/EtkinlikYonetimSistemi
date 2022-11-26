@@ -1,11 +1,17 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspcets.Autofac;
 using Business.Constants.Messages;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Validation;
 using Core.BusinessRuleHandle;
+using Core.Entities.Concrete;
+using Core.Utilities.Business;
 using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
-using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,24 +20,29 @@ using System.Text;
 using System.Threading.Tasks;
 namespace Business.Concrete
 {
-    public class UserManager : IUserService 
+    public class UserManager : IUserService
     {
         IUserDal _userDal;
+
         public UserManager(IUserDal userDal)
         {
             _userDal = userDal;
         }
 
+        public IDataResult<List<OperationClaim>> GetClaims(User user)
+        {
+            var result = _userDal.GetClaims(user);
+            return new SuccessDataResult<List<OperationClaim>>(result, TurkishMessage.SuccessMessage);
+        }
+
+        [CacheRemoveAspect("IUserService.Get")]
+        [ValidationAspect(typeof(UserValidator))]
         public IResult Add(User user)
         {
-            //Business code
-            var ruleExceptions = BusinessRuleHandler.CheckTheRules(UserEmailControl(user), UserPhoneControl(user));
-            if (!ruleExceptions.Success)
-            {
-                return new ErrorResult(ruleExceptions.Message);
-            }
+            //Business Codes
 
 
+            //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
                 _userDal.Add(user);
@@ -40,120 +51,76 @@ namespace Business.Concrete
             {
                 return new ErrorResult(TurkishMessage.ErrorMessage);
             }
-
-            return new SuccessResult(TurkishMessage.UserAdded);
+            return new SuccessResult(TurkishMessage.SuccessMessage);
         }
 
-        public IResult Delete(User user)
+        public IDataResult<User> GetByMail(string email)
         {
-            //Business code
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
-            {
-                _userDal.Delete(user);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
-            }
 
-            return new SuccessResult(TurkishMessage.UserDeleted);
-        }
-
-        public IResult DeleteAll(Expression<Func<User, bool>> filter)
-        {
-            //Business code
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
-            {
-                _userDal.DeleteAll(filter);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
-            }
-
-            return new SuccessResult(TurkishMessage.UserDeleted);
-        }
-
-        public IDataResult<List<User>> GetAll()
-        {
-            //Business code
-            var result = ExceptionHandler.HandleWithReturnNoParameter<List<User>>(() =>
-            {
-                return _userDal.GetAll();
-            });
-            if (!result.Success)
-            {
-                return new ErrorDataResult<List<User>>(TurkishMessage.ErrorMessage);
-            }
-
-            return new SuccessDataResult<List<User>>(result.Data, TurkishMessage.ActivitiesListed);
-        }
-
-        public IDataResult<User> GetById(int id)
-        {
-            //Business code
-            var result = ExceptionHandler.HandleWithReturn<int, User>((int x) =>
-            {
-                return _userDal.Get(u => u.Id == x);
-            }, id);
-            if (!result.Success)
-            {
-                return new ErrorDataResult<User>(TurkishMessage.ErrorMessage);
-            }
-
-            return new SuccessDataResult<User>(result.Data, TurkishMessage.SuccessMessage);
-        }
-
-
-        public IResult Update(User user)
-        {
-            //Business codes
-            if (DateTime.Now.Hour == 22)
-            {
-                return new ErrorResult(TurkishMessage.MaintenanceTime);
-            }
-
-            //var ruleExceptions = BusinessRuleHandler.CheckTheRules(UserEmailControl(user), UserPhoneControl(user));
-            //if (!ruleExceptions.Success)
+            //Business Codes
+            //var result = _userDal.Get(u => u.Email == email);
+            //if (result == null)
             //{
-            //    return new ErrorResult(ruleExceptions.Message);
+            //    return new ErrorDataResult<User>(TurkishMessage.UserNotFound);
+            //}
+            //return new SuccessDataResult<User>(result, TurkishMessage.SuccessMessage);
+
+
+            //Central Management System
+            //var result = ExceptionHandler.HandleWithReturn<string, User>((email) =>
+            //{
+            //    return _userDal.GetAll(u => u.Email == email)[0];
+            //}, email);
+            //if (!result.Success)
+            //{
+            //    return new ErrorDataResult<User>(TurkishMessage.ErrorMessage);
             //}
 
-            //Central Error Management
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            var result = _userDal.Get(p => p.Email == email);
+            return new SuccessDataResult<User>(result, TurkishMessage.SuccessMessage);
+        }
+
+        public IDataResult<List<UserDetailDto>> GetUserDetails()
+        {
+            //Business code
+
+
+            //Central Management System
+            var result = ExceptionHandler.HandleWithReturnNoParameter<List<UserDetailDto>>(() =>
             {
-                _userDal.Update(user);
+                return _userDal.GetUserDetails();
             });
-            if (!result)
+            if (!result.Success)
             {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
+                return new ErrorDataResult<List<UserDetailDto>>(TurkishMessage.ErrorMessage);
             }
 
-            return new SuccessResult(TurkishMessage.UserUpdated);
+            return new SuccessDataResult<List<UserDetailDto>>(result.Data, TurkishMessage.UserDetailListed);
         }
 
-        private IResult UserEmailControl(User user)
-        {
-            var users = _userDal.Get(u => u.Email == user.Email);
-            if (users != null)
-            {
-                return new ErrorResult("Sisteme varolan kullanici emaili eklenemez");
-            }
 
-            return new SuccessResult(TurkishMessage.SuccessMessage);
-        }
+        //İŞ KURALLARI
 
-        private IResult UserPhoneControl(User user)
-        {
-            var users = _userDal.Get(u => u.Phone == user.Phone);
-            if (users != null)
-            {
-                return new ErrorResult("Sisteme varolan kullanici numarasi eklenemez");
-            }
+        //private IResult UserEmailControl(string email)
+        //{
+        //    var result = _userDal.GetAll(u => u.Email == email).Any();
+        //    if (result)
+        //    {
+        //        return new ErrorResult("Sisteme varolan kullanici emaili eklenemez");
+        //    }
 
-            return new SuccessResult(TurkishMessage.SuccessMessage);
-        }
+        //    return new SuccessResult(TurkishMessage.SuccessMessage);
+        //}
 
-        
+        //private IResult UserPhoneControl(string phoneNumber)
+        //{
+        //    var result = _userDal.GetAll(u => u.Phone == phoneNumber).Any();
+        //    if (result)
+        //    {
+        //        return new ErrorResult("Sisteme varolan kullanici numarasi eklenemez");
+        //    }
+
+        //    return new SuccessResult(TurkishMessage.SuccessMessage);
+        //}
     }
 }

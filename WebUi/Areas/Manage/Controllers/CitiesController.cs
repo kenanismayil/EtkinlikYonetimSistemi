@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,13 @@ namespace WebUi.Areas.Manage.Controllers
     public class CitiesController : Controller
     {
         ICityService _cityService;        //interface'ler referans tutar.
+        ICountryService _countryService;
 
         //IoC Container
-        public CitiesController(ICityService cityService)
+        public CitiesController(ICityService cityService, ICountryService countryService)
         {
             _cityService = cityService;
+            _countryService = countryService;
         }
         public IActionResult Index()
         {
@@ -29,14 +32,17 @@ namespace WebUi.Areas.Manage.Controllers
         public IActionResult Create()
         {
             ViewBag.Breadcrumb = "New activity";
-            return View();
+            ViewData["CountryId"] = new SelectList(_countryService.GetAll().Data, "Id", "CountryName");
+
+            return View(new City());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("ActivityName,Id")] City city)
+        public IActionResult Create(City city)
         {
-            ViewBag.Breadcrumb = "New activity";
+            ViewBag.Breadcrumb = "New city";
+            ViewData["CountryId"] = new SelectList(_countryService.GetAll().Data, "Id", "CountryName");
 
             if (ModelState.IsValid)
             {
@@ -69,6 +75,9 @@ namespace WebUi.Areas.Manage.Controllers
                 return NotFound();
             }
 
+            ViewData["CountryId"] = new SelectList(_countryService.GetAll().Data, "Id", "CountryName");
+
+
             var city = _cityService.GetById(id ?? 0).Data;
             if (city == null)
             {
@@ -92,6 +101,8 @@ namespace WebUi.Areas.Manage.Controllers
             }
 
             ViewBag.Breadcrumb = "Update activity";
+            ViewData["CountryId"] = new SelectList(_countryService.GetAll().Data, "Id", "CountryName");
+
 
             if (ModelState.IsValid)
             {
