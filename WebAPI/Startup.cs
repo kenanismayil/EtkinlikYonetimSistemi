@@ -71,11 +71,11 @@ namespace WebAPI
 
 
             services.AddSwaggerGen(sw =>
-                                    sw.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-                                    {
-                                        Title = "dot6JWTAuthentication",
-                                        Version = "1.0",
-                                    }));
+                     sw.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                     {
+                        Title = "dot6JWTAuthentication",
+                        Version = "1.0",
+                     }));
 
             services.AddSwaggerGen(s =>
                     s.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -99,11 +99,13 @@ namespace WebAPI
                                 }
                             },
                     new string[]{}
-    }
-}));
+            }
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        //Aşağıdaki Middleware'lerimizdir. Bunlar hazır middleware'lerdir. Araya kendi middleware'lerimizi de ekleyebiliriz.
+        //Bunun için IApplicationBuilder'i kullanarak middleware yazarız.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -112,6 +114,10 @@ namespace WebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPI v1"));
             }
+
+            //yaşam döngüsü içerisine hata yakalamak için kullandığım middleware'i ekledim
+            //Gördüğümüz her yere try catch kodları yazmak yerine API kurallarına uygun olarak try catch'in içerisine aldık.
+            app.ConfigureCustomExceptionMiddleware(); 
 
             app.UseHttpsRedirection();
 

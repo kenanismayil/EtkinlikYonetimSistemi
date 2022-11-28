@@ -1,10 +1,12 @@
 ﻿using Business.Abstract;
+using Core.Entities.Concrete;
 using Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.Model;
 
 namespace WebAPI.Controllers
 {
@@ -14,6 +16,8 @@ namespace WebAPI.Controllers
     {
         private IAuthService _authService;
         private IUserService _userService;
+
+
         public AuthController(IAuthService authService, IUserService userService)
         {
             _authService = authService;
@@ -30,12 +34,16 @@ namespace WebAPI.Controllers
             }
 
             var result = _authService.CreateAccessToken(userToLogin.Data);
-            var user = _userService.GetUserDetails();
-
+            var user = _userService.GetByMail(userForLoginDto.Email).Data;
+            var model = new AuthorizationModel()
+            {
+                Token = result.Data.Token,
+                User = user
+            };
 
             if (result.Success)
             {
-                return Ok(result.Data);
+                return Ok(model);
             }
 
 
@@ -60,5 +68,15 @@ namespace WebAPI.Controllers
 
             return BadRequest(result.Message);
         }
+
+        //public User GetCurrentUser()
+        //{
+        //    var user = _userService.GetByMail("");
+        //    if (user.Success)
+        //    {
+        //        return user.Data;
+        //    }
+        //    return null;
+        //}
     }
 }
