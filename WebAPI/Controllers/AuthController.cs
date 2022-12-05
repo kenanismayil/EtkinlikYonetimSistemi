@@ -34,11 +34,10 @@ namespace WebAPI.Controllers
             }
 
             var result = _authService.CreateAccessToken(userToLogin.Data);
-            var user = _userService.GetByMail(userForLoginDto.Email).Data;
             var model = new AuthorizationModel()
             {
                 Token = result.Data.Token,
-                User = user
+                User = _userService.GetUserForView(userToLogin.Data).Data
             };
 
             if (result.Success)
@@ -59,24 +58,24 @@ namespace WebAPI.Controllers
                 return BadRequest(userExists.Message);
             }
 
-           var registerResult = _authService.Register(userForRegisterDto, userForRegisterDto.Password);
+            var registerResult = _authService.Register(userForRegisterDto);
             var result = _authService.CreateAccessToken(registerResult.Data);
+
+            var model = new AuthorizationModel()
+            {
+                Token = result.Data.Token,
+                ExpirationDate = result.Data.Expiration,
+                User = _userService.GetUserForView(registerResult.Data).Data
+            };
+
             if (result.Success)
             {
-                return Ok(result.Data);
+                return Ok(model);
             }
 
             return BadRequest(result.Message);
         }
 
-        //public User GetCurrentUser()
-        //{
-        //    var user = _userService.GetByMail("");
-        //    if (user.Success)
-        //    {
-        //        return user.Data;
-        //    }
-        //    return null;
-        //}
+
     }
 }

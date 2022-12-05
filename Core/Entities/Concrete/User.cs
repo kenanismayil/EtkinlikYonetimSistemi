@@ -11,7 +11,7 @@ namespace Core.Entities.Concrete
     public class User : IEntity
     {
         public int Id { get; set; }
-        //public int OperationClaimId { get; set; }
+        public int RoleTypeId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string DateOfBirth { get; set; }
@@ -23,8 +23,8 @@ namespace Core.Entities.Concrete
         public string UserPhoto { get; set; }
 
         //Foreign Key
-        //[ForeignKey("OperationClaimId")]
-        //public virtual OperationClaim OperationClaim { get; set; }
+        [ForeignKey("RoleTypeId")]
+        public virtual RoleType RoleType { get; set; }
 
     }
 }

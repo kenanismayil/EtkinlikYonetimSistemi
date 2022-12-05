@@ -11,6 +11,6 @@ namespace Core.Utilities.Security.JWT
     public interface ITokenHelper
     {
         //İlgili kullanıcı için, ilgili kullanıcının claim'lerini içerecek token üretecektir.
-        AccessToken CreateToken(User user, List<OperationClaim> operationClaim);
+        AccessToken CreateToken(User user, RoleType role);
     }
 }

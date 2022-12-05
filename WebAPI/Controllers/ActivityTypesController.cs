@@ -23,6 +23,8 @@ namespace WebAPI.Controllers
             _activityTypeService = activityTypeService;
         }
 
+
+        [AllowAnonymous]
         [HttpGet("getAll")]
         public IActionResult GetAll()
         {
@@ -34,6 +36,7 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+
 
         [AllowAnonymous]
         [HttpGet("getById")]

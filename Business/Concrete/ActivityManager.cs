@@ -144,6 +144,9 @@ namespace Business.Concrete
         public IDataResult<List<Activity>> GetAll()
         {
             //Business code
+
+
+            //Cetnral Management System
             var result = ExceptionHandler.HandleWithReturnNoParameter<List<Activity>>(() =>
             {
                 return _activityDal.GetAll();
@@ -178,12 +181,16 @@ namespace Business.Concrete
         public IResult Update(Activity activity)
         {
             //Business code
-            if (CheckIfActivityCountOfTypeCorrect(activity.ActivityTypeId).Success)
+            IResult result = BusinessRules.Run(CheckIfActivityCountOfTypeCorrect(activity.ActivityTypeId), 
+                CheckIfActivityNameExists(activity.ActivityName), CheckIfActivityTypeLimitExceded());
+
+            if (result != null)
             {
-                _activityDal.Update(activity);
-                return new SuccessResult(TurkishMessage.ActivityUpdated);
+                return result;
             }
-            return new ErrorResult();
+
+            _activityDal.Update(activity);
+            return new SuccessResult(TurkishMessage.ActivityUpdated);
 
             //Central Management System
             //var result = ExceptionHandler.HandleWithNoReturn(() =>
@@ -202,11 +209,11 @@ namespace Business.Concrete
         private IResult CheckIfActivityCountOfTypeCorrect(int activityTypeId)
         {
             //Aktivite eklemek istediğimizde eklemek istediğimiz aktivitenin tipinde maksimum 10 aktivite olabilir.
-            //Yani bir aktivite tipinde en fazla 10 tane aktivite olabilir.
+            //Yani aynı aktivite tipinde en fazla 10 tane aktivite olabilir.
             //_activityDal.GetAll(a => a.ActivityTypeId == activityTypeId).Count -> Bizim için arka planda bir Linq Query oluşturuyor ve bu query'yi veritabanına yolluyor.
             //Select count(*) from Activities where activityTypeId=1 -> bu query arka planda bu sorguyu çalıştırır.
             var result = _activityDal.GetAll(a => a.ActivityTypeId == activityTypeId).Count;
-            if (result >= 10)
+            if (result >= 100)
             {
                 return new ErrorResult(TurkishMessage.ActivityCountOfTypeError);
             }
@@ -228,9 +235,9 @@ namespace Business.Concrete
 
         private IResult CheckIfActivityTypeLimitExceded()
         {
-            //Eğer mevcut aktivite tipi sayısı 15'i geçmişse sisteme yeni aktivite eklenemez.
+            //Eğer toplam mevcut aktivite tipi sayısı 100'ü geçmişse sisteme yeni aktivite eklenemez.
             var result = _activityTypeService.GetAll();
-            if (result.Data.Count > 15)
+            if (result.Data.Count > 100)
             {
                 return new ErrorResult(TurkishMessage.ActivityTypeLimitExceded); 
             }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Entities.DTOs
 {
+    //burda 1-n ilişki var, aslında n-n ilişki olması gerekiyor. Ayrıca tablo oluşturup useropertaionclaimId gibi yapmak lazım
     public class UserDetailDto : IEntity
     {
         public int UserId { get; set; }

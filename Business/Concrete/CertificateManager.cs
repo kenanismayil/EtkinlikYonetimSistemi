@@ -137,5 +137,6 @@ namespace Business.Concrete
 
 
         //İş kuralları
+
     }
 }

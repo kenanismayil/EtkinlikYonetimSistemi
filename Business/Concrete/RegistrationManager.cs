@@ -113,19 +113,27 @@ namespace Business.Concrete
         public IResult Update(Registration registration)
         {
             //Business code
+            IResult result = BusinessRuleHandler.
+                CheckTheRules(CheckIfUserLimitsExceeded(registration.User.Id, registration.Activity.Id));
+            if (result != null)
+            {
+                return result;
+            }
+            _registrationDal.Update(registration);
+            return new SuccessResult(TurkishMessage.RegistrationUpdated);
 
 
             //Central Management System
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
-            {
-                _registrationDal.Update(registration);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
-            }
+            //var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //{
+            //    _registrationDal.Update(registration);
+            //});
+            //if (!result)
+            //{
+            //    return new ErrorResult(TurkishMessage.ErrorMessage);
+            //}
 
-            return new SuccessResult(TurkishMessage.RegistrationUpdated);
+            //return new SuccessResult(TurkishMessage.RegistrationUpdated);
         }
 
 

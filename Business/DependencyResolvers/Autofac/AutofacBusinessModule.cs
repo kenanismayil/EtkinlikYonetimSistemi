@@ -69,8 +69,8 @@ namespace Business.DependencyResolvers.Autofac
 
 
             //ActivityImage icin IoC Container
-            builder.RegisterType<ActivityImageManager>().As<IActivityImageService>().SingleInstance();
-            builder.RegisterType<EfActivityImageDal>().As<IActivityImageDal>().SingleInstance();
+            //builder.RegisterType<ActivityImageManager>().As<IActivityImageService>().SingleInstance();
+            //builder.RegisterType<EfActivityImageDal>().As<IActivityImageDal>().SingleInstance();
 
             //Auth icin IoC Container
             builder.RegisterType<AuthManager>().As<IAuthService>();

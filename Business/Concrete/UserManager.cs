@@ -29,10 +29,10 @@ namespace Business.Concrete
             _userDal = userDal;
         }
 
-        public IDataResult<List<OperationClaim>> GetClaims(User user)
+        public IDataResult<RoleType> GetClaim(User user)
         {
-            var result = _userDal.GetClaims(user);
-            return new SuccessDataResult<List<OperationClaim>>(result, TurkishMessage.SuccessMessage);
+            var result = _userDal.GetClaim(user);
+            return new SuccessDataResult<RoleType>(result, TurkishMessage.SuccessMessage);
         }
 
         [CacheRemoveAspect("IUserService.Get")]
@@ -53,6 +53,41 @@ namespace Business.Concrete
             }
             return new SuccessResult(TurkishMessage.SuccessMessage);
         }
+
+        public IResult Delete(User user)
+        {
+            //Business Codes
+
+
+            //Central Management System
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _userDal.Delete(user);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
+            return new SuccessResult(TurkishMessage.SuccessMessage);
+        }
+
+        public IResult Update(User user)
+        {
+            //Business Codes
+
+
+            //Central Management System
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _userDal.Update(user);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
+            return new SuccessResult(TurkishMessage.SuccessMessage);
+        }
+
 
         public IDataResult<User> GetByMail(string email)
         {
@@ -76,26 +111,60 @@ namespace Business.Concrete
             //    return new ErrorDataResult<User>(TurkishMessage.ErrorMessage);
             //}
 
-            var result = _userDal.Get(p => p.Email == email);
+            var result = _userDal.Get(u => u.Email == email);
             return new SuccessDataResult<User>(result, TurkishMessage.SuccessMessage);
         }
 
-        public IDataResult<List<UserDetailDto>> GetUserDetails()
+        //public IDataResult<List<UserDetailDto>> GetUserDetails()
+        //{
+        //    //Business code
+
+
+        //    //Central Management System
+        //    var result = ExceptionHandler.HandleWithReturnNoParameter<List<UserDetailDto>>(() =>
+        //    {
+        //        return _userDal.GetUserDetails();
+        //    });
+        //    if (!result.Success)
+        //    {
+        //        return new ErrorDataResult<List<UserDetailDto>>(TurkishMessage.ErrorMessage);
+        //    }
+
+        //    return new SuccessDataResult<List<UserDetailDto>>(result.Data, TurkishMessage.UserDetailListed);
+        //}
+
+
+        public IDataResult<List<User>> GetAll()
         {
             //Business code
 
 
-            //Central Management System
-            var result = ExceptionHandler.HandleWithReturnNoParameter<List<UserDetailDto>>(() =>
+            //Cetnral Management System
+            var result = ExceptionHandler.HandleWithReturnNoParameter<List<User>>(() =>
             {
-                return _userDal.GetUserDetails();
+                return _userDal.GetAll();
             });
             if (!result.Success)
             {
-                return new ErrorDataResult<List<UserDetailDto>>(TurkishMessage.ErrorMessage);
+                return new ErrorDataResult<List<User>>(TurkishMessage.ErrorMessage);
             }
 
-            return new SuccessDataResult<List<UserDetailDto>>(result.Data, TurkishMessage.UserDetailListed);
+            return new SuccessDataResult<List<User>>(result.Data, TurkishMessage.ActivitiesListed);
+        }
+
+        public IDataResult<UserForView> GetUserForView(User user)
+        {
+            var userForView = new UserForView()
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Phone = user.Phone,
+                DateOfBirth = user.DateOfBirth,
+                Role = user.RoleType.RoleName
+            };
+
+            return new SuccessDataResult<UserForView>(userForView);
         }
 
 

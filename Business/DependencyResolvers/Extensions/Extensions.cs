@@ -53,13 +53,11 @@ namespace Business.DependencyResolvers.Extensions
             services.AddSingleton<IUserService, UserManager>();
             services.AddSingleton<IUserDal, EfUserDal>();
 
-
-
             //ActivityImage icin IoC Container
-            services.AddSingleton<IActivityImageService, ActivityImageManager>();
-            services.AddSingleton<IActivityImageDal, EfActivityImageDal>();
+            services.AddSingleton<IRoleTypeService, RoleTypeManager>();
+            services.AddSingleton<IRoleTypeDal, EfRoleTypeDal>();
 
-            services.AddSingleton<IFileHelper, FileHelperManager>();
+            //services.AddSingleton<IFileHelper, FileHelperManager>();
 
 
             //Auth icin IoC Container

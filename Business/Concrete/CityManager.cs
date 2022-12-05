@@ -134,19 +134,26 @@ namespace Business.Concrete
         public IResult Update(City city)
         {
             //Business code
-
-
-            //Central Management System
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            IResult result = BusinessRules.Run(CheckIfCityNameExists(city.CityName));
+            if (result != null)
             {
-                _cityDal.Update(city);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
+                return new ErrorResult(TurkishMessage.CityNameAlreadyExists);
             }
 
+            _cityDal.Add(city);
             return new SuccessResult(TurkishMessage.CityUpdated);
+
+            //Central Management System
+            //var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //{
+            //    _cityDal.Update(city);
+            //});
+            //if (!result)
+            //{
+            //    return new ErrorResult(TurkishMessage.ErrorMessage);
+            //}
+
+            //return new SuccessResult(TurkishMessage.CityUpdated);
         }
 
 

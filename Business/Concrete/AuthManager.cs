@@ -18,30 +18,36 @@ namespace Business.Concrete
     {
         private IUserService _userService;
         private ITokenHelper _tokenHelper;
+        private IRoleTypeService _roleTypeService;
 
-        public AuthManager(IUserService userService, ITokenHelper tokenHelper)
+        public AuthManager(IUserService userService, ITokenHelper tokenHelper, IRoleTypeService roleTypeService)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
+            _roleTypeService = roleTypeService;
         }
 
-        public IDataResult<User> Register(UserForRegisterDto userForRegisterDto, string password)
+        public IDataResult<User> Register(UserForRegisterDto userForRegisterDto)
         {
             byte[] passwordHash, passwordSalt;
-            HashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            HashingHelper.CreatePasswordHash(userForRegisterDto.Password, out passwordHash, out passwordSalt);
             var user = new User
             {
                 Email = userForRegisterDto.Email,
                 FirstName = userForRegisterDto.FirstName,
                 LastName = userForRegisterDto.LastName,
+                Phone = userForRegisterDto.PhoneNumber,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
+                RoleTypeId = userForRegisterDto.RoleType.Id,
                 Status = true
             };
             if (!_userService.Add(user).Success)
             {
                 return new ErrorDataResult<User>(TurkishMessage.ErrorMessage);
             }
+
+            user.RoleType = _roleTypeService.GetById(user.RoleTypeId).Data;
             return new SuccessDataResult<User>(user, TurkishMessage.UserRegistered);
         }
 
@@ -57,6 +63,8 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<User>(TurkishMessage.PasswordError);
             }
+
+            userToLogin.Data.RoleType = _roleTypeService.GetById(userToLogin.Data.RoleTypeId).Data;
 
             return new SuccessDataResult<User>(userToLogin.Data, TurkishMessage.SuccessfulLogin);
         }
@@ -74,8 +82,8 @@ namespace Business.Concrete
 
         public IDataResult<AccessToken> CreateAccessToken(User user)
         {
-            var claims = _userService.GetClaims(user);
-            var accessToken = _tokenHelper.CreateToken(user, claims.Data);
+            var claim = _userService.GetClaim(user);
+            var accessToken = _tokenHelper.CreateToken(user, claim.Data);
             return new SuccessDataResult<AccessToken>(accessToken, TurkishMessage.AccessTokenCreated);
         }
     }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ActivityContext))]
-    [Migration("20221126145008_VirtualKeyAdded")]
-    partial class VirtualKeyAdded
+    [Migration("20221203141715_RoleTypeAdded")]
+    partial class RoleTypeAdded
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,19 +21,19 @@ namespace DataAccess.Migrations
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Core.Entities.Concrete.OperationClaim", b =>
+            modelBuilder.Entity("Core.Entities.Concrete.RoleType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name")
+                    b.Property<string>("RoleName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("OperationClaims");
+                    b.ToTable("RoleTypes");
                 });
 
             modelBuilder.Entity("Core.Entities.Concrete.User", b =>
@@ -64,6 +64,9 @@ namespace DataAccess.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RoleTypeId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
@@ -72,29 +75,9 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RoleTypeId");
+
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Core.Entities.Concrete.UserOperationClaim", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("OperationClaimId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OperationClaimId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserOperationClaims");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Activity", b =>
@@ -134,29 +117,6 @@ namespace DataAccess.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Activities");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.ActivityImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActivityId");
-
-                    b.ToTable("ActivityImages");
                 });
 
             modelBuilder.Entity("Entities.Concrete.ActivityType", b =>
@@ -279,21 +239,15 @@ namespace DataAccess.Migrations
                     b.ToTable("Registrations");
                 });
 
-            modelBuilder.Entity("Core.Entities.Concrete.UserOperationClaim", b =>
+            modelBuilder.Entity("Core.Entities.Concrete.User", b =>
                 {
-                    b.HasOne("Core.Entities.Concrete.OperationClaim", "OperationClaim")
+                    b.HasOne("Core.Entities.Concrete.RoleType", "RoleType")
                         .WithMany()
-                        .HasForeignKey("OperationClaimId")
+                        .HasForeignKey("RoleTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Entities.Concrete.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("OperationClaim");
-
-                    b.Navigation("User");
+                    b.Navigation("RoleType");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Activity", b =>
@@ -319,17 +273,6 @@ namespace DataAccess.Migrations
                     b.Navigation("Location");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Entities.Concrete.ActivityImage", b =>
-                {
-                    b.HasOne("Entities.Concrete.Activity", "Activity")
-                        .WithMany()
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Activity");
                 });
 
             modelBuilder.Entity("Entities.Concrete.City", b =>

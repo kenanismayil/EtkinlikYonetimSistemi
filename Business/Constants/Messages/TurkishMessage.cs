@@ -126,5 +126,6 @@ namespace Business.Constants.Messages
         public static string LocationUpdated = "Lokasyon güncellendi";
         public static string LocationDeleted = "Lokasyon silindi";
         public static string LocationsListed = "Lokasyonlar listelendi";
+        public static string LocationNameAlreadyExists = "Bu isimde zaten başka bir lokasyon ismi vardır";
     }
 }

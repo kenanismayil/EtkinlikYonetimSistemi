@@ -27,9 +27,7 @@ namespace DataAccess.Context
         public DbSet<Country> Countries { get; set; }
         public DbSet<Registration> Registrations { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<OperationClaim> OperationClaims { get; set; }
-        public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
-        public DbSet<ActivityImage> ActivityImages { get; set; }
+        public DbSet<RoleType> RoleTypes { get; set; }
         public DbSet<Location> Locations { get; set; }
 
     }

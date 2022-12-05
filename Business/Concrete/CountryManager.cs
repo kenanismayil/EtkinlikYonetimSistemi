@@ -130,19 +130,26 @@ namespace Business.Concrete
         public IResult Update(Country country)
         {
             //Business code
-
-
-            //Central Management System
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            IResult result = BusinessRules.Run(CheckIfCountryNameExists(country.CountryName));
+            if (result != null)
             {
-                _countryDal.Update(country);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
+                return new ErrorResult(TurkishMessage.CountryNameAlreadyExists);
             }
 
-            return new SuccessResult(TurkishMessage.CountryUpdated);
+            _countryDal.Add(country);
+            return new SuccessResult(TurkishMessage.CountryAdded);
+
+            //Central Management System
+            //var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //{
+            //    _countryDal.Update(country);
+            //});
+            //if (!result)
+            //{
+            //    return new ErrorResult(TurkishMessage.ErrorMessage);
+            //}
+
+            //return new SuccessResult(TurkishMessage.CountryUpdated);
         }
 
 

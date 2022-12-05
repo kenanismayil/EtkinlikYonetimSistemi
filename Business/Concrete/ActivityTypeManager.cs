@@ -124,18 +124,25 @@ namespace Business.Concrete
         public IResult Update(ActivityType activityType)
         {
             //Business code
+            IResult result = BusinessRules.Run(CheckIfActivityTypeNameExists(activityType.ActivityTypeName));
+            if (result != null)
+            {
+                return result;
+            }
+            _activityTypeDal.Update(activityType);
+            return new SuccessResult(TurkishMessage.ActivityTypeUpdated);
 
             //Central Management System
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
-            {
-                _activityTypeDal.Update(activityType);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
-            }
+            //var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //{
+            //    _activityTypeDal.Update(activityType);
+            //});
+            //if (!result)
+            //{
+            //    return new ErrorResult(TurkishMessage.ErrorMessage);
+            //}
 
-            return new SuccessResult(TurkishMessage.ActivityUpdated);
+            //return new SuccessResult(TurkishMessage.ActivityUpdated);
         }
 
 

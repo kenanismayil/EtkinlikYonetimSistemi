@@ -3,6 +3,7 @@ using Business.Constants.Messages;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
@@ -29,20 +30,26 @@ namespace Business.Concrete
         public IResult Add(Location location)
         {
             //Business code
-
+            IResult result = BusinessRules.Run(CheckIfLocationNameExists(location.Name));
+            if (result != null)
+            {
+                return result;
+            }
+            _locationDal.Update(location);
+            return new SuccessResult(TurkishMessage.LocationUpdated);
 
 
             //Central Management System
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
-            {
-                _locationDal.Add(location);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
-            }
+            //var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //{
+            //    _locationDal.Add(location);
+            //});
+            //if (!result)
+            //{
+            //    return new ErrorResult(TurkishMessage.ErrorMessage);
+            //}
 
-            return new SuccessResult(TurkishMessage.LocationAdded);
+            //return new SuccessResult(TurkishMessage.LocationAdded);
         }
 
         [ValidationAspect(typeof(LocationValidator))]
@@ -111,19 +118,35 @@ namespace Business.Concrete
         public IResult Update(Location location)
         {
             //Business code
-
+            IResult result = BusinessRules.Run(CheckIfLocationNameExists(location.Name));
+            if (result != null)
+            {
+                return result;
+            }
+            _locationDal.Update(location);
+            return new SuccessResult(TurkishMessage.LocationUpdated);
 
             //Central Management System
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
-            {
-                _locationDal.Update(location);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
-            }
+            //var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //{
+            //    _locationDal.Update(location);
+            //});
+            //if (!result)
+            //{
+            //    return new ErrorResult(TurkishMessage.ErrorMessage);
+            //}
 
-            return new SuccessResult(TurkishMessage.LocationUpdated);
+            //return new SuccessResult(TurkishMessage.LocationUpdated);
+        }
+
+        private IResult CheckIfLocationNameExists(string locationName)
+        {
+            var result = _locationDal.GetAll(loc => loc.Name == locationName).Any();
+            if (result)
+            {
+                return new ErrorResult(TurkishMessage.LocationNameAlreadyExists);
+            }
+            return new SuccessResult();
         }
     }
 }

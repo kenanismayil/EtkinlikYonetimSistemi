@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using WebAPI.Model;
 
 namespace WebAPI.Controllers
 {
@@ -34,6 +35,29 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpPost("delete")]
+        public IActionResult Delete(User user)
+        {
+            var result = _userService.Delete(user);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("update")]
+        public IActionResult Update(User user)
+        {
+            var result = _userService.Update(user);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+
         [HttpGet("getByEmail")]
         public IActionResult GetByMail(string email)
         {
@@ -45,11 +69,22 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "user")]
-        [HttpGet("userDetailDto")]
-        public IActionResult GetUserDetails()
+        //[Authorize(Roles = "user")]
+        //[HttpGet("userDetailDto")]
+        //public IActionResult GetUserDetails()
+        //{
+        //    var result = _userService.GetUserDetails();
+        //    if (result.Success)
+        //    {
+        //        return Ok(result);
+        //    }
+        //    return BadRequest(result);
+        //}
+
+        [HttpGet("getClaims")]
+        public IActionResult GetClaim(User user)
         {
-            var result = _userService.GetUserDetails();
+            var result = _userService.GetClaim(user);
             if (result.Success)
             {
                 return Ok(result);
@@ -57,15 +92,26 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getClaims")]
-        public IActionResult GetClaims(User user)
+        [HttpGet("getUserForView")]
+        public IActionResult GetUserForView(User user)
         {
-            var result = _userService.GetClaims(user);
+            var result = _userService.GetUserForView(user);
             if (result.Success)
             {
                 return Ok(result);
             }
             return BadRequest(result);
+        }
+
+        [HttpGet("getAll")]
+        public IActionResult GetAll()
+        {
+            var result = _userService.GetAll();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
         }
     }
 }
