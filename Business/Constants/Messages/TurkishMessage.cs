@@ -50,6 +50,7 @@ namespace Business.Constants.Messages
         public static string EmailsListed = "Emailler listelendi";
         public static string FirstNameInvalid = "Kullanıcı ismi gecersiz";
         public static string LastNameInvalid = "Kullanıcı soyismi gecersiz";
+        public static string UserInfoListed = "Kullanıcı bilgisi listelendi";
         public static string UserDetailListed = "Kullanıcı detayı listelendi";
 
 

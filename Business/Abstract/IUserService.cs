@@ -14,16 +14,14 @@ namespace Business.Abstract
     {
         IDataResult<RoleType> GetClaim(User user);
         IDataResult<List<User>> GetAll();
+        IDataResult<User> GetById(int userId);
+        IDataResult<User> GetByMail(string email);
+        IDataResult<UserForView> GetUserForView(User user);
         IResult Add(User user);
         IResult Delete(User user);
         IResult Update(User user);
-        IDataResult<User> GetByMail(string email);
+
         //IDataResult<List<UserDetailDto>> GetUserDetails();
-        IDataResult<UserForView> GetUserForView(User user);
-
-        //IDataResult<UserForLoginDto> GetByUserForLogin();
-
-
         //IDataResult<User> ChangePassword(string password);
 
     }

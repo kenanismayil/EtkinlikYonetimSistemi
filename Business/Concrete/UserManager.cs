@@ -92,46 +92,9 @@ namespace Business.Concrete
         public IDataResult<User> GetByMail(string email)
         {
 
-            //Business Codes
-            //var result = _userDal.Get(u => u.Email == email);
-            //if (result == null)
-            //{
-            //    return new ErrorDataResult<User>(TurkishMessage.UserNotFound);
-            //}
-            //return new SuccessDataResult<User>(result, TurkishMessage.SuccessMessage);
-
-
-            //Central Management System
-            //var result = ExceptionHandler.HandleWithReturn<string, User>((email) =>
-            //{
-            //    return _userDal.GetAll(u => u.Email == email)[0];
-            //}, email);
-            //if (!result.Success)
-            //{
-            //    return new ErrorDataResult<User>(TurkishMessage.ErrorMessage);
-            //}
-
             var result = _userDal.Get(u => u.Email == email);
             return new SuccessDataResult<User>(result, TurkishMessage.SuccessMessage);
         }
-
-        //public IDataResult<List<UserDetailDto>> GetUserDetails()
-        //{
-        //    //Business code
-
-
-        //    //Central Management System
-        //    var result = ExceptionHandler.HandleWithReturnNoParameter<List<UserDetailDto>>(() =>
-        //    {
-        //        return _userDal.GetUserDetails();
-        //    });
-        //    if (!result.Success)
-        //    {
-        //        return new ErrorDataResult<List<UserDetailDto>>(TurkishMessage.ErrorMessage);
-        //    }
-
-        //    return new SuccessDataResult<List<UserDetailDto>>(result.Data, TurkishMessage.UserDetailListed);
-        //}
 
 
         public IDataResult<List<User>> GetAll()
@@ -165,6 +128,12 @@ namespace Business.Concrete
             };
 
             return new SuccessDataResult<UserForView>(userForView);
+        }
+
+        public IDataResult<User> GetById(int userId)
+        {
+            var result = _userDal.Get(u => u.Id == userId);
+            return new SuccessDataResult<User>(result, TurkishMessage.UserInfoListed);
         }
 
 
