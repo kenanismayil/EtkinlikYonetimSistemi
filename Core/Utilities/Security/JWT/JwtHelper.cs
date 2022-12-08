@@ -50,13 +50,13 @@ namespace Core.Utilities.Security.JWT
                 audience: tokenOptions.Audience,
                 expires: _accessTokenExpiration,
                 notBefore: DateTime.UtcNow,
-                claims: SetClaims(user, role),
+                claims: SetClaim(user, role),
                 signingCredentials: signingCredentials
             );
             return jwt;
         }
 
-        private IEnumerable<Claim> SetClaims(User user, RoleType role)
+        private IEnumerable<Claim> SetClaim(User user, RoleType role)
         {
             var claims = new List<Claim>();
             claims.AddNameIdentifier(user.Id.ToString());

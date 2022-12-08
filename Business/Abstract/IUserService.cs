@@ -19,7 +19,9 @@ namespace Business.Abstract
         IDataResult<UserForView> GetUserForView(User user);
         IResult Add(User user);
         IResult Delete(User user);
-        IResult Update(User user);
+        IResult Update(UserForInfoChange userForInfoChange);
+
+        IResult ChangeUserRole(int userId, int roleId);
 
         //IDataResult<List<UserDetailDto>> GetUserDetails();
         //IDataResult<User> ChangePassword(string password);

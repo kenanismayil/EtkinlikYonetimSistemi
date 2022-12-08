@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ActivityContext))]
-    [Migration("20221203141715_RoleTypeAdded")]
-    partial class RoleTypeAdded
+    [Migration("20221207194928_UserOperationRoleDeleted")]
+    partial class UserOperationRoleDeleted
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -132,6 +132,32 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ActivityTypes");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.Certificate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CertificateName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("GivenDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
+
+                    b.ToTable("Certificates");
                 });
 
             modelBuilder.Entity("Entities.Concrete.City", b =>
@@ -273,6 +299,17 @@ namespace DataAccess.Migrations
                     b.Navigation("Location");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.Certificate", b =>
+                {
+                    b.HasOne("Entities.Concrete.Activity", "Activity")
+                        .WithMany()
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
                 });
 
             modelBuilder.Entity("Entities.Concrete.City", b =>

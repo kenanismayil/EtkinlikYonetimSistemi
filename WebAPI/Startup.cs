@@ -71,13 +71,25 @@ namespace WebAPI
                     };
                 });
 
+            //services.AddAuthorization(authzOptions =>
+            //{
+            //    // Define the policy here
+            //    authzOptions.AddPolicy("HasProtectedAccess", policyConfig =>
+            //    {
+            //        // Add requirements to satisfy this policy
+            //        policyConfig.RequireClaim("scope", "myapi:protected-access");
+            //    });
+            //});
+
+            services.AddAuthorization();
+
             //Servisleri autofac'in haberdar olacağı şekilde ayarladım. Daha profosyonel(modul) bir yapı haline getirip ekledim.
             services.AddDependencyResolvers(new ICoreModule[]
             {
                 new CoreModule()
             });
 
-
+            
             services.AddSwaggerGen(sw =>
                      sw.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
                      {

@@ -52,7 +52,7 @@ namespace Business.Constants.Messages
         public static string LastNameInvalid = "Kullanıcı soyismi gecersiz";
         public static string UserInfoListed = "Kullanıcı bilgisi listelendi";
         public static string UserDetailListed = "Kullanıcı detayı listelendi";
-
+        public static string UserRoleUpdatedBySuperAdmin = "Kullanıcı rol bilgisi super admin tarafından güncellendi";
 
         //Moderator magic string
         //public static string ModeratorAdded = "Moderator eklendi";

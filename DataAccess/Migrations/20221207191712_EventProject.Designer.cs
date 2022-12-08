@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ActivityContext))]
-    [Migration("20221203123958_EventProject")]
+    [Migration("20221207191712_EventProject")]
     partial class EventProject
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,19 +21,19 @@ namespace DataAccess.Migrations
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Core.Entities.Concrete.OperationClaim", b =>
+            modelBuilder.Entity("Core.Entities.Concrete.RoleType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("RoleType")
+                    b.Property<string>("RoleName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("OperationClaims");
+                    b.ToTable("RoleTypes");
                 });
 
             modelBuilder.Entity("Core.Entities.Concrete.User", b =>
@@ -55,9 +55,6 @@ namespace DataAccess.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OperationClaimId")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("PasswordHash")
                         .HasColumnType("varbinary(max)");
 
@@ -67,6 +64,9 @@ namespace DataAccess.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RoleTypeId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
@@ -75,9 +75,31 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OperationClaimId");
+                    b.HasIndex("RoleTypeId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Core.Entities.Concrete.UserOperationRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("RoleTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserOperationRoles");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Activity", b =>
@@ -132,6 +154,32 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ActivityTypes");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.Certificate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CertificateName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("GivenDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
+
+                    b.ToTable("Certificates");
                 });
 
             modelBuilder.Entity("Entities.Concrete.City", b =>
@@ -241,13 +289,30 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("Core.Entities.Concrete.User", b =>
                 {
-                    b.HasOne("Core.Entities.Concrete.OperationClaim", "OperationClaim")
+                    b.HasOne("Core.Entities.Concrete.RoleType", "RoleType")
                         .WithMany()
-                        .HasForeignKey("OperationClaimId")
+                        .HasForeignKey("RoleTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OperationClaim");
+                    b.Navigation("RoleType");
+                });
+
+            modelBuilder.Entity("Core.Entities.Concrete.UserOperationRole", b =>
+                {
+                    b.HasOne("Core.Entities.Concrete.RoleType", "RoleType")
+                        .WithMany()
+                        .HasForeignKey("RoleTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.Concrete.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("RoleType");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Activity", b =>
@@ -273,6 +338,17 @@ namespace DataAccess.Migrations
                     b.Navigation("Location");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.Certificate", b =>
+                {
+                    b.HasOne("Entities.Concrete.Activity", "Activity")
+                        .WithMany()
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
                 });
 
             modelBuilder.Entity("Entities.Concrete.City", b =>

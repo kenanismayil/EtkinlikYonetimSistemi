@@ -45,18 +45,22 @@ namespace Business.DependencyResolvers.Extensions
             services.AddSingleton<ICommentService, CommentManager>();
             services.AddSingleton<ICommentDal, EfCommentDal>();
 
-            //Moderator icin IoC Container
-            //services.AddSingleton<IModeratorService, ModeratorManager>();
-            //services.AddSingleton<IModeratorDal, EfModeratorDal>();
-
             //User icin IoC Container
             services.AddSingleton<IUserService, UserManager>();
             services.AddSingleton<IUserDal, EfUserDal>();
+
+            //User icin IoC Container
+            services.AddSingleton<ILocationService, LocationManager>();
+            services.AddSingleton<ILocationDal, EfLocationDal>();
 
             //ActivityImage icin IoC Container
             services.AddSingleton<IRoleTypeService, RoleTypeManager>();
             services.AddSingleton<IRoleTypeDal, EfRoleTypeDal>();
 
+
+            //Moderator icin IoC Container
+            //services.AddSingleton<IModeratorService, ModeratorManager>();
+            //services.AddSingleton<IModeratorDal, EfModeratorDal>();
             //services.AddSingleton<IFileHelper, FileHelperManager>();
 
 

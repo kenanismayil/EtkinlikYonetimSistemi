@@ -21,7 +21,7 @@ namespace DataAccess.Context
         //Tanimladigim nesnelerini Veritabani tablolarina baglama:
         public DbSet<Activity> Activities { get; set; }
         public DbSet<ActivityType> ActivityTypes { get; set; }
-        //public DbSet<Certificate> Certificates { get; set; }
+        public DbSet<Certificate> Certificates { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Country> Countries { get; set; }

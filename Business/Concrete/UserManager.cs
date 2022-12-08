@@ -23,10 +23,13 @@ namespace Business.Concrete
     public class UserManager : IUserService
     {
         IUserDal _userDal;
+        IRoleTypeService _roleTypeService;
 
-        public UserManager(IUserDal userDal)
+
+        public UserManager(IUserDal userDal, IRoleTypeService roleTypeService)
         {
             _userDal = userDal;
+            _roleTypeService = roleTypeService;
         }
 
         public IDataResult<RoleType> GetClaim(User user)
@@ -71,21 +74,39 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.SuccessMessage);
         }
 
-        public IResult Update(User user)
+        //[SecuredOperation("super_admin")]
+        public IResult Update(UserForInfoChange userForInfoChange)
         {
             //Business Codes
+            var userData = _userDal.Get(u => u.Id == userForInfoChange.UserId);
 
+            userData.FirstName = userForInfoChange.FirstName;
+            userData.LastName = userForInfoChange.LastName;
+            userData.Email = userForInfoChange.Email;
+            userData.DateOfBirth = userForInfoChange.DateOfBirth;
+            userData.Phone = userForInfoChange.Phone;
+
+            _userDal.Update(userData);
 
             //Central Management System
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
-            {
-                _userDal.Update(user);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
-            }
-            return new SuccessResult(TurkishMessage.SuccessMessage);
+            //var result = ExceptionHandler.HandleWithReturnNoParameter<UserForInfoChange>(() =>
+            //{
+            //    var userForInfoChange = new UserForInfoChange()
+            //    {
+            //        FirstName = user.FirstName,
+            //        LastName = user.LastName,
+            //        Email = user.Email,
+            //        Phone = user.Phone,
+            //        DateOfBirth = user.DateOfBirth,
+            //        UserPhoto = user.UserPhoto
+            //    };
+            //    _userDal.Update(user);
+            //});
+            //if (!result.Success)
+            //{
+            //    return new ErrorDataResult<UserForInfoChange>(TurkishMessage.ErrorMessage);
+            //}
+            return new SuccessResult(TurkishMessage.UserUpdated);
         }
 
 
@@ -134,6 +155,28 @@ namespace Business.Concrete
         {
             var result = _userDal.Get(u => u.Id == userId);
             return new SuccessDataResult<User>(result, TurkishMessage.UserInfoListed);
+        }
+
+        public IResult ChangeUserRole(int userId, int roleId)
+        {
+
+            var userData = _userDal.Get(u => u.Id == userId);
+
+
+            var role = _roleTypeService.GetById(userData.RoleTypeId);
+
+            if (role != null)
+            {
+                userData.RoleTypeId = roleId;
+            }
+            else
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
+
+
+            _userDal.Update(userData);
+            return new SuccessResult(TurkishMessage.UserRoleUpdatedBySuperAdmin);
         }
 
 

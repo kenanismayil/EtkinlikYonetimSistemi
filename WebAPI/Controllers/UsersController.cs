@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,7 +14,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin, super_admin")]
+    //[Authorize(Roles = "super_admin")]
     public class UsersController : Controller
     {
         IUserService _userService;        //interface'ler referans tutar.
@@ -46,8 +47,9 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        //[Authorize(Roles = "user")]
         [HttpPost("update")]
-        public IActionResult Update(User user)
+        public IActionResult Update(UserForInfoChange user)
         {
             var result = _userService.Update(user);
             if (result.Success)
@@ -57,6 +59,16 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [HttpPost("changeUserRole")]
+        public IActionResult ChangeUserRole(int userId, int roleId)
+        {
+            var result = _userService.ChangeUserRole(userId, roleId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
 
         [HttpGet("getByEmail")]
         public IActionResult GetByMail(string email)
@@ -69,17 +81,6 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        //[Authorize(Roles = "user")]
-        //[HttpGet("userDetailDto")]
-        //public IActionResult GetUserDetails()
-        //{
-        //    var result = _userService.GetUserDetails();
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result);
-        //}
 
         [HttpGet("getClaims")]
         public IActionResult GetClaim(User user)

@@ -89,7 +89,7 @@ namespace Business.Concrete
                 return new ErrorDataResult<List<Location>>(TurkishMessage.ErrorMessage);
             }
 
-            return new SuccessDataResult<List<Location>>(result.Data, TurkishMessage.CommentsListed);
+            return new SuccessDataResult<List<Location>>(result.Data, TurkishMessage.LocationsListed);
         }
 
         [CacheAspect]
