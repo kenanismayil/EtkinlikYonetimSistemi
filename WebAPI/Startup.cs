@@ -10,6 +10,7 @@ using Core.Utilities.Security.JWT;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -50,7 +51,7 @@ namespace WebAPI
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   policy =>
                                   {
-                                      policy.WithOrigins("http://localhost:3000");
+                                      policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
                                   });
             });
 
@@ -71,17 +72,22 @@ namespace WebAPI
                     };
                 });
 
-            //services.AddAuthorization(authzOptions =>
-            //{
-            //    // Define the policy here
-            //    authzOptions.AddPolicy("HasProtectedAccess", policyConfig =>
-            //    {
-            //        // Add requirements to satisfy this policy
-            //        policyConfig.RequireClaim("scope", "myapi:protected-access");
-            //    });
-            //});
+            services.AddAuthorization(options =>
+            {
+                // Define the policy here
+                options.AddPolicy("Default", new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build());
 
-            services.AddAuthorization();
+                options.AddPolicy("super_admin,admin,user", new AuthorizationPolicyBuilder()
+                    .RequireRole("super_admin, admin, user")
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build());
+            });
+
+            //services.AddAuthorization();
 
             //Servisleri autofac'in haberdar olacağı şekilde ayarladım. Daha profosyonel(modul) bir yapı haline getirip ekledim.
             services.AddDependencyResolvers(new ICoreModule[]

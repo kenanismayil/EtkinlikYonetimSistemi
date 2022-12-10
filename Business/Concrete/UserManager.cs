@@ -85,7 +85,7 @@ namespace Business.Concrete
             userData.Email = userForInfoChange.Email;
             userData.DateOfBirth = userForInfoChange.DateOfBirth;
             userData.Phone = userForInfoChange.Phone;
-
+            userData.Pas
             _userDal.Update(userData);
 
             //Central Management System

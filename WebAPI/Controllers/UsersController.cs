@@ -14,7 +14,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "super_admin")]
+    [Authorize(Roles = "super_admin")]
     public class UsersController : Controller
     {
         IUserService _userService;        //interface'ler referans tutar.
