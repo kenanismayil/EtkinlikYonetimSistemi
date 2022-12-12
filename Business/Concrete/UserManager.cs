@@ -10,6 +10,7 @@ using Core.Utilities.Business;
 using Core.Utilities.ExceptionHandle;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
+using Core.Utilities.Security.Hashing;
 using DataAccess.Abstract;
 using Entities.DTOs;
 using System;
@@ -85,7 +86,7 @@ namespace Business.Concrete
             userData.Email = userForInfoChange.Email;
             userData.DateOfBirth = userForInfoChange.DateOfBirth;
             userData.Phone = userForInfoChange.Phone;
-            userData.Pas
+
             _userDal.Update(userData);
 
             //Central Management System
@@ -177,6 +178,25 @@ namespace Business.Concrete
 
             _userDal.Update(userData);
             return new SuccessResult(TurkishMessage.UserRoleUpdatedBySuperAdmin);
+        }
+
+        public IDataResult<User> ChangePassword(UserForLoginDto userForLoginDto, string newPassowrd)
+        {
+            byte[] newPasswordHash, newPasswordSalt;
+
+            var userToLogin = _userDal.Get(u=>u.Email == userForLoginDto.Email);
+
+            HashingHelper.CreatePasswordHash(newPassowrd, out newPasswordHash, out newPasswordSalt);
+
+            if (HashingHelper.VerifyPasswordHash(userForLoginDto.Password, userToLogin.PasswordHash, userToLogin.PasswordSalt))
+            {
+
+                userToLogin.PasswordHash = newPasswordHash;
+                userToLogin.PasswordSalt = newPasswordSalt;
+            }
+
+            _userDal.Update(userToLogin);
+            return new SuccessDataResult<User>(userToLogin, TurkishMessage.SuccessMessage);
         }
 
 

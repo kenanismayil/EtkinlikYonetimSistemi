@@ -14,7 +14,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "super_admin")]
+    //[Authorize(Roles = "super_admin")]
     public class UsersController : Controller
     {
         IUserService _userService;        //interface'ler referans tutar.
@@ -63,6 +63,18 @@ namespace WebAPI.Controllers
         public IActionResult ChangeUserRole(int userId, int roleId)
         {
             var result = _userService.ChangeUserRole(userId, roleId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        //[Authorize(Roles = "user")]
+        [HttpPost("changePassword")]
+        public IActionResult ChangePassword(UserForLoginDto userForLoginDto, string newPassowrd)
+        {
+            var result = _userService.ChangePassword(userForLoginDto, newPassowrd);
             if (result.Success)
             {
                 return Ok(result);
