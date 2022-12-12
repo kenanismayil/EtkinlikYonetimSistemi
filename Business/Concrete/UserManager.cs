@@ -180,13 +180,13 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.UserRoleUpdatedBySuperAdmin);
         }
 
-        public IDataResult<User> ChangePassword(UserForLoginDto userForLoginDto, string newPassowrd)
+        public IDataResult<User> ChangePassword(UserForLoginDto userForLoginDto, string newPassword)
         {
             byte[] newPasswordHash, newPasswordSalt;
 
             var userToLogin = _userDal.Get(u=>u.Email == userForLoginDto.Email);
 
-            HashingHelper.CreatePasswordHash(newPassowrd, out newPasswordHash, out newPasswordSalt);
+            HashingHelper.CreatePasswordHash(newPassword, out newPasswordHash, out newPasswordSalt);
 
             if (HashingHelper.VerifyPasswordHash(userForLoginDto.Password, userToLogin.PasswordHash, userToLogin.PasswordSalt))
             {

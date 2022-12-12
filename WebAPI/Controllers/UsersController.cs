@@ -72,9 +72,9 @@ namespace WebAPI.Controllers
 
         //[Authorize(Roles = "user")]
         [HttpPost("changePassword")]
-        public IActionResult ChangePassword(UserForLoginDto userForLoginDto, string newPassowrd)
+        public IActionResult ChangePassword(UserForLoginDto userForLoginDto, string newPassword)
         {
-            var result = _userService.ChangePassword(userForLoginDto, newPassowrd);
+            var result = _userService.ChangePassword(userForLoginDto, newPassword);
             if (result.Success)
             {
                 return Ok(result);
