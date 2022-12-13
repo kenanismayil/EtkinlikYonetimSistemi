@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        //[Authorize(Roles = "user")]
+        //[Authorize(Roles = "user", "admin")]
         [HttpPost("update")]
         public IActionResult Update(UserForInfoChange user)
         {
@@ -70,11 +70,11 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        //[Authorize(Roles = "user")]
+        //[AllowAnonymous]
         [HttpPost("changePassword")]
-        public IActionResult ChangePassword(UserForLoginDto userForLoginDto, string newPassword)
+        public IActionResult ChangePassword(int userId, string oldPassword, string newPassword)
         {
-            var result = _userService.ChangePassword(userForLoginDto, newPassword);
+            var result = _userService.ChangePassword(userId, oldPassword, newPassword);
             if (result.Success)
             {
                 return Ok(result);

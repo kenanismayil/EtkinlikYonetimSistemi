@@ -24,7 +24,7 @@ namespace Business.Abstract
         IResult ChangeUserRole(int userId, int roleId);
 
         //IDataResult<List<UserDetailDto>> GetUserDetails();
-        IDataResult<User> ChangePassword(UserForLoginDto userForLoginDto, string newPassword);  //Şifre yenileme 
+        IDataResult<User> ChangePassword(int userId, string oldPassword, string newPassword);  //Şifre yenileme 
 
     }
 }

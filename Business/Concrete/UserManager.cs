@@ -180,23 +180,26 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.UserRoleUpdatedBySuperAdmin);
         }
 
-        public IDataResult<User> ChangePassword(UserForLoginDto userForLoginDto, string newPassword)
+        public IDataResult<User> ChangePassword(int userId, string oldPassword, string newPassword)
         {
+            byte[] oldPasswordHash, oldPasswordSalt;
             byte[] newPasswordHash, newPasswordSalt;
 
-            var userToLogin = _userDal.Get(u=>u.Email == userForLoginDto.Email);
+            HashingHelper.CreatePasswordHash(oldPassword, out oldPasswordHash, out oldPasswordSalt);
+            var userData = _userDal.Get(u=>u.Id == userId);
 
             HashingHelper.CreatePasswordHash(newPassword, out newPasswordHash, out newPasswordSalt);
 
-            if (HashingHelper.VerifyPasswordHash(userForLoginDto.Password, userToLogin.PasswordHash, userToLogin.PasswordSalt))
+            if (HashingHelper.VerifyPasswordHash(oldPassword, userData.PasswordHash, userData.PasswordSalt))
             {
-
-                userToLogin.PasswordHash = newPasswordHash;
-                userToLogin.PasswordSalt = newPasswordSalt;
+                userData.PasswordHash = newPasswordHash;
+                userData.PasswordSalt = newPasswordSalt;
             }
 
-            _userDal.Update(userToLogin);
-            return new SuccessDataResult<User>(userToLogin, TurkishMessage.SuccessMessage);
+
+
+            _userDal.Update(userData);
+            return new SuccessDataResult<User>(userData, TurkishMessage.SuccessMessage);
         }
 
 
