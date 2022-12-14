@@ -36,10 +36,9 @@ namespace Business.Concrete
                 Email = userForRegisterDto.Email,
                 FirstName = userForRegisterDto.FirstName,
                 LastName = userForRegisterDto.LastName,
-                Phone = userForRegisterDto.PhoneNumber,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-                RoleTypeId = userForRegisterDto.RoleType.Id,
+                RoleTypeId = 3,
                 Status = true
             };
             if (!_userService.Add(user).Success)
