@@ -11,7 +11,6 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin, super_admin")]
     public class LocationsController : Controller
     {
         ILocationService _locationService;
@@ -45,6 +44,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "admin, super_admin")]
         [HttpPost("add")]
         public IActionResult Add(Location location)
         {
@@ -56,6 +56,8 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+
+        [Authorize(Roles = "super_admin")]
         [HttpDelete("delete")]
         public IActionResult Delete(Location location)
         {
@@ -67,6 +69,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "admin, super_admin")]
         [HttpPut("update")]
         public IActionResult Update(Location location)
         {

@@ -12,7 +12,6 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin, super_admin")]
     public class CitiesController : Controller
     {
         ICityService _cityService;        //interface'ler referans tutar.
@@ -48,6 +47,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "admin, super_admin")]
         [HttpPost("add")]
         public IActionResult Add(City city)
         {
@@ -59,6 +59,8 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+
+        [Authorize(Roles = "super_admin")]
         [HttpDelete("delete")]
         public IActionResult Delete(City city)
         {
@@ -81,6 +83,7 @@ namespace WebAPI.Controllers
         //    return BadRequest(result);
         //}
 
+        [Authorize(Roles = "admin, super_admin")]
         [HttpPut("update")]
         public IActionResult Update(City city)
         {

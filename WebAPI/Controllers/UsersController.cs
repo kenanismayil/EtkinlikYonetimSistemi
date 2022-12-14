@@ -14,7 +14,6 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "super_admin")]
     public class UsersController : Controller
     {
         IUserService _userService;        //interface'ler referans tutar.
@@ -25,6 +24,7 @@ namespace WebAPI.Controllers
             _userService = userService;
         }
 
+        [Authorize(Roles = "super_admin")]
         [HttpPost("add")]
         public IActionResult Add(User user)
         {
@@ -36,6 +36,8 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+
+        [Authorize(Roles = "super_admin")]
         [HttpPost("delete")]
         public IActionResult Delete(User user)
         {
@@ -47,7 +49,6 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        //[Authorize(Roles = "user", "admin")]
         [HttpPost("update")]
         public IActionResult Update(UserForInfoChange user)
         {
@@ -59,6 +60,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "super_admin")]
         [HttpPost("changeUserRole")]
         public IActionResult ChangeUserRole(int userId, int roleId)
         {
@@ -70,7 +72,6 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        //[AllowAnonymous]
         [HttpPost("changePassword")]
         public IActionResult ChangePassword(int userId, string oldPassword, string newPassword)
         {
@@ -82,6 +83,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "super_admin")]
         [HttpGet("getByEmail")]
         public IActionResult GetByMail(string email)
         {
@@ -105,6 +107,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+
         [HttpGet("getUserForView")]
         public IActionResult GetUserForView(User user)
         {
@@ -116,6 +119,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "super_admin")]
         [HttpGet("getById")]
         public IActionResult GetById(int userId)
         {
@@ -127,6 +131,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "super_admin")]
         [HttpGet("getAll")]
         public IActionResult GetAll()
         {

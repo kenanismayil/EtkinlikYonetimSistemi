@@ -12,7 +12,6 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin, super_admin")]
     public class ActivityTypesController : Controller
     {
         IActivityTypeService _activityTypeService;        //interface'ler referans tutar.
@@ -50,6 +49,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "admin, super_admin")]
         [HttpPost("add")]
         public IActionResult Add(ActivityType activityType)
         {
@@ -61,6 +61,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "super_admin")]
         [HttpDelete("delete")]
         public IActionResult Delete(ActivityType activityType)
         {
@@ -72,6 +73,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "super_admin")]
         [HttpDelete("deleteAll")]
         public IActionResult DeleteAll(Expression<Func<ActivityType, bool>> filter)
         {
@@ -83,7 +85,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "super_admin")]
         [HttpPut("update")]
         public IActionResult Update(ActivityType activityType)
         {
