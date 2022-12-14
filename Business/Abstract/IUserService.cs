@@ -21,7 +21,7 @@ namespace Business.Abstract
         IResult Delete(User user);
         IResult Update(UserForInfoChange userForInfoChange);
 
-        IResult ChangeUserRole(int userId, int roleId);
+        IResult UpdateUserInfoBySuperAdmin(User user);
 
         //IDataResult<List<UserDetailDto>> GetUserDetails();
         IDataResult<User> ChangePassword(int userId, string oldPassword, string newPassword);  //Şifre yenileme 

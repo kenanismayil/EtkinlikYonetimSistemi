@@ -38,6 +38,7 @@ namespace Business.Concrete
                 LastName = userForRegisterDto.LastName,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
+                //RoleTypeId = userForRegisterDto.RoleType.Id,
                 RoleTypeId = 3,
                 Status = true
             };

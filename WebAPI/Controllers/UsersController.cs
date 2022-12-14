@@ -49,6 +49,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+
         [HttpPost("update")]
         public IActionResult Update(UserForInfoChange user)
         {
@@ -61,10 +62,10 @@ namespace WebAPI.Controllers
         }
 
         [Authorize(Roles = "super_admin")]
-        [HttpPost("changeUserRole")]
-        public IActionResult ChangeUserRole(int userId, int roleId)
+        [HttpPost("updateUserInfoBySuperAdmin")]
+        public IActionResult UpdateUserInfoBySuperAdmin(User user)
         {
-            var result = _userService.ChangeUserRole(userId, roleId);
+            var result = _userService.UpdateUserInfoBySuperAdmin(user);
             if (result.Success)
             {
                 return Ok(result);

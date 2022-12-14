@@ -89,24 +89,6 @@ namespace Business.Concrete
 
             _userDal.Update(userData);
 
-            //Central Management System
-            //var result = ExceptionHandler.HandleWithReturnNoParameter<UserForInfoChange>(() =>
-            //{
-            //    var userForInfoChange = new UserForInfoChange()
-            //    {
-            //        FirstName = user.FirstName,
-            //        LastName = user.LastName,
-            //        Email = user.Email,
-            //        Phone = user.Phone,
-            //        DateOfBirth = user.DateOfBirth,
-            //        UserPhoto = user.UserPhoto
-            //    };
-            //    _userDal.Update(user);
-            //});
-            //if (!result.Success)
-            //{
-            //    return new ErrorDataResult<UserForInfoChange>(TurkishMessage.ErrorMessage);
-            //}
             return new SuccessResult(TurkishMessage.UserUpdated);
         }
 
@@ -158,22 +140,28 @@ namespace Business.Concrete
             return new SuccessDataResult<User>(result, TurkishMessage.UserInfoListed);
         }
 
-        public IResult ChangeUserRole(int userId, int roleId)
+        public IResult UpdateUserInfoBySuperAdmin(User user)
         {
 
-            var userData = _userDal.Get(u => u.Id == userId);
+            var userData = _userDal.Get(u => u.Id == user.Id);
 
+            userData.FirstName = user.FirstName;
+            userData.LastName = user.LastName;
+            userData.Email = user.Email;
+            userData.DateOfBirth = user.DateOfBirth;
+            userData.Phone = user.Phone;
+            userData.RoleTypeId = user.RoleTypeId;
 
-            var role = _roleTypeService.GetById(userData.RoleTypeId);
+            //var role = _roleTypeService.GetById(userData.RoleTypeId);
 
-            if (role != null)
-            {
-                userData.RoleTypeId = roleId;
-            }
-            else
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
-            }
+            //if (role != null)
+            //{
+            //    userData.RoleTypeId = roleId;
+            //}
+            //else
+            //{
+            //    return new ErrorResult(TurkishMessage.ErrorMessage);
+            //}
 
 
             _userDal.Update(userData);
