@@ -123,6 +123,7 @@ namespace Business.Concrete
         {
             var userForView = new UserForView()
             {
+                Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,

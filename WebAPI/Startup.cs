@@ -72,6 +72,7 @@ namespace WebAPI
                     };
                 });
 
+
             services.AddAuthorization(options =>
             {
                 // Define the policy here
