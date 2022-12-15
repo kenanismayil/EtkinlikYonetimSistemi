@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataAccess.Migrations
 {
-    public partial class EventProject : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -110,32 +110,6 @@ namespace DataAccess.Migrations
                         name: "FK_Locations_Cities_CityId",
                         column: x => x.CityId,
                         principalTable: "Cities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserOperationRoles",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: true),
-                    RoleTypeId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserOperationRoles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserOperationRoles_RoleTypes_RoleTypeId",
-                        column: x => x.RoleTypeId,
-                        principalTable: "RoleTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserOperationRoles_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -304,16 +278,6 @@ namespace DataAccess.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserOperationRoles_RoleTypeId",
-                table: "UserOperationRoles",
-                column: "RoleTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserOperationRoles_UserId",
-                table: "UserOperationRoles",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleTypeId",
                 table: "Users",
                 column: "RoleTypeId");
@@ -329,9 +293,6 @@ namespace DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Registrations");
-
-            migrationBuilder.DropTable(
-                name: "UserOperationRoles");
 
             migrationBuilder.DropTable(
                 name: "Activities");

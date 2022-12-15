@@ -24,7 +24,7 @@ namespace Business.Abstract
         IResult UpdateUserInfoBySuperAdmin(User user);
 
         //IDataResult<List<UserDetailDto>> GetUserDetails();
-        IDataResult<User> ChangePassword(int userId, string oldPassword, string newPassword);  //Şifre yenileme 
+        IResult ChangePassword(int Id, string oldPassword, string newPassword);  //Şifre yenileme 
 
     }
 }
