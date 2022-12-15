@@ -79,7 +79,7 @@ namespace Business.Concrete
         public IResult Update(UserForInfoChange userForInfoChange)
         {
             //Business Codes
-            var userData = _userDal.Get(u => u.Id == userForInfoChange.UserId);
+            var userData = _userDal.Get(u => u.Id == userForInfoChange.Id);
 
             userData.FirstName = userForInfoChange.FirstName;
             userData.LastName = userForInfoChange.LastName;
@@ -123,6 +123,7 @@ namespace Business.Concrete
         {
             var userForView = new UserForView()
             {
+                Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
@@ -168,13 +169,13 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.UserRoleUpdatedBySuperAdmin);
         }
 
-        public IDataResult<User> ChangePassword(int userId, string oldPassword, string newPassword)
+        public IResult ChangePassword(int Id, string oldPassword, string newPassword)
         {
             byte[] oldPasswordHash, oldPasswordSalt;
             byte[] newPasswordHash, newPasswordSalt;
 
             HashingHelper.CreatePasswordHash(oldPassword, out oldPasswordHash, out oldPasswordSalt);
-            var userData = _userDal.Get(u=>u.Id == userId);
+            var userData = _userDal.Get(u=>u.Id == Id);
 
             HashingHelper.CreatePasswordHash(newPassword, out newPasswordHash, out newPasswordSalt);
 
@@ -182,12 +183,14 @@ namespace Business.Concrete
             {
                 userData.PasswordHash = newPasswordHash;
                 userData.PasswordSalt = newPasswordSalt;
+            } else {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
             }
 
 
 
             _userDal.Update(userData);
-            return new SuccessDataResult<User>(userData, TurkishMessage.SuccessMessage);
+            return new SuccessResult(TurkishMessage.SuccessMessage);
         }
 
 

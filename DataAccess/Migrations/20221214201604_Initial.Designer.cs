@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ActivityContext))]
-    [Migration("20221207191712_EventProject")]
-    partial class EventProject
+    [Migration("20221214201604_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -78,28 +78,6 @@ namespace DataAccess.Migrations
                     b.HasIndex("RoleTypeId");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Core.Entities.Concrete.UserOperationRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("RoleTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleTypeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserOperationRoles");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Activity", b =>
@@ -296,23 +274,6 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("RoleType");
-                });
-
-            modelBuilder.Entity("Core.Entities.Concrete.UserOperationRole", b =>
-                {
-                    b.HasOne("Core.Entities.Concrete.RoleType", "RoleType")
-                        .WithMany()
-                        .HasForeignKey("RoleTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Entities.Concrete.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("RoleType");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Activity", b =>
