@@ -58,10 +58,10 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.SuccessMessage);
         }
 
-        public IResult Delete(User user)
+        public IResult Delete(string id)
         {
             //Business Codes
-
+            var user = _userDal.Get(u => u.Id.ToString() == id);
 
             //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>

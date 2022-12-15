@@ -38,15 +38,15 @@ namespace WebAPI.Controllers
 
 
         [Authorize(Roles = "super_admin")]
-        [HttpDelete("delete")]
-        public IActionResult Delete(User user)
+        [HttpDelete("delete/{id}")]
+        public IActionResult Delete(string id)
         {
-            var result = _userService.Delete(user);
+            var result = _userService.Delete(id);
             if (result.Success)
             {
                 return Ok(result);
             }
-            return BadRequest(result);
+            return BadRequest(result);          
         }
 
 
