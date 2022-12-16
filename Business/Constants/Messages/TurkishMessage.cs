@@ -73,7 +73,7 @@ namespace Business.Constants.Messages
 
 
         //Registration magic string
-        public static string RegistrationAdded = "Kayıt yapildi";
+        public static string RegistrationAdded = "Etkinliğe kayıt yapildi";
         public static string RegistrationDeleted = "Kayıt silindi";
         public static string RegistrationUpdated = "Kayıt güncellendi";
         public static string RegistrationNameInvalid = "Kayıt ismi gecersiz";

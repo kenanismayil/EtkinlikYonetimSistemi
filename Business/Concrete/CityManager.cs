@@ -10,6 +10,7 @@ using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,40 +31,35 @@ namespace Business.Concrete
 
         [ValidationAspect(typeof(CityValidator))]
         [CacheRemoveAspect("ICityService.Get")]
-        public IResult Add(City city)
+        public IResult Add(CityRequirements city)
         {
             //Business code
-            IResult result = BusinessRules.Run(CheckIfCityNameExists(city.CityName));
+            var cityData = new City()
+            {
+                CountryId = city.CountryId,
+                CityName = city.CityName
+            };
+
+            IResult result = BusinessRules.Run(CheckIfCityNameExists(cityData.CityName));
             if (result != null)
             {
                 return new ErrorResult(TurkishMessage.CityNameAlreadyExists);
             }
 
-            _cityDal.Add(city);
+            _cityDal.Add(cityData);
             return new SuccessResult(TurkishMessage.CityAdded);
-
-            //Central Management System
-            //var result = ExceptionHandler.HandleWithNoReturn(() =>
-            //{
-            //    _cityDal.Add(city);
-            //});
-            //if (!result)
-            //{
-            //    return new ErrorResult(TurkishMessage.ErrorMessage);
-            //}
-
-            //return new SuccessResult(TurkishMessage.CityAdded);
         }
 
         [CacheRemoveAspect("ICityService.Get")]
-        public IResult Delete(City city)
+        public IResult Delete(string cityId)
         {
             //Business code
+            var cityData = _cityDal.Get(c => c.Id.ToString() == cityId);
 
             //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
-                _cityDal.Delete(city);
+                _cityDal.Delete(cityData);
             });
             if (!result)
             {
@@ -73,25 +69,28 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.CityDeleted);
         }
 
+        [ValidationAspect(typeof(CityValidator))]
+        [CacheRemoveAspect("ICityService.Get")]
+        public IResult Update(CityRequirements city)
+        {
+            //Business code
+            var cityData = new City()
+            {
+                Id = city.CityId,
+                CountryId = city.CountryId,
+                CityName = city.CityName
+            };
 
-        //[SecuredOperation("city.deleteAll, admin, super_admin")]
-        //[CacheRemoveAspect("ICityService.Get")]
-        //public IResult DeleteAll(Expression<Func<City, bool>> filter)
-        //{
-        //    //Business code
+            IResult result = BusinessRules.Run(CheckIfCityNameExists(cityData.CityName));
+            if (result != null)
+            {
+                return new ErrorResult(TurkishMessage.CityNameAlreadyExists);
+            }
 
-        //    //Central Management System
-        //    var result = ExceptionHandler.HandleWithNoReturn(() =>
-        //    {
-        //        _cityDal.DeleteAll(filter);
-        //    });
-        //    if (!result)
-        //    {
-        //        return new ErrorResult(TurkishMessage.ErrorMessage);
-        //    }
+            _cityDal.Update(cityData);
+            return new SuccessResult(TurkishMessage.CityUpdated);
 
-        //    return new SuccessResult(TurkishMessage.CityDeleted);
-        //}
+        }
 
         [CacheAspect]
         public IDataResult<List<City>> GetAll()
@@ -129,32 +128,7 @@ namespace Business.Concrete
             return new SuccessDataResult<City>(result.Data, TurkishMessage.SuccessMessage);
         }
 
-        [ValidationAspect(typeof(CityValidator))]
-        [CacheRemoveAspect("ICityService.Get")]
-        public IResult Update(City city)
-        {
-            //Business code
-            IResult result = BusinessRules.Run(CheckIfCityNameExists(city.CityName));
-            if (result != null)
-            {
-                return new ErrorResult(TurkishMessage.CityNameAlreadyExists);
-            }
 
-            _cityDal.Add(city);
-            return new SuccessResult(TurkishMessage.CityUpdated);
-
-            //Central Management System
-            //var result = ExceptionHandler.HandleWithNoReturn(() =>
-            //{
-            //    _cityDal.Update(city);
-            //});
-            //if (!result)
-            //{
-            //    return new ErrorResult(TurkishMessage.ErrorMessage);
-            //}
-
-            //return new SuccessResult(TurkishMessage.CityUpdated);
-        }
 
 
         //İş kuralları

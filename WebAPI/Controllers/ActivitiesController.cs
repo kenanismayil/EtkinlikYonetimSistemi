@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -35,6 +36,19 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        //[Authorize(Roles = "admin, super_admin")]
+        //[HttpGet("getParticipiants")]
+        //public IActionResult GetParticipiants(int activityId)
+        //{
+        //    var result = _activityService.GetParticipiants(activityId);
+        //    if (result.Success)
+        //    {
+        //        return Ok(result.Data);
+        //    }
+
+        //    return BadRequest(result);
+        //}
+
         [AllowAnonymous]
         [HttpGet("getById")]
         public IActionResult GetById(int activityId)
@@ -62,7 +76,7 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "admin, super_admin")]
         [HttpPost("add")]
-        public IActionResult Add(Activity activity)
+        public IActionResult Add(ActivityCreatingByAdmin activity)
         {
             var result = _activityService.Add(activity);
             if (result.Success)
@@ -74,9 +88,9 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "admin, super_admin")]
         [HttpDelete("delete")]
-        public IActionResult Delete(Activity activity)
+        public IActionResult Delete(string activityId)
         {
-            var result = _activityService.Delete(activity);
+            var result = _activityService.Delete(activityId);
             if (result.Success)
             {
                 return Ok(result);
@@ -98,7 +112,7 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "admin, super_admin")]
         [HttpPut("update")]
-        public IActionResult Update(Activity activity)
+        public IActionResult Update(ActivityCreatingByAdmin activity)
         {
             var result = _activityService.Update(activity);
             if (result.Success)

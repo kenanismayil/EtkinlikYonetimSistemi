@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -49,7 +50,7 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "admin, super_admin")]
         [HttpPost("add")]
-        public IActionResult Add(City city)
+        public IActionResult Add(CityRequirements city)
         {
             var result = _cityService.Add(city);
             if (result.Success)
@@ -62,9 +63,9 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "super_admin")]
         [HttpDelete("delete")]
-        public IActionResult Delete(City city)
+        public IActionResult Delete(string cityId)
         {
-            var result = _cityService.Delete(city);
+            var result = _cityService.Delete(cityId);
             if (result.Success)
             {
                 return Ok(result);
@@ -72,20 +73,9 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        //[HttpDelete("deleteAll")]
-        //public IActionResult DeleteAll(Expression<Func<City, bool>> filter)
-        //{
-        //    var result = _cityService.DeleteAll(filter);
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result);
-        //}
-
         [Authorize(Roles = "admin, super_admin")]
         [HttpPut("update")]
-        public IActionResult Update(City city)
+        public IActionResult Update(CityRequirements city)
         {
             var result = _cityService.Update(city);
             if (result.Success)

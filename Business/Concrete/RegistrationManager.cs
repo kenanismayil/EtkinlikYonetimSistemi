@@ -10,6 +10,7 @@ using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,48 +23,57 @@ namespace Business.Concrete
     public class RegistrationManager : IRegistrationService
     {
         IRegistrationDal _registrationDal;
+        //IActivityService _activityService;
 
 
         public RegistrationManager(IRegistrationDal registrationDal)
         {
             _registrationDal = registrationDal;
-
+            //_activityService = activityService;
         }
 
 
         [ValidationAspect(typeof(RegistrationValidator))]
         [CacheRemoveAspect("IRegistrationService.Get")]
-        public IResult Add(Registration registration)
+        public IResult Add(RegisterForActivity registration)
         {
             //Business code
-            IResult result = BusinessRuleHandler.
-                CheckTheRules(CheckIfUserLimitsExceeded(registration.User.Id, registration.Activity.Id));
-            if (result != null)
+            //var activityData = _activityService.GetById(registration.Activity.Id);
+
+            var register = _registrationDal.GetAll(r => r.UserId == registration.UserId && r.ActivityId == registration.ActivityId).Count;
+            if (register >= 1)
             {
-                return result;
+                return new ErrorResult("Bir kullanici ayni aktiviteye tekrar kayit yapamaz");
             }
 
-            //Central Management System
-            //var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //if (activityData.Data.Participiant == 0)
             //{
-            //    _registrationDal.Add(registration);
-            //});
-            //if (!result)
-            //{
-            //    return new ErrorResult(TurkishMessage.ErrorMessage);
+            //    return new ErrorResult("Etkinliğe katılımcı sayısı aşıldığından katılamazsınız");
             //}
 
-            _registrationDal.Add(registration);
+            var result = new Registration()
+            {
+                UserId = registration.UserId,
+                ActivityId = registration.ActivityId
+            };
+
+
+            result.Date = DateTime.Now;
+            _registrationDal.Add(result);
+            //activityData.Data.Participiant--;
+
             return new SuccessResult(TurkishMessage.RegistrationAdded);
         }
 
         [CacheRemoveAspect("IRegistrationService.Get")]
-        public IResult Delete(Registration registration)
+        public IResult Delete(RegisterForActivity registration)
         {
             //Business code
+            var register = _registrationDal.Get(r => r.UserId == registration.UserId && r.ActivityId == registration.ActivityId);
+
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
-                _registrationDal.Delete(registration);
+                _registrationDal.Delete(register);
             });
             if (!result)
             {
@@ -89,6 +99,24 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Registration>>(result.Data, TurkishMessage.RegistrationListed);
         }
 
+        public IDataResult<List<Registration>> GetAllForFilter(Expression<Func<Registration, bool>> filter)
+        {
+            //Business code
+
+
+            //Central Management System
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _registrationDal.GetAll(filter);
+            });
+            if (!result)
+            {
+                return new ErrorDataResult<List<Registration>>(TurkishMessage.ErrorMessage);
+            }
+
+            return new SuccessDataResult<List<Registration>>(TurkishMessage.ActivityDeleted);
+        }
+
         public IDataResult<Registration> GetById(int id)
         {
             //Business code
@@ -110,44 +138,45 @@ namespace Business.Concrete
 
         [ValidationAspect(typeof(RegistrationValidator))]
         [CacheRemoveAspect("IRegistrationService.Get")]
-        public IResult Update(Registration registration)
+        public IResult Update(RegisterForActivity registration)
         {
             //Business code
-            IResult result = BusinessRuleHandler.
-                CheckTheRules(CheckIfUserLimitsExceeded(registration.User.Id, registration.Activity.Id));
-            if (result != null)
-            {
-                return result;
-            }
-            _registrationDal.Update(registration);
-            return new SuccessResult(TurkishMessage.RegistrationUpdated);
-
-
-            //Central Management System
-            //var result = ExceptionHandler.HandleWithNoReturn(() =>
+            //IResult result = BusinessRuleHandler.
+            //    CheckTheRules(CheckIfUserLimitsExceeded(registration.User.Id, registration.Activity.Id));
+            //if (result != null)
             //{
-            //    _registrationDal.Update(registration);
-            //});
-            //if (!result)
-            //{
-            //    return new ErrorResult(TurkishMessage.ErrorMessage);
+            //    return result;
             //}
-
-            //return new SuccessResult(TurkishMessage.RegistrationUpdated);
-        }
-
-
-        //İŞ KURALLARI
-        private IResult CheckIfUserLimitsExceeded(int userId, int activityId)
-        {
-            var register = _registrationDal.Get(r => r.UserId == userId);
-            if (register.ActivityId == activityId)
+            var register = _registrationDal.GetAll(r => r.UserId == registration.UserId && r.ActivityId == registration.ActivityId).Count;
+            if (register >= 1)
             {
                 return new ErrorResult("Bir kullanici ayni aktiviteye tekrar kayit yapamaz");
             }
 
-            return new SuccessResult(TurkishMessage.SuccessMessage);
+            var result = new Registration()
+            {
+                UserId = registration.UserId,
+                ActivityId = registration.ActivityId
+            };
+
+            result.Date = DateTime.Now;
+            _registrationDal.Update(result);
+            return new SuccessResult(TurkishMessage.RegistrationUpdated);
+
         }
+
+
+        //İŞ KURALLARI
+        //private IResult CheckIfUserLimitsExceeded(int userId, int activityId)
+        //{
+        //    var register = _registrationDal.Get(r => r.UserId == userId && r.ActivityId == activityId);
+        //    if (register != null)
+        //    {
+        //        return new ErrorResult("Bir kullanici ayni aktiviteye tekrar kayit yapamaz");
+        //    }
+
+        //    return new SuccessResult(TurkishMessage.SuccessMessage);
+        //}
 
 
 

@@ -1,5 +1,6 @@
 ﻿using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,8 @@ namespace Business.Abstract
     {
         IDataResult<List<Comment>> GetAll();
         IDataResult<Comment> GetById(int commentId);
-        IResult Add(Comment comment);
-        IResult Delete(Comment comment  );
-        IResult Update(Comment comment);
+        IResult Add(CommentForUser comment);
+        IResult Delete(string commentId);
+        IResult Update(CommentForUser comment);
     }
 }

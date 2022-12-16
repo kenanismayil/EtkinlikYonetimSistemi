@@ -1,4 +1,5 @@
 ﻿using Core.DataAccess;
+using Core.Entities.Concrete;
 using Entities.Concrete;
 using Entities.DTOs;
 using System;
@@ -13,5 +14,6 @@ namespace DataAccess.Abstract
     public interface IActivityDal : IEntityRepository<Activity>
     {
         List<ActivityDetailDto> GetActivityDetails();
+        //List<User> GetParticipiantstoActivity(int activityId);
     }
 }

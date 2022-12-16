@@ -1,5 +1,6 @@
 ﻿using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,8 @@ namespace Business.Abstract
     {
         IDataResult<List<City>> GetAll();
         IDataResult<City> GetById(int id);
-        IResult Add(City city);
-        IResult Delete(City city);
-        //IResult DeleteAll(Expression<Func<City, bool>> filter);
-        IResult Update(City city);
+        IResult Add(CityRequirements city);
+        IResult Delete(string cityId);
+        IResult Update(CityRequirements city);
     }
 }

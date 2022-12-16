@@ -1,4 +1,5 @@
 ﻿using Core.DataAccess.EntityFramework;
+using Core.Entities.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Context;
 using Entities.Concrete;
@@ -41,5 +42,14 @@ namespace DataAccess.Concrete.EntityFramework
                 return result.ToList();
             }
         }
+
+        //public List<User> GetParticipiantstoActivity(int activityId)
+        //{
+        //    using (ActivityContext context = new ActivityContext)
+        //    {
+        //        var result = context.Registrations.SingleOrDefault(r => r.ActivityId == activityId);
+        //        return result.ToList();
+        //    }
+        //}
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ActivityContext))]
-    [Migration("20221207191712_EventProject")]
+    [Migration("20221215143920_EventProject")]
     partial class EventProject
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -80,28 +80,6 @@ namespace DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Core.Entities.Concrete.UserOperationRole", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("RoleTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleTypeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserOperationRoles");
-                });
-
             modelBuilder.Entity("Entities.Concrete.Activity", b =>
                 {
                     b.Property<int>("Id")
@@ -115,7 +93,7 @@ namespace DataAccess.Migrations
                     b.Property<string>("ActivityName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ActivityTypeId")
+                    b.Property<int?>("ActivityTypeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("AppDeadLine")
@@ -124,7 +102,7 @@ namespace DataAccess.Migrations
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int?>("LocationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserId")
@@ -163,7 +141,7 @@ namespace DataAccess.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ActivityId")
+                    b.Property<int?>("ActivityId")
                         .HasColumnType("int");
 
                     b.Property<string>("CertificateName")
@@ -209,7 +187,7 @@ namespace DataAccess.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ActivityId")
+                    b.Property<int?>("ActivityId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
@@ -269,7 +247,7 @@ namespace DataAccess.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ActivityId")
+                    b.Property<int?>("ActivityId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
@@ -298,36 +276,15 @@ namespace DataAccess.Migrations
                     b.Navigation("RoleType");
                 });
 
-            modelBuilder.Entity("Core.Entities.Concrete.UserOperationRole", b =>
-                {
-                    b.HasOne("Core.Entities.Concrete.RoleType", "RoleType")
-                        .WithMany()
-                        .HasForeignKey("RoleTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Entities.Concrete.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("RoleType");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Entities.Concrete.Activity", b =>
                 {
                     b.HasOne("Entities.Concrete.ActivityType", "ActivityType")
                         .WithMany()
-                        .HasForeignKey("ActivityTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ActivityTypeId");
 
                     b.HasOne("Entities.Concrete.Location", "Location")
                         .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LocationId");
 
                     b.HasOne("Core.Entities.Concrete.User", "User")
                         .WithMany()
@@ -344,9 +301,7 @@ namespace DataAccess.Migrations
                 {
                     b.HasOne("Entities.Concrete.Activity", "Activity")
                         .WithMany()
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ActivityId");
 
                     b.Navigation("Activity");
                 });
@@ -364,9 +319,7 @@ namespace DataAccess.Migrations
                 {
                     b.HasOne("Entities.Concrete.Activity", "Activity")
                         .WithMany()
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ActivityId");
 
                     b.HasOne("Core.Entities.Concrete.User", "User")
                         .WithMany()
@@ -390,9 +343,7 @@ namespace DataAccess.Migrations
                 {
                     b.HasOne("Entities.Concrete.Activity", "Activity")
                         .WithMany()
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ActivityId");
 
                     b.HasOne("Core.Entities.Concrete.User", "User")
                         .WithMany()

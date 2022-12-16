@@ -13,7 +13,7 @@ namespace Entities.Concrete
     {
         public int Id { get; set; }
         public int? UserId { get; set; }
-        public int ActivityId { get; set; }
+        public int? ActivityId { get; set; }
         public string Content { get; set; }
 
         //Foreign key
@@ -21,6 +21,6 @@ namespace Entities.Concrete
         public virtual User User { get; set; }
 
         [ForeignKey("ActivityId")]
-        public Activity Activity { get; set; }
+        public virtual Activity Activity { get; set; }
     }
 }

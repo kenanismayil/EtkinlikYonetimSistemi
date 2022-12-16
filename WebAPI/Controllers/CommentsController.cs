@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -49,7 +50,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("add")]
-        public IActionResult Add(Comment comment)
+        public IActionResult Add(CommentForUser comment)
         {
             var result = _commentService.Add(comment);
             if (result.Success)
@@ -60,9 +61,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("delete")]
-        public IActionResult Delete(Comment comment)
+        public IActionResult Delete(string commentId)
         {
-            var result = _commentService.Delete(comment);
+            var result = _commentService.Delete(commentId);
             if (result.Success)
             {
                 return Ok(result);
@@ -70,19 +71,8 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        //[HttpDelete("deleteAll")]
-        //public IActionResult DeleteAll(Expression<Func<Comment, bool>> filter)
-        //{
-        //    var result = _commentService.DeleteAll(filter);
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result);
-        //}
-
         [HttpPut("update")]
-        public IActionResult Update(Comment comment)
+        public IActionResult Update(CommentForUser comment)
         {
             var result = _commentService.Update(comment);
             if (result.Success)

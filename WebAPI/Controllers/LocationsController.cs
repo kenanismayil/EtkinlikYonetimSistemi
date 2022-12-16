@@ -59,9 +59,9 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "super_admin")]
         [HttpDelete("delete")]
-        public IActionResult Delete(Location location)
+        public IActionResult Delete(string locationId)
         {
-            var result = _locationService.Delete(location);
+            var result = _locationService.Delete(locationId);
             if (result.Success)
             {
                 return Ok(result);

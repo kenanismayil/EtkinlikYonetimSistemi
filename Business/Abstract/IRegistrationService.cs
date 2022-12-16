@@ -1,5 +1,6 @@
 ﻿using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,11 @@ namespace Business.Abstract
     public interface IRegistrationService
     {
         IDataResult<List<Registration>> GetAll();
+        IDataResult<List<Registration>> GetAllForFilter(Expression<Func<Registration, bool>> filter);
         IDataResult<Registration> GetById(int id);
-        IResult Add(Registration registration);
-        IResult Delete(Registration registration);
+        IResult Add(RegisterForActivity registration);
+        IResult Delete(RegisterForActivity registration);
         //IResult DeleteAll(Expression<Func<Registration, bool>> filter);
-        IResult Update(Registration registration);
+        IResult Update(RegisterForActivity registration);
     }
 }

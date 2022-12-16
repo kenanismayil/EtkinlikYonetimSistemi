@@ -70,7 +70,7 @@ namespace ConsoleUI
 
 
 
-            RegistrationManager registrationManager = new RegistrationManager(new EfRegistrationDal());
+            //RegistrationManager registrationManager = new RegistrationManager(new EfRegistrationDal());
             //Registration registration = new Registration
             //{
             //    ActivityId = 2,

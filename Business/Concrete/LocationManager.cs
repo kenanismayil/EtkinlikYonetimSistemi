@@ -37,32 +37,19 @@ namespace Business.Concrete
             }
             _locationDal.Update(location);
             return new SuccessResult(TurkishMessage.LocationUpdated);
-
-
-            //Central Management System
-            //var result = ExceptionHandler.HandleWithNoReturn(() =>
-            //{
-            //    _locationDal.Add(location);
-            //});
-            //if (!result)
-            //{
-            //    return new ErrorResult(TurkishMessage.ErrorMessage);
-            //}
-
-            //return new SuccessResult(TurkishMessage.LocationAdded);
         }
 
         [ValidationAspect(typeof(LocationValidator))]
         [CacheRemoveAspect("ILocation.Get")]
-        public IResult Delete(Location location)
+        public IResult Delete(string locationId)
         {
             //Business code
-
+            var locationData = _locationDal.Get(l => l.Id.ToString() == locationId);
 
             //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
-                _locationDal.Delete(location);
+                _locationDal.Delete(locationData);
             });
             if (!result)
             {

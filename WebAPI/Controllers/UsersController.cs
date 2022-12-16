@@ -38,10 +38,10 @@ namespace WebAPI.Controllers
 
 
         [Authorize(Roles = "super_admin")]
-        [HttpPost("delete")]
-        public IActionResult Delete(User user)
+        [HttpDelete("delete/{id}")]
+        public IActionResult Delete(string id)
         {
-            var result = _userService.Delete(user);
+            var result = _userService.Delete(id);
             if (result.Success)
             {
                 return Ok(result);
@@ -50,7 +50,7 @@ namespace WebAPI.Controllers
         }
 
 
-        [HttpPost("update")]
+        [HttpPut("update")]
         public IActionResult Update(UserForInfoChange user)
         {
             var result = _userService.Update(user);
@@ -62,7 +62,7 @@ namespace WebAPI.Controllers
         }
 
         [Authorize(Roles = "super_admin")]
-        [HttpPost("updateUserInfoBySuperAdmin")]
+        [HttpPut("updateUserInfoBySuperAdmin")]
         public IActionResult UpdateUserInfoBySuperAdmin(User user)
         {
             var result = _userService.UpdateUserInfoBySuperAdmin(user);
@@ -73,10 +73,10 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("changePassword")]
-        public IActionResult ChangePassword(int userId, string oldPassword, string newPassword)
+        [HttpPut("changePassword")]
+        public IActionResult ChangePassword(UserForPasswordChange user)
         {
-            var result = _userService.ChangePassword(userId, oldPassword, newPassword);
+            var result = _userService.ChangePassword(user.Id, user.oldPassword, user.newPassword);
             if (result.Success)
             {
                 return Ok(result);

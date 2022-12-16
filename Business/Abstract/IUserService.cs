@@ -18,13 +18,13 @@ namespace Business.Abstract
         IDataResult<User> GetByMail(string email);
         IDataResult<UserForView> GetUserForView(User user);
         IResult Add(User user);
-        IResult Delete(User user);
+        IResult Delete(string id);
         IResult Update(UserForInfoChange userForInfoChange);
 
         IResult UpdateUserInfoBySuperAdmin(User user);
 
         //IDataResult<List<UserDetailDto>> GetUserDetails();
-        IDataResult<User> ChangePassword(int userId, string oldPassword, string newPassword);  //Şifre yenileme 
+        IResult ChangePassword(int Id, string oldPassword, string newPassword);  //Şifre yenileme 
 
     }
 }

@@ -13,7 +13,7 @@ namespace Business.Abstract
         IDataResult<List<Location>> GetAll();
         IDataResult<Location> GetById(int locationId);
         IResult Add(Location location);
-        IResult Delete(Location location);
+        IResult Delete(string locationId);
         IResult Update(Location location);
     }
 }

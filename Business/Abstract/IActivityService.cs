@@ -1,4 +1,5 @@
-﻿using Core.Utilities.Results.Abstract;
+﻿using Core.Entities.Concrete;
+using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
 using System;
@@ -14,11 +15,12 @@ namespace Business.Abstract
     {
         IDataResult<List<Activity>> GetAll();
         IDataResult<Activity> GetById(int activityId);
+        //IDataResult<List<User>> GetParticipiants(int activityId);
+        //IDataResult<int> GetMaxUserCount(int activityId);
         IDataResult<List<ActivityDetailDto>> GetActivityDetails();
-        IResult Add(Activity activity);
-        IResult Delete(Activity activity);
+        IResult Add(ActivityCreatingByAdmin activity);
+        IResult Delete(string activityId);
         IResult DeleteAll(Expression<Func<Activity, bool>> filter);
-        IResult Update(Activity activity);
-        //IResult AddTransactionalTest(Activity activity);
+        IResult Update(ActivityCreatingByAdmin activity);
     }
 }
