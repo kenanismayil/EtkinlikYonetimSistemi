@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
             {
                 return Ok(result);
             }
-            return BadRequest(result);
+            return BadRequest(result);          
         }
 
 
@@ -73,8 +73,8 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPut("changePassword")]
-        public IActionResult ChangePassword(UserForPasswordChange user)
+        [HttpPost("changePassword")]
+        public IActionResult ChangePassword(int userId, string oldPassword, string newPassword)
         {
             var result = _userService.ChangePassword(user.Id, user.oldPassword, user.newPassword);
             if (result.Success)

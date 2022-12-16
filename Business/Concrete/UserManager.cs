@@ -183,6 +183,8 @@ namespace Business.Concrete
             {
                 userData.PasswordHash = newPasswordHash;
                 userData.PasswordSalt = newPasswordSalt;
+            } else {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
             }
             else
             {
