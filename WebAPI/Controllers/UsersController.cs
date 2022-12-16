@@ -74,7 +74,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("changePassword")]
-        public IActionResult ChangePassword(int userId, string oldPassword, string newPassword)
+        public IActionResult ChangePassword(UserForPasswordChange user)
         {
             var result = _userService.ChangePassword(user.Id, user.oldPassword, user.newPassword);
             if (result.Success)
