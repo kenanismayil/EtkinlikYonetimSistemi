@@ -53,7 +53,9 @@ namespace Business.Concrete
             {
                 UserId = activity.UserId,
                 ActivityTypeId = activity.ActivityTypeId,
-                ActivityName = activity.ActivityName,
+                Title = activity.Title,
+                Description = activity.Description,
+                Image = activity.Image,
                 LocationId = activity.LocationId,
                 Participiant = activity.Participiant,
                 AppDeadLine = activity.AppDeadLine,
@@ -61,7 +63,7 @@ namespace Business.Concrete
             };
 
             IResult result = BusinessRules.Run(CheckIfActivityCountOfTypeCorrect(activityData.ActivityTypeId), 
-                CheckIfActivityNameExists(activityData.ActivityName), CheckIfActivityTypeLimitExceded());
+                CheckIfActivityNameExists(activityData.Title), CheckIfActivityTypeLimitExceded());
 
             //result -> kurala uymayan
             //result null değilse, yani kurala uymayan bir durum oluşmuşsa, o zaman result kendisi döner. ErrorResult dönecektir.
@@ -106,7 +108,9 @@ namespace Business.Concrete
             {
                 UserId = activity.UserId,
                 ActivityTypeId = activity.ActivityTypeId,
-                ActivityName = activity.ActivityName,
+                Title = activity.Title,
+                Description = activity.Description,
+                Image = activity.Image,
                 LocationId = activity.LocationId,
                 Participiant = activity.Participiant,
                 AppDeadLine = activity.AppDeadLine,
@@ -114,7 +118,7 @@ namespace Business.Concrete
             };
 
             IResult result = BusinessRules.Run(CheckIfActivityCountOfTypeCorrect(activityData.ActivityTypeId),
-                CheckIfActivityNameExists(activityData.ActivityName), CheckIfActivityTypeLimitExceded());
+                CheckIfActivityNameExists(activityData.Title), CheckIfActivityTypeLimitExceded());
 
             //result -> kurala uymayan
             //result null değilse, yani kurala uymayan bir durum oluşmuşsa, o zaman result kendisi döner. ErrorResult dönecektir.
@@ -247,7 +251,7 @@ namespace Business.Concrete
         {
             //Aynı isimde aktivite eklenemez
             //Any() -> _activityDal.GetAll(a => a.ActivityName == activityName)'e uyan kayıt var mı anlamına gelen metottur.
-            var result = _activityDal.GetAll(a => a.ActivityName == activityName).Any();
+            var result = _activityDal.GetAll(a => a.Title == activityName).Any();
             if (result)
             {
                 return new ErrorResult(TurkishMessage.ActivityNameAlreadyExists);

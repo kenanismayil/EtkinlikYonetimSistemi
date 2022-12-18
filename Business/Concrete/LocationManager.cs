@@ -20,9 +20,11 @@ namespace Business.Concrete
     public class LocationManager : ILocationService
     {
         ILocationDal _locationDal;
-        public LocationManager(ILocationDal locationDal)
+        ICityDal _cityDal;
+        public LocationManager(ILocationDal locationDal, ICityDal cityDal)
         {
             _locationDal = locationDal;
+            _cityDal = cityDal;
         }
 
         [ValidationAspect(typeof(LocationValidator))]
@@ -30,12 +32,12 @@ namespace Business.Concrete
         public IResult Add(Location location)
         {
             //Business code
-            IResult result = BusinessRules.Run(CheckIfLocationNameExists(location.Name));
+            IResult result = BusinessRules.Run(CheckIfLocationNameExists(location.Name, location.CityId), CheckCityExists(location.CityId));
             if (result != null)
             {
                 return result;
             }
-            _locationDal.Update(location);
+            _locationDal.Add(location);
             return new SuccessResult(TurkishMessage.LocationUpdated);
         }
 
@@ -105,7 +107,7 @@ namespace Business.Concrete
         public IResult Update(Location location)
         {
             //Business code
-            IResult result = BusinessRules.Run(CheckIfLocationNameExists(location.Name));
+            IResult result = BusinessRules.Run(CheckIfLocationNameExists(location.Name, location.CityId), CheckCityExists(location.CityId));
             if (result != null)
             {
                 return result;
@@ -126,13 +128,23 @@ namespace Business.Concrete
             //return new SuccessResult(TurkishMessage.LocationUpdated);
         }
 
-        private IResult CheckIfLocationNameExists(string locationName)
+        private IResult CheckIfLocationNameExists(string locationName, int? CityId)
         {
-            var result = _locationDal.GetAll(loc => loc.Name == locationName).Any();
+            var result = _locationDal.GetAll(loc => loc.Name == locationName && loc.CityId == CityId).Any();
             if (result)
             {
                 return new ErrorResult(TurkishMessage.LocationNameAlreadyExists);
             }
+            return new SuccessResult();
+        }
+        private IResult CheckCityExists(int? CityId)
+        {
+            var result = _cityDal.GetAll(c => c.Id == CityId).Any();
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.CityNotFound);
+            }
+            // var result = _locationDal.GetAll(loc => loc.Name == locationName).Any();
             return new SuccessResult();
         }
     }

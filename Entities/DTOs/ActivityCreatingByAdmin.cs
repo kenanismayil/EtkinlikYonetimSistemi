@@ -11,7 +11,10 @@ namespace Entities.DTOs
         public int UserId { get; set; }
         public int ActivityTypeId { get; set; }
         public int LocationId { get; set; }
-        public string ActivityName { get; set; }
+
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Image { get; set; }
         public int Participiant { get; set; }
         public DateTime CreatedTime { get; set; }
         public DateTime AppDeadLine { get; set; }

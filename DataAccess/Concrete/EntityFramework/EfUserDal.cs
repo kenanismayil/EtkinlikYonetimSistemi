@@ -37,7 +37,7 @@ namespace DataAccess.Concrete.EntityFramework
                                  UserId = u.Id, UserName = u.FirstName, UserSurname = u.LastName, 
                                  UserPhoto = u.UserPhoto, DateOfBirth = u.DateOfBirth, 
                                  Email = u.Email, Phone = u.Phone,
-                                 ActivityId = a.Id, ActivityName = a.ActivityName, 
+                                 ActivityId = a.Id, ActivityName = a.Title, 
                                  ActivityTypeId = type.Id, ActivityTypeName = type.ActivityTypeName, 
                              };
                 return result.ToList();

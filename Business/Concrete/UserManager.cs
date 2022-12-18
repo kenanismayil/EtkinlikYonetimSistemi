@@ -86,6 +86,7 @@ namespace Business.Concrete
             userData.Email = userForInfoChange.Email;
             userData.DateOfBirth = userForInfoChange.DateOfBirth;
             userData.Phone = userForInfoChange.Phone;
+            userData.UserPhoto = userForInfoChange.UserPhoto;
 
             _userDal.Update(userData);
 
@@ -129,7 +130,8 @@ namespace Business.Concrete
                 Email = user.Email,
                 Phone = user.Phone,
                 DateOfBirth = user.DateOfBirth,
-                Role = user.RoleType.RoleName
+                Role = user.RoleType.RoleName,
+                UserPhoto = user.UserPhoto
             };
 
             return new SuccessDataResult<UserForView>(userForView);
