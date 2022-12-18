@@ -14,9 +14,5 @@ namespace Entities.Concrete
         public int? CityId { get; set; }
         public string Name { get; set; }
 
-
-        //Foreign Key
-        [ForeignKey("CityId")]
-        public virtual City City { get; set; }
     }
 }

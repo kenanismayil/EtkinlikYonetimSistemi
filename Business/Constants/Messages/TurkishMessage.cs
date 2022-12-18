@@ -87,6 +87,7 @@ namespace Business.Constants.Messages
         public static string CitiesListed = "Şehirler listelendi";
         public static string CityNameInvalid = "Şehir ismi gecersiz";
         public static string CityNameAlreadyExists = "Bu isime sahip zaten bir şehir vardır";
+        public static string CityNotFound = "Böyle bir şehir bulunamadı";
 
 
         //Country magic string

@@ -32,7 +32,7 @@ namespace DataAccess.Concrete.EntityFramework
                              on a.UserId equals user.Id
                              select new ActivityDetailDto
                              {
-                                 ActivityId = a.Id, ActivityName = a.ActivityName, 
+                                 ActivityId = a.Id, ActivityName = a.Title, 
                                  CreatedTime = a.CreatedTime, AppDeadLine = a.AppDeadLine, ActivityDate = a.ActivityDate, 
                                  ActivityTypeName = t.ActivityTypeName,
                                  CountryName = country.CountryName,
