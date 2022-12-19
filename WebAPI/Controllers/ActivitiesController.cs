@@ -50,7 +50,7 @@ namespace WebAPI.Controllers
         //}
 
         [AllowAnonymous]
-        [HttpGet("getById")]
+        [HttpGet("{activityId}")]
         public IActionResult GetById(int activityId)
         {
             var result = _activityService.GetById(activityId);
@@ -61,18 +61,6 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-
-        [AllowAnonymous]
-        [HttpGet("activityDetailDto")]
-        public IActionResult GetActivityDetails()
-        {
-            var result = _activityService.GetActivityDetails();
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
 
         [Authorize(Roles = "admin, super_admin")]
         [HttpPost("add")]

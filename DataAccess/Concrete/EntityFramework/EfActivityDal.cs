@@ -12,35 +12,96 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-    public class EfActivityDal : EfEntityRepositoryBase<Activity, ActivityContext>, IActivityDal
+    public class EfActivityDal : EfEntityRepositoryBase<Activity, ActivityContext> , IActivityDal
     {
-        public List<ActivityDetailDto> GetActivityDetails()
+
+        // public List<Activity> GetAll() {
+        //     using (ActivityContext context = new ActivityContext()) {
+        //         var result = context.Activities.Join(context.Locations, activity => activity.LocationId, loc => loc.Id, )
+        //     }
+        // }
+
+        public List<ActivityForView> GetAll() //GetAll
         {
             using (ActivityContext context = new ActivityContext())
             {
+                var result = context.Activities.Join(context.Locations, activity => activity.LocationId, loc => loc.Id, (activity, loc) => new
+                {
+                    activity,
+                    loc = new LocationInfoForActivities
+                    {
+                        Id = loc.Id,
+                        Name = loc.Name,
+                        CityName = loc.City.CityName,
+                        CountryName = loc.City.Country.CountryName
+                    }
+                }).Join(context.Users, activity => activity.activity.UserId, user => user.Id, (activity, user) => new {
+                    activity,
+                    user = new UserInfoForActivities
+                    {
+                        Id = user.Id,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Image = user.UserPhoto,
+                        Role = user.RoleType.RoleName
+                    }
+                }).Select(x => new ActivityForView
+                {
+                    Id = x.activity.activity.Id,
+                    Title = x.activity.activity.Title,
+                    Description = x.activity.activity.Description,
+                    Image = x.activity.activity.Image,
+                    Participiant = x.activity.activity.Participiant,
+                    CreatedTime = x.activity.activity.CreatedTime,
+                    ActivityDate = x.activity.activity.ActivityDate,
+                    Location = x.activity.loc,
+                    ActivityType = x.activity.activity.ActivityType,
+                    User = x.user
+                });
                 
-                var result = from a in context.Activities
-                             join t in context.ActivityTypes
-                             on a.ActivityTypeId equals t.Id
-                             join loc in context.Locations
-                             on a.LocationId equals loc.Id
-                             join city in context.Cities
-                             on loc.CityId equals city.Id
-                             join country in context.Countries
-                             on city.CountryId equals country.Id
-                             join user in context.Users
-                             on a.UserId equals user.Id
-                             select new ActivityDetailDto
-                             {
-                                 ActivityId = a.Id, ActivityName = a.Title, 
-                                 CreatedTime = a.CreatedTime, AppDeadLine = a.AppDeadLine, ActivityDate = a.ActivityDate, 
-                                 ActivityTypeName = t.ActivityTypeName,
-                                 CountryName = country.CountryName,
-                                 CityName = city.CityName,
-                                 LocationName = loc.Name,
-                             };
                 return result.ToList();
             }
+        }
+
+        public ActivityForView GetById(int activityId) {
+            using (ActivityContext context = new ActivityContext()) {
+                var result = context.Activities.Join(context.Locations, activity => activity.LocationId, loc => loc.Id, (activity, loc) => new
+                {
+                    activity,
+                    loc = new LocationInfoForActivities
+                    {
+                        Id = loc.Id,
+                        Name = loc.Name,
+                        CityName = loc.City.CityName,
+                        CountryName = loc.City.Country.CountryName
+                    }
+                }).Join(context.Users, activity => activity.activity.UserId, user => user.Id, (activity, user) => new
+                {
+                    activity,
+                    user = new UserInfoForActivities
+                    {
+                        Id = user.Id,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Image = user.UserPhoto,
+                        Role = user.RoleType.RoleName
+                    }
+                }).Where(x => x.activity.activity.Id == activityId).Select(x => new ActivityForView
+                {
+                    Id = x.activity.activity.Id,
+                    Title = x.activity.activity.Title,
+                    Description = x.activity.activity.Description,
+                    Image = x.activity.activity.Image,
+                    Participiant = x.activity.activity.Participiant,
+                    CreatedTime = x.activity.activity.CreatedTime,
+                    ActivityDate = x.activity.activity.ActivityDate,
+                    Location = x.activity.loc,
+                    ActivityType = x.activity.activity.ActivityType,
+                    User = x.user
+                });
+
+                return result.SingleOrDefault();
+            }   
         }
 
         //public List<User> GetParticipiantstoActivity(int activityId)

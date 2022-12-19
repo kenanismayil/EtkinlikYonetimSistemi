@@ -13,11 +13,10 @@ namespace Business.Abstract
 {
     public interface IActivityService
     {
-        IDataResult<List<Activity>> GetAll();
-        IDataResult<Activity> GetById(int activityId);
+        IDataResult<List<ActivityForView>> GetAll();
+        IDataResult<ActivityForView> GetById(int activityId);
         //IDataResult<List<User>> GetParticipiants(int activityId);
         //IDataResult<int> GetMaxUserCount(int activityId);
-        IDataResult<List<ActivityDetailDto>> GetActivityDetails();
         IResult Add(ActivityCreatingByAdmin activity);
         IResult Delete(string activityId);
         IResult DeleteAll(Expression<Func<Activity, bool>> filter);
