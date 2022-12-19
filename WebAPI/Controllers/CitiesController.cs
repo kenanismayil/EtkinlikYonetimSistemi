@@ -35,6 +35,18 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+        [AllowAnonymous]
+        [HttpGet("{countryId}")]
+        public IActionResult GetCityByCountryId(int countryId)
+        {
+            var result = _cityService.GetCityByCountryId(countryId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
 
         [AllowAnonymous]
         [HttpGet("getById")]

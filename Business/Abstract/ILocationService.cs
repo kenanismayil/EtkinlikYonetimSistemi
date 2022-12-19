@@ -12,6 +12,8 @@ namespace Business.Abstract
     {
         IDataResult<List<Location>> GetAll();
         IDataResult<Location> GetById(int locationId);
+
+        IDataResult<List<Location>> GetLocationByCityId(int cityId);
         IResult Add(Location location);
         IResult Delete(string locationId);
         IResult Update(Location location);
