@@ -44,6 +44,19 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [AllowAnonymous]
+        [HttpGet("{cityId}")]
+        public IActionResult GetLocationByCityId(int cityId)
+        {
+            var result = _locationService.GetLocationByCityId(cityId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+
         [Authorize(Roles = "admin, super_admin")]
         [HttpPost("add")]
         public IActionResult Add(Location location)

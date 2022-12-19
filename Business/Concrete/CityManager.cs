@@ -128,6 +128,22 @@ namespace Business.Concrete
             return new SuccessDataResult<City>(result.Data, TurkishMessage.SuccessMessage);
         }
 
+        [CacheAspect]
+
+        public IDataResult<List<City>> GetCityByCountryId(int countryId)
+        {
+            var result = ExceptionHandler.HandleWithReturn<int, List<City>>((int x) =>
+            {
+                return _cityDal.GetAll(c => c.CountryId == x);
+            }, countryId);
+            if (!result.Success)
+            {
+                return new ErrorDataResult<List<City>>(TurkishMessage.ErrorMessage);
+            }
+
+            return new SuccessDataResult<List<City>>(result.Data, TurkishMessage.SuccessMessage);
+        }
+
 
 
 

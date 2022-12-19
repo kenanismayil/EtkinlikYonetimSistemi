@@ -66,8 +66,6 @@ namespace Business.Concrete
         {
             //Business code
 
-
-
             //Central Management System
             var result = ExceptionHandler.HandleWithReturnNoParameter<List<Location>>(() =>
             {
@@ -99,6 +97,21 @@ namespace Business.Concrete
             }
 
             return new SuccessDataResult<Location>(result.Data, TurkishMessage.SuccessMessage);
+        }
+
+        [CacheAspect]
+        public IDataResult<List<Location>> GetLocationByCityId(int cityId)
+        {
+            var result = ExceptionHandler.HandleWithReturn<int, List<Location>>((int x) =>
+            {
+                return _locationDal.GetAll(l => l.CityId == x);
+            }, cityId);
+            if (!result.Success)
+            {
+                return new ErrorDataResult<List<Location>>(TurkishMessage.ErrorMessage);
+            }
+
+            return new SuccessDataResult<List<Location>>(result.Data, TurkishMessage.LocationsListed);
         }
 
 

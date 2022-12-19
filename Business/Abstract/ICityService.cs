@@ -14,6 +14,8 @@ namespace Business.Abstract
     {
         IDataResult<List<City>> GetAll();
         IDataResult<City> GetById(int id);
+
+        IDataResult<List<City>> GetCityByCountryId(int countryId);
         IResult Add(CityRequirements city);
         IResult Delete(string cityId);
         IResult Update(CityRequirements city);
