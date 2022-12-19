@@ -13,6 +13,8 @@ namespace Entities.Concrete
     {
         public int Id { get; set; }
         public int? LocationId { get; set; }
+        public int? CountryId { get; set; }
+        public int? CityId { get; set; }
         public int? UserId { get; set; }
         public int? ActivityTypeId { get; set; }
         public string Title { get; set; }
@@ -29,9 +31,15 @@ namespace Entities.Concrete
         public virtual ActivityType ActivityType { get; set; }
 
         [ForeignKey("LocationId")]
-        public virtual Location Location { get; set; }
+        public virtual DTOs.LocationInfoForActivities Location { get; set; }
+
+        [ForeignKey("CityId")]
+        public virtual City City { get; set; }
+
+        [ForeignKey("CountryId")]
+        public virtual Country Country { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual User User { get; set; }
+        public virtual DTOs.UserInfoForActivities User { get; set; }
     }
 }

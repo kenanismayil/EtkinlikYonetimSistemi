@@ -58,8 +58,10 @@ namespace Business.Concrete
                 Image = activity.Image,
                 LocationId = activity.LocationId,
                 Participiant = activity.Participiant,
-                AppDeadLine = activity.AppDeadLine,
-                ActivityDate = activity.ActivityDate
+                ActivityDate = activity.ActivityDate,
+                CityId = activity.CityId,
+                CountryId = activity.CountryId,
+                CreatedTime = DateTime.Now
             };
 
             IResult result = BusinessRules.Run(CheckIfActivityCountOfTypeCorrect(activityData.ActivityTypeId), 
@@ -113,8 +115,9 @@ namespace Business.Concrete
                 Image = activity.Image,
                 LocationId = activity.LocationId,
                 Participiant = activity.Participiant,
-                AppDeadLine = activity.AppDeadLine,
-                ActivityDate = activity.ActivityDate
+                ActivityDate = activity.ActivityDate,
+                CityId = activity.CityId,
+                CountryId = activity.CountryId
             };
 
             IResult result = BusinessRules.Run(CheckIfActivityCountOfTypeCorrect(activityData.ActivityTypeId),
@@ -152,59 +155,42 @@ namespace Business.Concrete
             return new SuccessResult(TurkishMessage.ActivityDeleted);
         }
 
+       //Cachlemek istediğimiz bir datayı bellekte Key,Value olarak tutuyoruz.
         [CacheAspect]
-        public IDataResult<List<ActivityDetailDto>> GetActivityDetails()
-        {
-            //Business code
-
-
-            //Central Management System
-            var result = ExceptionHandler.HandleWithReturnNoParameter<List<ActivityDetailDto>>(() =>
-            {
-                return _activityDal.GetActivityDetails();
-            });
-            if (!result.Success)
-            {
-                return new ErrorDataResult<List<ActivityDetailDto>>(TurkishMessage.ErrorMessage);
-            }
-
-            return new SuccessDataResult<List<ActivityDetailDto>>(result.Data, TurkishMessage.ActivitiesListed);
-        }
-
-        //Cachlemek istediğimiz bir datayı bellekte Key,Value olarak tutuyoruz.
-        [CacheAspect]
-        public IDataResult<List<Activity>> GetAll()
+        public IDataResult<List<ActivityForView>> GetAll()
         {
             //Business code
 
 
             //Cetnral Management System
-            var result = ExceptionHandler.HandleWithReturnNoParameter<List<Activity>>(() =>
+            var result = ExceptionHandler.HandleWithReturnNoParameter<List<ActivityForView>>(() =>
             {
                 return _activityDal.GetAll();
             });
             if (!result.Success)
             {
-                return new ErrorDataResult<List<Activity>>(TurkishMessage.ErrorMessage);
+                return new ErrorDataResult<List<ActivityForView>>(TurkishMessage.ErrorMessage);
             }
 
-            return new SuccessDataResult<List<Activity>>(result.Data, TurkishMessage.ActivitiesListed);
+            return new SuccessDataResult<List<ActivityForView>>(result.Data, TurkishMessage.ActivitiesListed);
         }
 
         [CacheAspect]
-        public IDataResult<Activity> GetById(int activityId)
+        public IDataResult<ActivityForView> GetById(int activityId)
         {
             //Business code
-            var result = ExceptionHandler.HandleWithReturn<int, Activity>((x) =>
+            var result = ExceptionHandler.HandleWithReturn<int, ActivityForView>((x) =>
             {
-                return _activityDal.Get(a => a.Id == x);
+                var activity = _activityDal.GetById(x);
+                
+                return activity;
             }, activityId);
             if (!result.Success)
             {
-                return new ErrorDataResult<Activity>(TurkishMessage.ErrorMessage);
+                return new ErrorDataResult<ActivityForView>(TurkishMessage.ErrorMessage);
             }
 
-            return new SuccessDataResult<Activity>(result.Data, TurkishMessage.SuccessMessage);
+            return new SuccessDataResult<ActivityForView>(result.Data, TurkishMessage.SuccessMessage);
         }
 
         //public IDataResult<Activity> GetCurrentAttendiesCount(int activityId)
