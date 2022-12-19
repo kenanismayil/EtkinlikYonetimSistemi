@@ -13,7 +13,8 @@ namespace DataAccess.Abstract
     //Veri Erisim Islemini yapacak IActivityDal interface'i olusturdum ve IEntityRepository'e bagladim.
     public interface IActivityDal : IEntityRepository<Activity>
     {
-        List<ActivityDetailDto> GetActivityDetails();
+        List<ActivityForView> GetAll();
+        ActivityForView GetById(int activityId);
         //List<User> GetParticipiantstoActivity(int activityId);
     }
 }
