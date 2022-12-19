@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Business.BusinessAspcets.Autofac;
 using Business.Constants.Messages;
+using Business.Helper;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
@@ -23,25 +24,36 @@ namespace Business.Concrete
     public class RegistrationManager : IRegistrationService
     {
         IRegistrationDal _registrationDal;
+        IAuthHelper _authHelper;
+
         //IActivityService _activityService;
 
 
-        public RegistrationManager(IRegistrationDal registrationDal)
+        public RegistrationManager(IRegistrationDal registrationDal, IAuthHelper authHelper)
         {
             _registrationDal = registrationDal;
+            _authHelper = authHelper;
             //_activityService = activityService;
         }
 
 
         [ValidationAspect(typeof(RegistrationValidator))]
         [CacheRemoveAspect("IRegistrationService.Get")]
-        public IResult Add(RegisterForActivity registration)
+        public IResult Add(string token, int  activityId)
         {
             //Business code
-            //var activityData = _activityService.GetById(registration.Activity.Id);
+            //var activityData = _activityService.GetById(activityId);
 
-            var register = _registrationDal.GetAll(r => r.UserId == registration.UserId && r.ActivityId == registration.ActivityId).Count;
-            if (register >= 1)
+            var currentUser = _authHelper.GetCurrentUser(token).Data;
+            Registration registerForActivity = new Registration()
+            {
+                UserId = currentUser.Id,
+                ActivityId = activityId,
+                Date = DateTime.Now
+            };
+
+            var register = _registrationDal.GetAll(r => r.UserId == registerForActivity.UserId && r.ActivityId == activityId);
+            if (register.Count >= 1)
             {
                 return new ErrorResult("Bir kullanici ayni aktiviteye tekrar kayit yapamaz");
             }
@@ -51,16 +63,18 @@ namespace Business.Concrete
             //    return new ErrorResult("Etkinliğe katılımcı sayısı aşıldığından katılamazsınız");
             //}
 
-            var result = new Registration()
-            {
-                UserId = registration.UserId,
-                ActivityId = registration.ActivityId
-            };
 
 
-            result.Date = DateTime.Now;
-            _registrationDal.Add(result);
             //activityData.Data.Participiant--;
+            _registrationDal.Add(registerForActivity);
+
+
+            //var activity = new ActivityCreatingByAdmin()
+            //{
+            //    UserId 
+            //};
+
+            //_activityService.Update(activityData);
 
             return new SuccessResult(TurkishMessage.RegistrationAdded);
         }

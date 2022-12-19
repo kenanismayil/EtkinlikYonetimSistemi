@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Concrete;
 using Business.DependencyResolvers.Extensions;
+using Business.Helper;
 using Core.Extensions;
 using Core.Utilities.DependencyResolvers.Modules.Abstract;
 using Core.Utilities.DependencyResolvers.Modules.Concrete;
@@ -44,6 +45,8 @@ namespace WebAPI
             //Extensions classina ait AddCustomsServices methodunu services'le Startup'da ConfigureService icinden cagirdim.
             services.AddCustomsServices();
 
+            services.AddMvc();
+
             services.AddControllers();
 
             services.AddCors(options =>
@@ -56,6 +59,12 @@ namespace WebAPI
             });
 
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+
+            //ITempDataDictionaryFactory
+
+            services.AddSingleton<IAuthHelper, AuthHelper>();
+
+
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -71,6 +80,7 @@ namespace WebAPI
                         IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
                     };
                 });
+
 
 
             services.AddAuthorization(options =>

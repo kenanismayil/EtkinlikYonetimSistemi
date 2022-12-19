@@ -15,7 +15,7 @@ namespace Business.Abstract
         IDataResult<List<Registration>> GetAll();
         IDataResult<List<Registration>> GetAllForFilter(Expression<Func<Registration, bool>> filter);
         IDataResult<Registration> GetById(int id);
-        IResult Add(RegisterForActivity registration);
+        IResult Add(string token, int activityId);
         IResult Delete(RegisterForActivity registration);
         //IResult DeleteAll(Expression<Func<Registration, bool>> filter);
         IResult Update(RegisterForActivity registration);

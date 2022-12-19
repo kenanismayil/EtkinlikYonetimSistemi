@@ -67,6 +67,8 @@ namespace Business.DependencyResolvers.Extensions
             //Auth icin IoC Container
             services.AddSingleton<IAuthService, AuthManager>();
 
+
+
             //JWT icin IoC Container
             services.AddSingleton<ITokenHelper, JwtHelper>();
 

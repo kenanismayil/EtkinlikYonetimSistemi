@@ -1,7 +1,9 @@
 ﻿using Business.Abstract;
+using Business.Helper;
 using Core.Entities.Concrete;
 using Entities.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,15 +18,17 @@ namespace WebAPI.Controllers
     {
         private IAuthService _authService;
         private IUserService _userService;
+        private IAuthHelper _authHelper;
 
 
-        public AuthController(IAuthService authService, IUserService userService)
+        public AuthController(IAuthService authService, IUserService userService, IAuthHelper authHelper)
         {
             _authService = authService;
             _userService = userService;
+            _authHelper = authHelper;
         }
 
-        [HttpPost("login")]
+        [HttpPost]
         public ActionResult Login(UserForLoginDto userForLoginDto)
         {
             var userToLogin = _authService.Login(userForLoginDto);
@@ -34,17 +38,20 @@ namespace WebAPI.Controllers
             }
 
             var result = _authService.CreateAccessToken(userToLogin.Data);
+            var claims = _authHelper.GetCurrentUser(result.Data.Token);
+
             var model = new AuthorizationModel()
             {
                 Token = result.Data.Token,
                 User = _userService.GetUserForView(userToLogin.Data).Data
             };
 
+            TempData["token"] = result.Data.Token;
+
             if (result.Success)
             {
                 return Ok(model);
             }
-
 
             return BadRequest(result.Message);
         }

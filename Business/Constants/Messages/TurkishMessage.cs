@@ -23,6 +23,8 @@ namespace Business.Constants.Messages
         public static string SuccessfulLogin = "Başarılı giriş";
         public static string UserAlreadyExists = "Kullanıcı mevcut";
         public static string AccessTokenCreated = "Token oluşturuldu";
+        public static string TokenIsExpired = "Token zaman aşımına uğradı.";
+
 
         //Activity magic string
         public static string ActivityAdded = "Aktivite eklendi";
@@ -54,13 +56,6 @@ namespace Business.Constants.Messages
         public static string UserDetailListed = "Kullanıcı detayı listelendi";
         public static string UserRoleUpdatedBySuperAdmin = "Kullanıcı rol bilgisi super admin tarafından güncellendi";
 
-        //Moderator magic string
-        //public static string ModeratorAdded = "Moderator eklendi";
-        //public static string ModeratorDeleted = "Moderator silindi";
-        //public static string ModeratorUpdated = "Moderator guncellendi";
-        //public static string ModeratorsListed = "Moderator listelendi";
-        //public static string ModeratorNamesListed = "Moderator isimleri listelendi";
-        //public static string ModeratorNameInvalid = "Moderator ismi gecersiz";
 
         //Certificate magic string
         public static string CertificateAdded = "Sertifika yapildi";

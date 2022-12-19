@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Helper;
 using Entities.Concrete;
 using Entities.DTOs;
 using Microsoft.AspNetCore.Authorization;
@@ -16,11 +17,13 @@ namespace WebAPI.Controllers
     public class RegistrationsController : Controller
     {
         IRegistrationService _registrationService;        //interface'ler referans tutar.
+        IAuthHelper _authHelper;
 
         //IoC Container
-        public RegistrationsController(IRegistrationService registrationService)
+        public RegistrationsController(IRegistrationService registrationService, IAuthHelper authHelper)
         {
             _registrationService = registrationService;
+            _authHelper = authHelper;
         }
 
         [Authorize(Roles = "super_admin")]
@@ -61,11 +64,15 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        //requestin headerindeki tokeni alma 
+
 
         [HttpPost("add")]
-        public IActionResult Add(RegisterForActivity registration)
+        public IActionResult Add(string token, int activityId)
         {
-            var result = _registrationService.Add(registration);
+
+
+            var result = _registrationService.Add(token, activityId);
             if (result.Success)
             {
                 return Ok(result);

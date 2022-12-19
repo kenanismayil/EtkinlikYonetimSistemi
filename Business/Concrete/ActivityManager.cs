@@ -32,14 +32,13 @@ namespace Business.Concrete
         IActivityDal _activityDal;
         IActivityTypeService _activityTypeService;  //aktivite tipi tablosunu ilgilendiren bir kural olduğu için bu servisi enjekte deriz, Dal'ı değil!
         IUserService _userService;
-        IRegistrationService _registrationService;
-        public ActivityManager(IActivityDal activityDal, IActivityTypeService activityTypeService, IUserService userService,
-            IRegistrationService registrationService)
+        //IRegistrationService _registrationService;
+        public ActivityManager(IActivityDal activityDal, IActivityTypeService activityTypeService, IUserService userService)
         {
             _activityDal = activityDal;
             _activityTypeService = activityTypeService;
             _userService = userService;
-            _registrationService = registrationService;
+            //_registrationService = registrationService;
         }
 
         //Validation -> Add metotunu ActivityValidator'daki kurallara göre doğrulanması

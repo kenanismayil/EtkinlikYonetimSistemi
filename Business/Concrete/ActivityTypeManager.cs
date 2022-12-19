@@ -40,18 +40,6 @@ namespace Business.Concrete
 
             _activityTypeDal.Add(activityType);
             return new SuccessResult(TurkishMessage.ActivityTypeAdded);
-
-
-            //var result = ExceptionHandler.HandleWithNoReturn(() =>
-            //{
-            //    _activityTypeDal.Add(activityType);
-            //});
-            //if (!result)
-            //{
-            //    return new ErrorResult(TurkishMessage.ErrorMessage);
-            //}
-
-            //return new SuccessResult(TurkishMessage.ActivityTypeAdded);
         }
 
         [CacheRemoveAspect("IActivityTypeService.Get")]
