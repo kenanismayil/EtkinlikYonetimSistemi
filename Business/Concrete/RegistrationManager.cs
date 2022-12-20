@@ -171,6 +171,29 @@ namespace Business.Concrete
             return new SuccessDataResult<Registration>(result.Data, TurkishMessage.SuccessMessage);
         }
 
+        public IDataResult<UserRegisterInfo> GetRegisterInfo(int activityId, string token)
+        {
+            var currentUser = _authHelper.GetCurrentUser(token).Data;
+            var isRegister = _registrationDal.Get(r => r.UserId == currentUser.Id && r.ActivityId == activityId);
+
+            if (isRegister != null)
+            {
+                return new SuccessDataResult<UserRegisterInfo>(new UserRegisterInfo()
+                {
+                    IsRegistered = true,
+                    UserId = currentUser.Id,
+                    ActivityId = activityId,
+                });
+            }
+
+            return new SuccessDataResult<UserRegisterInfo>(new UserRegisterInfo()
+            {
+                IsRegistered = false,
+                UserId = currentUser.Id,
+                ActivityId = activityId,
+            });
+        }
+
 
         //İŞ KURALLARI
         //private IResult CheckIfUserLimitsExceeded(int userId, int activityId)
