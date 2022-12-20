@@ -96,8 +96,6 @@ namespace Business.Concrete
         {
             //Business code
 
-
-
             //Central Management System
             var result = ExceptionHandler.HandleWithReturnNoParameter<List<Comment>>(() =>
             {
@@ -111,23 +109,22 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Comment>>(result.Data, TurkishMessage.CommentsListed);
         }
 
-        public IDataResult<Comment> GetById(int commentId)
+        public IDataResult<List<CommentForView>> GetByActivityId(int activityId)
         {
             //Business code
 
-
-
             //Central Management System
-            var result = ExceptionHandler.HandleWithReturn<int, Comment>((int x) =>
+            var result = ExceptionHandler.HandleWithReturn<int, List<CommentForView>>((int x) =>
             {
-                return _commentDal.Get(c => c.Id == x);
-            }, commentId);
+                return _commentDal.GetByActivityId(x);
+            }, activityId);
+
             if (!result.Success)
             {
-                return new ErrorDataResult<Comment>(TurkishMessage.ErrorMessage);
+                return new ErrorDataResult<List<CommentForView>>(TurkishMessage.ErrorMessage);
             }
 
-            return new SuccessDataResult<Comment>(result.Data, TurkishMessage.SuccessMessage);
+            return new SuccessDataResult<List<CommentForView>>(result.Data, TurkishMessage.SuccessMessage);
         }
     }
 }

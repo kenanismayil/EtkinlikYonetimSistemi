@@ -13,7 +13,8 @@ namespace Business.Abstract
     public interface ICommentService
     {
         IDataResult<List<Comment>> GetAll();
-        IDataResult<Comment> GetById(int commentId);
+        // IDataResult<Comment> GetById(int commentId);
+        IDataResult<List<CommentForView>> GetByActivityId(int activityId);
         IResult Add(CommentForUser comment);
         IResult Delete(string commentId);
         IResult Update(CommentForUser comment);

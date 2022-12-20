@@ -37,17 +37,19 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+
         [AllowAnonymous]
-        [HttpGet("getById")]
-        public IActionResult GetById(int id)
+        [HttpGet("")]
+        public IActionResult GetByActivityId(int activityId)
         {
-            var result = _commentService.GetById(id);
+            var result = _commentService.GetByActivityId(activityId);
             if (result.Success)
             {
                 return Ok(result);
             }
             return BadRequest(result);
         }
+
 
         [HttpPost("add")]
         public IActionResult Add(CommentForUser comment)
