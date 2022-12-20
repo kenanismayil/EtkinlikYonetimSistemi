@@ -26,14 +26,14 @@ namespace Business.Concrete
         IRegistrationDal _registrationDal;
         IAuthHelper _authHelper;
 
-        //IActivityService _activityService;
+        IActivityService _activityService;
 
 
-        public RegistrationManager(IRegistrationDal registrationDal, IAuthHelper authHelper)
+        public RegistrationManager(IRegistrationDal registrationDal, IAuthHelper authHelper, IActivityService activityService)
         {
             _registrationDal = registrationDal;
             _authHelper = authHelper;
-            //_activityService = activityService;
+            _activityService = activityService;
         }
 
 
@@ -57,6 +57,18 @@ namespace Business.Concrete
             {
                 return new ErrorResult("Bir kullanici ayni aktiviteye tekrar kayit yapamaz");
             }
+
+            var activity = _activityService.GetById(activityId).Data;
+            if (activity.Participiant == 0)
+            {
+                return new ErrorResult("Etkinliğe katılımcı sayısı aşıldığından katılamazsınız");
+            }
+
+            var newParticipiant = activity.Participiant - 1;
+            _activityService.UpdateParticipiant(activityId, newParticipiant);
+            
+
+
 
             //if (activityData.Data.Participiant == 0)
             //{
@@ -94,6 +106,10 @@ namespace Business.Concrete
                 return new ErrorResult(TurkishMessage.ErrorMessage);
             }
 
+            var activity = _activityService.GetById(registration.ActivityId).Data;
+            var newParticipiant = activity.Participiant + 1;
+            _activityService.UpdateParticipiant(registration.ActivityId, newParticipiant);
+            
             return new SuccessResult(TurkishMessage.RegistrationDeleted);
         }
 

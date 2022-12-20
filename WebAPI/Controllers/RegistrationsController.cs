@@ -2,6 +2,7 @@
 using Business.Helper;
 using Entities.Concrete;
 using Entities.DTOs;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -68,9 +69,10 @@ namespace WebAPI.Controllers
 
 
         [HttpPost("add")]
-        public IActionResult Add(string token, int activityId)
+        [Authorize]
+        public IActionResult Add(int activityId)
         {
-
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
 
             var result = _registrationService.Add(token, activityId);
             if (result.Success)

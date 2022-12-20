@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ActivityContext))]
-    [Migration("20221215184610_UpdateActivity2")]
-    partial class UpdateActivity2
+    [Migration("20221220121708_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -90,26 +90,35 @@ namespace DataAccess.Migrations
                     b.Property<DateTime>("ActivityDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ActivityName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("ActivityTypeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("AppDeadLine")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CountryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("LocationId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MaxParticipiants")
-                        .HasColumnType("int");
-
                     b.Property<int>("Participiant")
                         .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
@@ -117,6 +126,10 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ActivityTypeId");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("CountryId");
 
                     b.HasIndex("LocationId");
 
@@ -288,6 +301,14 @@ namespace DataAccess.Migrations
                         .WithMany()
                         .HasForeignKey("ActivityTypeId");
 
+                    b.HasOne("Entities.Concrete.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId");
+
+                    b.HasOne("Entities.Concrete.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId");
+
                     b.HasOne("Entities.Concrete.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId");
@@ -297,6 +318,10 @@ namespace DataAccess.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("ActivityType");
+
+                    b.Navigation("City");
+
+                    b.Navigation("Country");
 
                     b.Navigation("Location");
 

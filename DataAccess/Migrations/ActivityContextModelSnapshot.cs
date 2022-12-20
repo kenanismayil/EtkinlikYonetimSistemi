@@ -94,6 +94,12 @@ namespace DataAccess.Migrations
                     b.Property<DateTime>("AppDeadLine")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CountryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
@@ -118,6 +124,10 @@ namespace DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ActivityTypeId");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("CountryId");
 
                     b.HasIndex("LocationId");
 
@@ -242,6 +252,8 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
                     b.ToTable("Locations");
                 });
 
@@ -287,6 +299,14 @@ namespace DataAccess.Migrations
                         .WithMany()
                         .HasForeignKey("ActivityTypeId");
 
+                    b.HasOne("Entities.Concrete.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId");
+
+                    b.HasOne("Entities.Concrete.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId");
+
                     b.HasOne("Entities.Concrete.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId");
@@ -296,6 +316,10 @@ namespace DataAccess.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("ActivityType");
+
+                    b.Navigation("City");
+
+                    b.Navigation("Country");
 
                     b.Navigation("Location");
 
@@ -333,6 +357,15 @@ namespace DataAccess.Migrations
                     b.Navigation("Activity");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Entities.Concrete.Location", b =>
+                {
+                    b.HasOne("Entities.Concrete.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId");
+
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("Entities.Concrete.Registration", b =>

@@ -66,7 +66,8 @@ namespace WebAPI.Controllers
         [HttpPost("add")]
         public IActionResult Add(ActivityCreatingByAdmin activity)
         {
-            var result = _activityService.Add(activity);
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var result = _activityService.Add(activity, token);
             if (result.Success)
             {
                 return Ok(result);
@@ -102,7 +103,8 @@ namespace WebAPI.Controllers
         [HttpPut("update")]
         public IActionResult Update(ActivityCreatingByAdmin activity)
         {
-            var result = _activityService.Update(activity);
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var result = _activityService.Update(activity, token);
             if (result.Success)
             {
                 return Ok(result);

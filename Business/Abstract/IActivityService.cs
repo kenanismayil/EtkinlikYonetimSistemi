@@ -17,9 +17,10 @@ namespace Business.Abstract
         IDataResult<ActivityForView> GetById(int activityId);
         //IDataResult<List<User>> GetParticipiants(int activityId);
         //IDataResult<int> GetMaxUserCount(int activityId);
-        IResult Add(ActivityCreatingByAdmin activity);
+        IResult Add(ActivityCreatingByAdmin activity, string token);
         IResult Delete(string activityId);
         IResult DeleteAll(Expression<Func<Activity, bool>> filter);
-        IResult Update(ActivityCreatingByAdmin activity);
+        IResult Update(ActivityCreatingByAdmin activity, string token);
+        IResult UpdateParticipiant(int activityId, int participiant);
     }
 }
