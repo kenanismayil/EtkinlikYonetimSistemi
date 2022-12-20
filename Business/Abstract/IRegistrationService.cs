@@ -13,8 +13,8 @@ namespace Business.Abstract
     public interface IRegistrationService
     {
         IDataResult<List<Registration>> GetAll();
-        IDataResult<List<Registration>> GetAllForFilter(Expression<Func<Registration, bool>> filter);
-        IDataResult<Registration> GetById(int id);
+        
+        IDataResult<UserRegisterInfo> GetRegisterInfo(int activityId, string token);
         IResult Add(string token, int activityId);
         IResult Delete(RegisterForActivity registration);
         //IResult DeleteAll(Expression<Func<Registration, bool>> filter);

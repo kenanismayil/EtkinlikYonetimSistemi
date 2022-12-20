@@ -40,28 +40,17 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "super_admin")]
-        [HttpGet("getAllForFilter")]
-        public IActionResult GetAllForFilter(Expression<Func<Registration, bool>> filter)
+        [Authorize]
+        [HttpGet("{activityId}")]
+        public IActionResult GetRegisterInfo(int activityId)
         {
-            var result = _registrationService.GetAllForFilter(filter);
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var result = _registrationService.GetRegisterInfo(activityId, token);
             if (result.Success)
             {
                 return Ok(result);
             }
 
-            return BadRequest(result);
-        }
-
-        [Authorize(Roles = "super_admin")]
-        [HttpGet("getById")]
-        public IActionResult GetById(int id)
-        {
-            var result = _registrationService.GetById(id);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
             return BadRequest(result);
         }
 
@@ -95,15 +84,6 @@ namespace WebAPI.Controllers
         }
 
 
-        [HttpPut("update")]
-        public IActionResult Update(RegisterForActivity registration)
-        {
-            var result = _registrationService.Update(registration);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
+        
     }
 }
