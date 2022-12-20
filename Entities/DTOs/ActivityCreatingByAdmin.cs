@@ -8,6 +8,7 @@ namespace Entities.DTOs
 {
     public class ActivityCreatingByAdmin
     {
+        public int Id { get; set; }
         public int ActivityTypeId { get; set; }
         public int LocationId { get; set; }
         public int CityId { get; set; }

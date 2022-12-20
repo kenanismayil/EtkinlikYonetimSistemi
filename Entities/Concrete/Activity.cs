@@ -31,7 +31,7 @@ namespace Entities.Concrete
         public virtual ActivityType ActivityType { get; set; }
 
         [ForeignKey("LocationId")]
-        public Location Location { get; set; }
+        public virtual Location Location { get; set; }
 
         [ForeignKey("CityId")]
         public virtual City City { get; set; }
@@ -40,6 +40,6 @@ namespace Entities.Concrete
         public virtual Country Country { get; set; }
 
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public virtual User User { get; set; }
     }
 }

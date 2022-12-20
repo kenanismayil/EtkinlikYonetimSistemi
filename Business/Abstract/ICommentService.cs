@@ -15,8 +15,8 @@ namespace Business.Abstract
         IDataResult<List<Comment>> GetAll();
         // IDataResult<Comment> GetById(int commentId);
         IDataResult<List<CommentForView>> GetByActivityId(int activityId);
-        IResult Add(CommentForUser comment);
+        IResult Add(CommentForUser comment, string token);
         IResult Delete(string commentId);
-        IResult Update(CommentForUser comment);
+        IResult Update(CommentForUser comment, string token);
     }
 }

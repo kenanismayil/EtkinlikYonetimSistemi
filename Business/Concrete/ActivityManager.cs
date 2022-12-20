@@ -54,6 +54,7 @@ namespace Business.Concrete
             //Business codes -> Polymorphism yaptım.
             var activityData = new Activity()
             {
+                Id = activity.Id,
                 UserId = currentUserId,
                 ActivityTypeId = activity.ActivityTypeId,
                 Title = activity.Title,

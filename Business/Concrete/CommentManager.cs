@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants.Messages;
+using Business.Helper;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.ExceptionHandle;
@@ -19,18 +20,21 @@ namespace Business.Concrete
     public class CommentManager : ICommentService 
     {
         ICommentDal _commentDal;
-        public CommentManager(ICommentDal commentDal)
+        IAuthHelper _authHelper;
+        public CommentManager(ICommentDal commentDal, IAuthHelper authHelper)
         {
             _commentDal = commentDal;
+            _authHelper = authHelper;
         }
 
         [ValidationAspect(typeof(CommentValidator))]
-        public IResult Add(CommentForUser comment)
+        public IResult Add(CommentForUser comment, string token)
         {
             //Business code
+            var currentUserId = _authHelper.GetCurrentUser(token).Data.Id;
             var commentData = new Comment()
             {
-                UserId = comment.UserId,
+                UserId = currentUserId,
                 ActivityId = comment.ActivityId,
                 Content = comment.Content
             };
@@ -68,13 +72,15 @@ namespace Business.Concrete
         }
 
         [ValidationAspect(typeof(CommentValidator))]
-        public IResult Update(CommentForUser comment)
+        public IResult Update(CommentForUser comment, string token)
         {
             //Business code
+            var currentUserId = _authHelper.GetCurrentUser(token).Data.Id;
+
             var commentData = new Comment()
             {
                 Id = comment.Id,
-                UserId = comment.UserId,
+                UserId = currentUserId,
                 ActivityId = comment.ActivityId,
                 Content = comment.Content
             };

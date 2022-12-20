@@ -52,9 +52,12 @@ namespace WebAPI.Controllers
 
 
         [HttpPost("add")]
+        [Authorize]
         public IActionResult Add(CommentForUser comment)
         {
-            var result = _commentService.Add(comment);
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = _commentService.Add(comment, token);
             if (result.Success)
             {
                 return Ok(result);
@@ -63,6 +66,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("delete")]
+        [Authorize]
         public IActionResult Delete(string commentId)
         {
             var result = _commentService.Delete(commentId);
@@ -74,9 +78,12 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize]
         public IActionResult Update(CommentForUser comment)
         {
-            var result = _commentService.Update(comment);
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = _commentService.Update(comment, token);
             if (result.Success)
             {
                 return Ok(result);
