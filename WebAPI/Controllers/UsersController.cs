@@ -51,6 +51,7 @@ namespace WebAPI.Controllers
 
 
         [HttpPut("update")]
+        [Authorize]
         public IActionResult Update(UserForInfoChange user)
         {
             var result = _userService.Update(user);
@@ -74,6 +75,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("changePassword")]
+        [Authorize]
         public IActionResult ChangePassword(UserForPasswordChange user)
         {
             var result = _userService.ChangePassword(user.Id, user.oldPassword, user.newPassword);
@@ -98,6 +100,7 @@ namespace WebAPI.Controllers
 
 
         [HttpGet("getClaims")]
+        [Authorize]
         public IActionResult GetClaim(User user)
         {
             var result = _userService.GetClaim(user);
@@ -110,6 +113,7 @@ namespace WebAPI.Controllers
 
 
         [HttpGet("getUserForView")]
+        [Authorize]
         public IActionResult GetUserForView(User user)
         {
             var result = _userService.GetUserForView(user);
