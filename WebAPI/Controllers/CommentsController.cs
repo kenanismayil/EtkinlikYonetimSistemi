@@ -13,7 +13,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin, super_admin")]
+    [Authorize(Roles = "admin, super_admin, user")]
     public class CommentsController : Controller
     {
         ICommentService _commentService;        //interface'ler referans tutar.
