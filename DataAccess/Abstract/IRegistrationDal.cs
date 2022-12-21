@@ -13,6 +13,9 @@ namespace DataAccess.Abstract
     public interface IRegistrationDal : IEntityRepository<Registration>
     {
         List<UserRegisteredEventsInfo> GetRegisteredEvents(int userId);
+        UserInfoForBarcodeReaderPerson GetUserByPnrNo(string pnrNo);
+        UserInfoForBarcodeReaderPerson UpdateUserStatusOnEventArea(string pnrNo);
+        
 
     }
 }

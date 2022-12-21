@@ -14,13 +14,13 @@ namespace Entities.Concrete
         public int Id { get; set; }
         //public int? UserId { get; set; }
         public int? ActivityId { get; set; }
-        public string CertificateName { get; set; }
+        public int? UserId { get; set; }
         public DateTime GivenDate { get; set; }
         public DateTime ExpiryDate { get; set; }
 
         //Foreign Key
-        //[ForeignKey("UserId")]
-        //public User User { get; set; }
+        [ForeignKey("UserId")]
+        public User User { get; set; }
 
         [ForeignKey("ActivityId")]
         public virtual Activity Activity { get; set; }

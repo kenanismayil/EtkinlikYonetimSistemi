@@ -74,6 +74,7 @@ namespace Business.Constants.Messages
         public static string RegistrationNameInvalid = "Kayıt ismi gecersiz";
         public static string RegistrationListed = "Kayıtlar listelendi";
         public static string RegistrationDateListed = "Kayıt tarihleri listelendi";
+        public static string UserAlreadyOnEventArea = "Kullanıcı zaten etkinlik alanına giriş yapmış";
 
         //City magic string
         public static string CityAdded = "Şehir eklendi";

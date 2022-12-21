@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,15 +40,17 @@ namespace Business.Concrete
 
         [ValidationAspect(typeof(RegistrationValidator))]
         [CacheRemoveAspect("IRegistrationService.Get")]
-        public IResult Add(string token, int  activityId)
+        public IResult Add(string token, int activityId)
         {
             //Business code
             var currentUser = _authHelper.GetCurrentUser(token).Data;
+
             Registration registerForActivity = new Registration()
             {
                 UserId = currentUser.Id,
                 ActivityId = activityId,
-                Date = DateTime.Now
+                Date = DateTime.Now,
+                PnrNo = RandomNumberGenerator.Create().GetHashCode().ToString()
             };
 
             var register = _registrationDal.GetAll(r => r.UserId == registerForActivity.UserId && r.ActivityId == activityId);
@@ -208,6 +211,53 @@ namespace Business.Concrete
             }
 
             return new SuccessDataResult<List<UserRegisteredEventsInfo>>(result.Data, TurkishMessage.SuccessMessage);
+        }
+
+        public IDataResult<UserInfoForBarcodeReaderPerson> GetUserByPnrNo(string pnrNo)
+        {
+            var result = ExceptionHandler.HandleWithReturn<string, UserInfoForBarcodeReaderPerson>((string x) =>
+            {
+                return _registrationDal.GetUserByPnrNo(x);
+            }, pnrNo);
+
+            if (!result.Success || result.Data == null)
+            {
+                return new ErrorDataResult<UserInfoForBarcodeReaderPerson>(TurkishMessage.ErrorMessage);
+            }
+
+            if (result.Data.isUserOnEventPlace)
+            {
+                return new ErrorDataResult<UserInfoForBarcodeReaderPerson>(TurkishMessage.UserAlreadyOnEventArea);
+            }
+
+            return new SuccessDataResult<UserInfoForBarcodeReaderPerson>(result.Data, TurkishMessage.SuccessMessage);
+        }
+        public IDataResult<UserInfoForBarcodeReaderPerson> UpdateUserStatusOnEventArea(string pnrNo)
+        {
+            var result = ExceptionHandler.HandleWithReturn<string, UserInfoForBarcodeReaderPerson>((string x) =>
+            {
+                var info = _registrationDal.GetUserByPnrNo(x);
+                info.isUserOnEventPlace = true;
+
+                return info;
+            }, pnrNo);
+
+            if (!result.Success || result.Data == null)
+            {
+                return new ErrorDataResult<UserInfoForBarcodeReaderPerson>(TurkishMessage.ErrorMessage);
+            }
+
+            var updateRegistration = _registrationDal.Get(r => r.PnrNo == pnrNo);
+            if (updateRegistration.isUserOnEventPlace)
+            {
+                return new ErrorDataResult<UserInfoForBarcodeReaderPerson>(TurkishMessage.UserAlreadyOnEventArea);
+            }
+            
+            updateRegistration.isUserOnEventPlace = true;
+
+            _registrationDal.Update(updateRegistration);
+
+            return new SuccessDataResult<UserInfoForBarcodeReaderPerson>(result.Data, TurkishMessage.SuccessMessage);
         }
 
 
