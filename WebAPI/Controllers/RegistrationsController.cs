@@ -53,6 +53,22 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+
+
+        [Authorize(Roles = "super_admin")]
+        [HttpGet("userId")]
+        public IActionResult GetRegisterInfoByUserId(int userId)
+        {
+            //var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var result = _registrationService.GetRegisterInfoByUserId(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+
         [Authorize]
         [HttpGet("user")]
         public IActionResult GetRegisteredEvents()

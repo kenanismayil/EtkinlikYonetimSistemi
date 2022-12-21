@@ -156,7 +156,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Registration>>(TurkishMessage.ActivityDeleted);
         }
 
-        public IDataResult<Registration> GetById(int id)
+        public IDataResult<Registration> GetRegisterInfoByUserId(int userId)
         {
             //Business code
 
@@ -164,8 +164,8 @@ namespace Business.Concrete
             //Central Management System
             var result = ExceptionHandler.HandleWithReturn<int, Registration>((int x) =>
             {
-                return _registrationDal.Get(r => r.Id == x);
-            }, id);
+                return _registrationDal.Get(r => r.UserId == x);
+            }, userId);
             if (!result.Success)
             {
                 return new ErrorDataResult<Registration>(TurkishMessage.ErrorMessage);

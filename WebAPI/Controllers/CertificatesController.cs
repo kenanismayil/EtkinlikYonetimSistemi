@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,7 +16,7 @@ namespace WebAPI.Controllers
     [Authorize(Roles = "admin, super_admin")]
     public class CertificatesController : Controller
     {
-        ICertificateService _certificateService;        //interface'ler referans tutar.
+        ICertificateService _certificateService;        //interface'ler referans tutar.      
 
         //IoC Container
         public CertificatesController(ICertificateService certificateService)
@@ -37,10 +38,10 @@ namespace WebAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("getById")]
-        public IActionResult GetById(int id)
+        [HttpGet("getByCertificateId")]
+        public IActionResult GetByCertificateId(int certificateId)
         {
-            var result = _certificateService.GetById(id);
+            var result = _certificateService.GetByCertificateId(certificateId);
             if (result.Success)
             {
                 return Ok(result);
@@ -48,10 +49,22 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        //[AllowAnonymous]
+        //[HttpGet("getByCertificateId")]
+        //public IActionResult GetByUserId(int userId)
+        //{
+        //    var result = _certificateService.GetByUserId(userId);
+        //    if (result.Success)
+        //    {
+        //        return Ok(result);
+        //    }
+        //    return BadRequest(result);
+        //}
+
         [HttpPost("add")]
-        public IActionResult Add(Certificate certificate)
+        public IActionResult Add(CertificateForView certificate, string pnrNo)
         {
-            var result = _certificateService.Add(certificate);
+            var result = _certificateService.Add(certificate, pnrNo);
             if (result.Success)
             {
                 return Ok(result);
@@ -60,20 +73,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("delete")]
-        public IActionResult Delete(Certificate certificate)
+        public IActionResult Delete(int certificateId)
         {
-            var result = _certificateService.Delete(certificate);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
-        [HttpDelete("deleteAll")]
-        public IActionResult DeleteAll(Expression<Func<Certificate, bool>> filter)
-        {
-            var result = _certificateService.DeleteAll(filter);
+            var result = _certificateService.Delete(certificateId);
             if (result.Success)
             {
                 return Ok(result);
@@ -82,7 +84,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("update")]
-        public IActionResult Update(Certificate certificate)
+        public IActionResult Update(CertificateForView certificate)
         {
             var result = _certificateService.Update(certificate);
             if (result.Success)

@@ -60,6 +60,7 @@ namespace DataAccess.Concrete.EntityFramework
                     Id = x.reg.Id,
                     UserId = x.reg.User.Id,
                     ActivityId = x.reg.Activity.Id,
+                    PnrNo = x.reg.PnrNo,
                     Date = x.reg.Date,
                     Activity = x.act
                 }).ToList();

@@ -83,7 +83,7 @@ namespace ConsoleUI
 
 
 
-            CommentManager commentManager = new CommentManager(new EfCommentDal());
+            //CommentManager commentManager = new CommentManager(new EfCommentDal());
             //Comment comment = new Comment
             //{
             //    UserId = 1,

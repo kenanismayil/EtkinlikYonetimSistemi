@@ -13,8 +13,8 @@ namespace Business.Abstract
     public interface IRegistrationService
     {
         IDataResult<List<Registration>> GetAll();
-        
         IDataResult<UserRegisterInfo> GetRegisterInfo(int activityId, string token);
+        IDataResult<Registration> GetRegisterInfoByUserId(int userId);
         IDataResult<List<UserRegisteredEventsInfo>> GetRegisteredEvents(string token);
         IDataResult<UserInfoForBarcodeReaderPerson> GetUserByPnrNo(string pnrNo);
         IDataResult<UserInfoForBarcodeReaderPerson> UpdateUserStatusOnEventArea(string pnrNo);

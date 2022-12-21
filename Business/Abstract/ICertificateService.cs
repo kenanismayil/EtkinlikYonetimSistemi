@@ -1,5 +1,6 @@
 ﻿using Core.Utilities.Results.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,10 @@ namespace Business.Abstract
     public interface ICertificateService
     {
         IDataResult<List<Certificate>> GetAll();
-        IDataResult<Certificate> GetById(int id);
-        IResult Add(Certificate certificate);
-        IResult Delete(Certificate certificate);
-        IResult DeleteAll(Expression<Func<Certificate, bool>> filter);
-        IResult Update(Certificate certificate);
+        IDataResult<Certificate> GetByCertificateId(int certificateId);
+        //IDataResult<Certificate> GetByUserId(int userId);
+        IResult Add(CertificateForView certificate, string pnrNo);
+        IResult Delete(int certificateId);
+        IResult Update(CertificateForView certificate);
     }
 }
