@@ -67,6 +67,32 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize]
+        [HttpGet("pnr")]
+        public IActionResult GetUserByPnrNo(string pnrNo)
+        {
+            var result = _registrationService.GetUserByPnrNo(pnrNo);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+
+        [Authorize]
+        [HttpPut("pnr")]
+        public IActionResult UpdateUserStatusOnEventArea(string pnrNo)
+        {
+            var result = _registrationService.UpdateUserStatusOnEventArea(pnrNo);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+
         //requestin headerindeki tokeni alma 
 
 

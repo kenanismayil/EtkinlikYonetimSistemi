@@ -67,5 +67,50 @@ namespace DataAccess.Concrete.EntityFramework
                 return result;
             }
         }
+
+        public UserInfoForBarcodeReaderPerson GetUserByPnrNo(string pnrNo)
+        {
+            using (var context = new ActivityContext())
+            {
+
+                var result = context.Registrations.Where(x => x.PnrNo == pnrNo).Select(x => new UserInfoForBarcodeReaderPerson
+                {
+                    Id = x.Id,
+                    User = new UserInfoForActivities
+                    {
+                        Id = x.User.Id,
+                        FirstName = x.User.FirstName,
+                        LastName = x.User.LastName,
+                        Image = x.User.UserPhoto,
+                        Role = x.User.RoleType.RoleName
+                    },
+                    isUserOnEventPlace = x.isUserOnEventPlace
+                }).FirstOrDefault();
+
+                return result;
+            }
+        }
+
+        public UserInfoForBarcodeReaderPerson UpdateUserStatusOnEventArea(string pnrNo)
+        {
+            using (var context = new ActivityContext())
+            {
+                var result = context.Registrations.Where(x => x.PnrNo == pnrNo).Select(x => new UserInfoForBarcodeReaderPerson
+                {
+                    Id = x.Id,
+                    User = new UserInfoForActivities
+                    {
+                        Id = x.User.Id,
+                        FirstName = x.User.FirstName,
+                        LastName = x.User.LastName,
+                        Image = x.User.UserPhoto,
+                        Role = x.User.RoleType.RoleName
+                    },
+                    isUserOnEventPlace = true
+                }).FirstOrDefault();
+
+                return result;
+            }
+        }
     }
 }

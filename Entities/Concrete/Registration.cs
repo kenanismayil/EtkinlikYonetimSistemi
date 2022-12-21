@@ -12,6 +12,9 @@ namespace Entities.Concrete
     public class Registration : IEntity
     {
         public int Id { get; set; }
+        public string PnrNo { get; set; }
+
+        public bool isUserOnEventPlace { get; set; } = false;
         public int? UserId { get; set; }
         public int? ActivityId { get; set; }
         public DateTime Date { get; set; }
