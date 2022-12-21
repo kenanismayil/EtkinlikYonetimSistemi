@@ -64,7 +64,7 @@ namespace Business.Concrete
 
             var newParticipiant = activity.Participiant - 1;
             _activityService.UpdateParticipiant(activityId, newParticipiant);
-            
+
             _registrationDal.Add(registerForActivity);
             return new SuccessResult(TurkishMessage.RegistrationAdded);
         }
@@ -115,7 +115,7 @@ namespace Business.Concrete
             var activity = _activityService.GetById(registration.ActivityId).Data;
             var newParticipiant = activity.Participiant + 1;
             _activityService.UpdateParticipiant(registration.ActivityId, newParticipiant);
-            
+
             return new SuccessResult(TurkishMessage.RegistrationDeleted);
         }
 
@@ -192,6 +192,22 @@ namespace Business.Concrete
                 UserId = currentUser.Id,
                 ActivityId = activityId,
             });
+        }
+
+        public IDataResult<List<UserRegisteredEventsInfo>> GetRegisteredEvents(string token)
+        {
+            var currentUserId = _authHelper.GetCurrentUser(token).Data.Id;
+            var result = ExceptionHandler.HandleWithReturn<int, List<UserRegisteredEventsInfo>>((int x) =>
+            {
+                return _registrationDal.GetRegisteredEvents(x);
+            }, currentUserId);
+
+            if (!result.Success)
+            {
+                return new ErrorDataResult<List<UserRegisteredEventsInfo>>(TurkishMessage.ErrorMessage);
+            }
+
+            return new SuccessDataResult<List<UserRegisteredEventsInfo>>(result.Data, TurkishMessage.SuccessMessage);
         }
 
 

@@ -53,6 +53,19 @@ namespace WebAPI.Controllers
 
             return BadRequest(result);
         }
+        [Authorize]
+        [HttpGet("user")]
+        public IActionResult GetRegisteredEvents()
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var result = _registrationService.GetRegisteredEvents(token);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
 
         //requestin headerindeki tokeni alma 
 
