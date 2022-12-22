@@ -156,22 +156,22 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Registration>>(TurkishMessage.ActivityDeleted);
         }
 
-        public IDataResult<Registration> GetRegisterInfoByUserId(int userId)
+        [CacheAspect]
+        public IDataResult<List<Registration>> GetRegistersInfoByUserId(int userId)
         {
             //Business code
 
+            var result = _registrationDal.GetAll(r => r.UserId == userId);
+            return new SuccessDataResult<List<Registration>>(result, TurkishMessage.SuccessMessage);
+        }
 
-            //Central Management System
-            var result = ExceptionHandler.HandleWithReturn<int, Registration>((int x) =>
-            {
-                return _registrationDal.Get(r => r.UserId == x);
-            }, userId);
-            if (!result.Success)
-            {
-                return new ErrorDataResult<Registration>(TurkishMessage.ErrorMessage);
-            }
+        [CacheAspect]
+        public IDataResult<Registration> GetRegisterInfoByUserAndActivityId(int userId, int activityId)
+        {
+            //Business code
 
-            return new SuccessDataResult<Registration>(result.Data, TurkishMessage.SuccessMessage);
+            var result = _registrationDal.Get(r => r.UserId == userId && r.ActivityId == activityId);
+            return new SuccessDataResult<Registration>(result, TurkishMessage.SuccessMessage);
         }
 
         public IDataResult<UserRegisterInfo> GetRegisterInfo(int activityId, string token)

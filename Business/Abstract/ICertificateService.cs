@@ -14,7 +14,7 @@ namespace Business.Abstract
     {
         IDataResult<List<Certificate>> GetAll();
         IDataResult<Certificate> GetByCertificateId(int certificateId);
-        //IDataResult<Certificate> GetByUserId(int userId);
+        IDataResult<List<Certificate>> GetCertificatesInfoByUserId(int userId);
         IResult Add(CertificateForView certificate, string pnrNo);
         IResult Delete(int certificateId);
         IResult Update(CertificateForView certificate);

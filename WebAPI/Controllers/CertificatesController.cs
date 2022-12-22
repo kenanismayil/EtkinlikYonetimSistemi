@@ -49,17 +49,17 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        //[AllowAnonymous]
-        //[HttpGet("getByCertificateId")]
-        //public IActionResult GetByUserId(int userId)
-        //{
-        //    var result = _certificateService.GetByUserId(userId);
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result);
-        //}
+        [AllowAnonymous]
+        [HttpGet("getCertificatesInfoByUserId")]
+        public IActionResult GetCertificatesInfoByUserId(int userId)
+        {
+            var result = _certificateService.GetCertificatesInfoByUserId(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
 
         [HttpPost("add")]
         public IActionResult Add(CertificateForView certificate, string pnrNo)

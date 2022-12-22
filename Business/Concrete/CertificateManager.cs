@@ -37,12 +37,12 @@ namespace Business.Concrete
         public IResult Add(CertificateForView certificate, string pnrNo)
         {
             //Business code
-            var regData = _registrationService.GetRegisterInfoByUserId(certificate.UserId);
+            var regData = _registrationService.GetRegisterInfoByUserAndActivityId(certificate.UserId, certificate.ActivityId);
 
             var certificateForView = new Certificate()
             {
                 UserId = regData.Data.UserId,
-                ActivityId = certificate.ActivityId,
+                ActivityId = regData.Data.ActivityId,
                 GivenDate = certificate.GivenDate,
                 ExpiryDate = certificate.ExpiryDate
             };
@@ -68,13 +68,13 @@ namespace Business.Concrete
         public IResult Update(CertificateForView certificate)
         {
             //Business code
-            var regData = _registrationService.GetRegisterInfoByUserId(certificate.UserId);
+            var regData = _registrationService.GetRegisterInfoByUserAndActivityId(certificate.UserId, certificate.ActivityId);
 
             var certificateForView = new Certificate()
             {
                 Id = certificate.Id,
-                UserId = certificate.UserId,
-                ActivityId = certificate.ActivityId,
+                UserId = regData.Data.UserId,
+                ActivityId = regData.Data.ActivityId,
                 GivenDate = certificate.GivenDate,
                 ExpiryDate = certificate.ExpiryDate
             };
@@ -149,21 +149,24 @@ namespace Business.Concrete
             return new SuccessDataResult<Certificate>(result.Data, TurkishMessage.SuccessMessage);
         }
 
-        //public IDataResult<Certificate> GetByUserId(int userId)
-        //{
-        //    //Business code
+        public IDataResult<List<Certificate>> GetCertificatesInfoByUserId(int userId)
+        {
+            //Business codes
 
-        //    var result = ExceptionHandler.HandleWithReturn<int, Certificate>((x) =>
-        //    {
-        //        return _certificateDal.Get(c => c.UserId == x);
-        //    }, userId);
-        //    if (!result.Success)
-        //    {
-        //        return new ErrorDataResult<Certificate>(result.Data, TurkishMessage.ErrorMessage);
-        //    }
+            //var result = ExceptionHandler.HandleWithReturn<int, Certificate>((x) =>
+            //{
+            //    return _certificateDal.Get(c => c.UserId == x);
+            //}, userId);
+            //if (!result.Success)
+            //{
+            //    return new ErrorDataResult<Certificate>(result.Data, TurkishMessage.ErrorMessage);
+            //}
 
-        //    return new SuccessDataResult<Certificate>(result.Data, TurkishMessage.SuccessMessage);
-        //}
+
+            var result = _certificateDal.GetAll(c => c.UserId == userId);
+            return new SuccessDataResult<List<Certificate>>(result, TurkishMessage.SuccessMessage);
+        }
+
 
 
 

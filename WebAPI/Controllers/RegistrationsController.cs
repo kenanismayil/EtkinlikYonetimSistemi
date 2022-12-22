@@ -60,7 +60,21 @@ namespace WebAPI.Controllers
         public IActionResult GetRegisterInfoByUserId(int userId)
         {
             //var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
-            var result = _registrationService.GetRegisterInfoByUserId(userId);
+            var result = _registrationService.GetRegistersInfoByUserId(userId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+
+        [Authorize(Roles = "super_admin")]
+        [HttpGet("getRegisterInfoByUserAndActivityId")]
+        public IActionResult GetRegisterInfoByUserAndActivityId(int userId, int activityId)
+        {
+            //var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var result = _registrationService.GetRegisterInfoByUserAndActivityId(userId, activityId);
             if (result.Success)
             {
                 return Ok(result);

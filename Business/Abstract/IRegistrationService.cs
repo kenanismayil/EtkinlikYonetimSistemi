@@ -14,7 +14,8 @@ namespace Business.Abstract
     {
         IDataResult<List<Registration>> GetAll();
         IDataResult<UserRegisterInfo> GetRegisterInfo(int activityId, string token);
-        IDataResult<Registration> GetRegisterInfoByUserId(int userId);
+        IDataResult<List<Registration>> GetRegistersInfoByUserId(int userId);
+        IDataResult<Registration> GetRegisterInfoByUserAndActivityId(int userId, int activityId);
         IDataResult<List<UserRegisteredEventsInfo>> GetRegisteredEvents(string token);
         IDataResult<UserInfoForBarcodeReaderPerson> GetUserByPnrNo(string pnrNo);
         IDataResult<UserInfoForBarcodeReaderPerson> UpdateUserStatusOnEventArea(string pnrNo);
