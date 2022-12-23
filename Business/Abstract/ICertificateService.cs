@@ -13,8 +13,9 @@ namespace Business.Abstract
     public interface ICertificateService
     {
         IDataResult<List<Certificate>> GetAll();
-        IDataResult<Certificate> GetByCertificateId(int certificateId);
-        IDataResult<List<Certificate>> GetCertificatesInfoByUserId(int userId);
+        IDataResult<UserCertificateInfo> GetByCertificateId(int certificateId);
+        IDataResult<List<UserCertificateInfo>> GetCertificatesForUser(string token);
+        //IDataResult<UserCertificateInfo> GetCertificates(int activityId, string token);
         IResult Add(CertificateForView certificate, string pnrNo);
         IResult Delete(int certificateId);
         IResult Update(CertificateForView certificate);

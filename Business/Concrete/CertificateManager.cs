@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Business.BusinessAspcets.Autofac;
 using Business.Constants.Messages;
+using Business.Helper;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
@@ -24,11 +25,13 @@ namespace Business.Concrete
         ICertificateDal _certificateDal;
         //IUserService _userservice;
         IRegistrationService _registrationService;
+        IAuthHelper _authHelper;
 
-        public CertificateManager(ICertificateDal certificateDal, IRegistrationService registrationService)
+        public CertificateManager(ICertificateDal certificateDal, IRegistrationService registrationService, IAuthHelper authHelper)
         {
             _certificateDal = certificateDal;
             //_userservice = userService;
+            _authHelper = authHelper;
             _registrationService = registrationService;
         }
 
@@ -132,40 +135,50 @@ namespace Business.Concrete
         }
 
         [CacheAspect]
-        public IDataResult<Certificate> GetByCertificateId(int certificateId)
+        public IDataResult<UserCertificateInfo> GetByCertificateId(int certificateId)
         {
             //Business code
 
 
-            var result = ExceptionHandler.HandleWithReturn<int, Certificate>((x) =>
+            var result = ExceptionHandler.HandleWithReturn<int, UserCertificateInfo>((x) =>
             {
-                return _certificateDal.Get(c => c.Id == x);
+                return _certificateDal.GetByCertificateId(certificateId);
             }, certificateId);
             if (!result.Success)
             {
-                return new ErrorDataResult<Certificate>(result.Data, TurkishMessage.ErrorMessage);
+                return new ErrorDataResult<UserCertificateInfo>(result.Data, TurkishMessage.ErrorMessage);
             }
 
-            return new SuccessDataResult<Certificate>(result.Data, TurkishMessage.SuccessMessage);
+            //var result = _certificateDal.GetByCertificateId(certificateId);
+            return new SuccessDataResult<UserCertificateInfo>(result.Data, TurkishMessage.SuccessMessage);
         }
 
-        public IDataResult<List<Certificate>> GetCertificatesInfoByUserId(int userId)
+        public IDataResult<List<UserCertificateInfo>> GetCertificatesForUser(string token)
         {
             //Business codes
+            var currentUserId = _authHelper.GetCurrentUser(token).Data.Id;
+            var result = ExceptionHandler.HandleWithReturn<int, List<UserCertificateInfo>>((int x) =>
+            {
+                return _certificateDal.GetCertificatesForUser(x);
+            }, currentUserId);
 
-            //var result = ExceptionHandler.HandleWithReturn<int, Certificate>((x) =>
-            //{
-            //    return _certificateDal.Get(c => c.UserId == x);
-            //}, userId);
-            //if (!result.Success)
-            //{
-            //    return new ErrorDataResult<Certificate>(result.Data, TurkishMessage.ErrorMessage);
-            //}
+            if (!result.Success)
+            {
+                return new ErrorDataResult<List<UserCertificateInfo>>(TurkishMessage.ErrorMessage);
+            }
 
-
-            var result = _certificateDal.GetAll(c => c.UserId == userId);
-            return new SuccessDataResult<List<Certificate>>(result, TurkishMessage.SuccessMessage);
+            return new SuccessDataResult<List<UserCertificateInfo>>(result.Data, TurkishMessage.SuccessMessage);
         }
+
+        //public IDataResult<UserCertificateInfo> GetCertificates(string token)
+        //{
+        //    var currentUser = _authHelper.GetCurrentUser(token).Data;
+
+
+        //    var result = _certificateDal.GetCertificates(activityId);
+
+        //    return new SuccessDataResult<UserCertificateInfo>(result, TurkishMessage.SuccessMessage);
+        //}
 
 
 

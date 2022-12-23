@@ -13,7 +13,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin, super_admin")]
+
     public class CertificatesController : Controller
     {
         ICertificateService _certificateService;        //interface'ler referans tutar.      
@@ -24,7 +24,7 @@ namespace WebAPI.Controllers
             _certificateService = certificateService;
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "admin, super_admin")]
         [HttpGet("getAll")]
         public IActionResult GetAll()
         {
@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "admin, super_admin")]
         [HttpGet("getByCertificateId")]
         public IActionResult GetByCertificateId(int certificateId)
         {
@@ -49,11 +49,13 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [AllowAnonymous]
-        [HttpGet("getCertificatesInfoByUserId")]
-        public IActionResult GetCertificatesInfoByUserId(int userId)
+        [Authorize]
+        [HttpGet("getCertificatesInfoByUser")]
+        public IActionResult GetCertificatesForUser()
         {
-            var result = _certificateService.GetCertificatesInfoByUserId(userId);
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            var result = _certificateService.GetCertificatesForUser(token);
             if (result.Success)
             {
                 return Ok(result);
@@ -61,6 +63,20 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        //[AllowAnonymous]
+        //[HttpGet("getCertificates")]
+        //public IActionResult GetCertificates(int activityId, int userId)
+        //{
+        //    var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+        //    var result = _certificateService.GetCertificates(activityId, token);
+        //    if (result.Success)
+        //    {
+        //        return Ok(result);
+        //    }
+        //    return BadRequest(result);
+        //}
+
+        [Authorize(Roles = "admin, super_admin")]
         [HttpPost("add")]
         public IActionResult Add(CertificateForView certificate, string pnrNo)
         {
@@ -72,6 +88,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "admin, super_admin")]
         [HttpDelete("delete")]
         public IActionResult Delete(int certificateId)
         {
@@ -83,6 +100,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
+        [Authorize(Roles = "admin, super_admin")]
         [HttpPut("update")]
         public IActionResult Update(CertificateForView certificate)
         {
