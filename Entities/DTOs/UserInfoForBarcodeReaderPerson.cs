@@ -11,5 +11,6 @@ namespace Entities.DTOs
         public int Id { get; set; }
         public UserInfoForActivities User { get; set; }
         public bool isUserOnEventPlace { get; set; }
+        public int ActivityId { get; set; }
     }
 }

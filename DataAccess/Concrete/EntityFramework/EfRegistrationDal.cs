@@ -85,7 +85,8 @@ namespace DataAccess.Concrete.EntityFramework
                         Image = x.User.UserPhoto,
                         Role = x.User.RoleType.RoleName
                     },
-                    isUserOnEventPlace = x.isUserOnEventPlace
+                    isUserOnEventPlace = x.isUserOnEventPlace,
+                    ActivityId = x.Activity.Id
                 }).FirstOrDefault();
 
                 return result;
@@ -107,7 +108,8 @@ namespace DataAccess.Concrete.EntityFramework
                         Image = x.User.UserPhoto,
                         Role = x.User.RoleType.RoleName
                     },
-                    isUserOnEventPlace = true
+                    isUserOnEventPlace = true,
+                    ActivityId = x.Activity.Id
                 }).FirstOrDefault();
 
                 return result;
