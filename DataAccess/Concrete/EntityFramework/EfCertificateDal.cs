@@ -59,6 +59,7 @@ namespace DataAccess.Concrete.EntityFramework
                 var result = context.Certificates.Where(c => c.UserId == userId).Join(context.Activities, cer => cer.ActivityId, act => act.Id, (cer, act) => new
                 {
                     cer,
+                    
                     user = new UserForCertificate
                     {
                         UserId = act.User.Id,
@@ -71,7 +72,6 @@ namespace DataAccess.Concrete.EntityFramework
                         ActivityId = act.Id,
                         Title = act.Title
                     }
-
                 }).
                 Select(x => new UserCertificateInfo
                 {
@@ -81,7 +81,8 @@ namespace DataAccess.Concrete.EntityFramework
                     FirstName = x.cer.User.FirstName,
                     LastName = x.cer.User.LastName,
                     GivenDate = x.cer.GivenDate,
-                    ExpiryDate = x.cer.ExpiryDate
+                    ExpiryDate = x.cer.ExpiryDate,
+                    CertificateImage = x.cer.CertificateImage
                 }).ToList();
 
                 return result;

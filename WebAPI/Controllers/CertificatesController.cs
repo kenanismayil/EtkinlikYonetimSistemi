@@ -76,11 +76,11 @@ namespace WebAPI.Controllers
         //    return BadRequest(result);
         //}
 
-        [Authorize(Roles = "admin, super_admin")]
+        [Authorize]
         [HttpPost("add")]
-        public IActionResult Add(CertificateForView certificate, string pnrNo)
+        public IActionResult Add(Certificate certificate)
         {
-            var result = _certificateService.Add(certificate, pnrNo);
+            var result = _certificateService.Add(certificate);
             if (result.Success)
             {
                 return Ok(result);
@@ -88,7 +88,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "admin, super_admin")]
+        [Authorize]
         [HttpDelete("delete")]
         public IActionResult Delete(int certificateId)
         {
@@ -100,11 +100,22 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "admin, super_admin")]
+        [Authorize]
         [HttpPut("update")]
         public IActionResult Update(CertificateForView certificate)
         {
             var result = _certificateService.Update(certificate);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        [AllowAnonymous]
+        [HttpPut("certificateImage")]
+        public IActionResult UpdateCertificateImage(UpdateCertificateImageDto data)
+        {
+            var result = _certificateService.UpdateCertificateImage(data);
             if (result.Success)
             {
                 return Ok(result);

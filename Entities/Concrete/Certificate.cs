@@ -16,6 +16,7 @@ namespace Entities.Concrete
         public int? ActivityId { get; set; }
         public DateTime GivenDate { get; set; }
         public DateTime ExpiryDate { get; set; }
+        public string CertificateImage { get; set; }
 
         //Foreign Key
         [ForeignKey("UserId")]

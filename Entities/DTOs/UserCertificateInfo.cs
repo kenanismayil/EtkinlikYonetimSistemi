@@ -16,5 +16,6 @@ namespace Entities.DTOs
         public string ActivityName { get; set; }
         public DateTime GivenDate { get; set; }
         public DateTime ExpiryDate { get; set; }
+        public string CertificateImage { get; set; }
     }
 }
