@@ -22,6 +22,24 @@ namespace DataAccess.Concrete.EntityFramework
         //        return result;
         //    }
         //}
+        public List<RegistrationForTickets> GetAllForTickets(int userId) {
+            using (var context = new ActivityContext())
+            {
+                var result = context.Registrations.Where(x => x.UserId == userId).Join(context.Activities, reg => reg.ActivityId, act => act.Id, (reg, act) => new
+                RegistrationForTickets {
+                    ActivityDate = act.ActivityDate,
+                    ActivityId = act.Id,
+                    ActivityTitle = act.Title,
+                    ActivityImage = act.Image,
+                    City = act.Location.City.CityName,
+                    Country = act.Location.City.Country.CountryName,
+                    Location = act.Location.Name,
+                    PnrNo = reg.PnrNo
+                }).ToList();
+
+                return result;
+            }
+        }
         public List<UserRegisteredEventsInfo> GetRegisteredEvents(int userId) 
         {
             using (var context = new ActivityContext())

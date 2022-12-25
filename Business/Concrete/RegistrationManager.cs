@@ -157,12 +157,20 @@ namespace Business.Concrete
         }
 
         [CacheAspect]
-        public IDataResult<List<Registration>> GetRegistersInfoByUserId(int userId)
+        public IDataResult<List<Registration>> GetRegistersInfoByUserId(string token)
         {
             //Business code
-
-            var result = _registrationDal.GetAll(r => r.UserId == userId);
+            var currentUserId = _authHelper.GetCurrentUser(token).Data.Id;
+            var result = _registrationDal.GetAll(r => r.UserId == currentUserId);
             return new SuccessDataResult<List<Registration>>(result, TurkishMessage.SuccessMessage);
+        }
+        [CacheAspect]
+        public IDataResult<List<RegistrationForTickets>> GetRegistersInfoByUserIdForTickets(string token)
+        {
+            //Business code
+            var currentUserId = _authHelper.GetCurrentUser(token).Data.Id;
+            var result = _registrationDal.GetAllForTickets(currentUserId);
+            return new SuccessDataResult<List<RegistrationForTickets>>(result, TurkishMessage.SuccessMessage);
         }
 
         [CacheAspect]
