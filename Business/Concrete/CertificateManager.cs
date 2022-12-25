@@ -37,25 +37,18 @@ namespace Business.Concrete
 
         [ValidationAspect(typeof(CertificateValidator))]
         [CacheRemoveAspect("ICertificateService.Get")]
-        public IResult Add(CertificateForView certificate, string pnrNo)
+        public IResult Add(Certificate certificate)
         {
             //Business code
-            var regData = _registrationService.GetRegisterInfoByUserAndActivityId(certificate.UserId, certificate.ActivityId);
 
-            var certificateForView = new Certificate()
-            {
-                UserId = regData.Data.UserId,
-                ActivityId = regData.Data.ActivityId,
-                GivenDate = certificate.GivenDate,
-                ExpiryDate = certificate.ExpiryDate
-            };
-
+            var isCertificateExists = _certificateDal.Get(c => c.UserId == certificate.UserId && c.ActivityId == certificate.ActivityId) != null;
             //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
-                if (regData.Data.isUserOnEventPlace == true)
+    
+                if (!isCertificateExists)
                 {
-                    _certificateDal.Add(certificateForView);
+                    _certificateDal.Add(certificate);
                 }
             });
             if (!result)
@@ -79,7 +72,8 @@ namespace Business.Concrete
                 UserId = regData.Data.UserId,
                 ActivityId = regData.Data.ActivityId,
                 GivenDate = certificate.GivenDate,
-                ExpiryDate = certificate.ExpiryDate
+                ExpiryDate = certificate.ExpiryDate,
+                CertificateImage = certificate.CertificateImage
             };
 
             //Central Management System
@@ -93,6 +87,27 @@ namespace Business.Concrete
             }
 
             return new SuccessResult(TurkishMessage.CertificateUpdate);
+        }
+
+        [CacheAspect]
+        public IResult UpdateCertificateImage(UpdateCertificateImageDto certificateData)
+        {
+            //Business code
+            var certificate = _certificateDal.Get(c => c.UserId == certificateData.UserId && c.ActivityId == certificateData.ActivityId);
+
+            certificate.CertificateImage = certificateData.CertificateImage;
+
+            //Central Management System
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+                _certificateDal.Update(certificate);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
+            }
+
+            return new SuccessResult("Resim başarılı bir şekilde güncellendi.");
         }
 
         [CacheRemoveAspect("ICertificateService.Get")]

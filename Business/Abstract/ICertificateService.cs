@@ -16,8 +16,10 @@ namespace Business.Abstract
         IDataResult<UserCertificateInfo> GetByCertificateId(int certificateId);
         IDataResult<List<UserCertificateInfo>> GetCertificatesForUser(string token);
         //IDataResult<UserCertificateInfo> GetCertificates(int activityId, string token);
-        IResult Add(CertificateForView certificate, string pnrNo);
+        IResult Add(Certificate certificate);
         IResult Delete(int certificateId);
         IResult Update(CertificateForView certificate);
+
+        IResult UpdateCertificateImage(UpdateCertificateImageDto data);
     }
 }

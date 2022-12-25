@@ -28,13 +28,15 @@ namespace Business.Concrete
         IAuthHelper _authHelper;
 
         IActivityService _activityService;
+        ICertificateDal _certificateDal;
 
 
-        public RegistrationManager(IRegistrationDal registrationDal, IAuthHelper authHelper, IActivityService activityService)
+        public RegistrationManager(IRegistrationDal registrationDal, IAuthHelper authHelper, IActivityService activityService, ICertificateDal certificateDal)
         {
             _registrationDal = registrationDal;
             _authHelper = authHelper;
             _activityService = activityService;
+            _certificateDal = certificateDal;
         }
 
 
@@ -264,6 +266,28 @@ namespace Business.Concrete
             updateRegistration.isUserOnEventPlace = true;
 
             _registrationDal.Update(updateRegistration);
+
+
+            var registrationActivityId = Convert.ToInt32(updateRegistration.ActivityId);
+            var registrationUserId = Convert.ToInt32(updateRegistration.UserId);
+
+            var certificate = new Certificate(){
+                ActivityId = registrationActivityId,
+                UserId = registrationUserId,
+                GivenDate = DateTime.Now,
+                ExpiryDate = DateTime.Now.AddYears(1),
+            };
+
+            var isCertificateExists = _certificateDal.Get(c => c.UserId == registrationUserId && c.ActivityId == registrationActivityId) != null;
+            //Central Management System
+            var certificateResult = ExceptionHandler.HandleWithNoReturn(() =>
+            {
+    
+                if (!isCertificateExists)
+                {
+                    _certificateDal.Add(certificate);
+                }
+            });
 
             return new SuccessDataResult<UserInfoForBarcodeReaderPerson>(result.Data, TurkishMessage.SuccessMessage);
         }
