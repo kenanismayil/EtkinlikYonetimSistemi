@@ -97,7 +97,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("pnr")]
         public IActionResult GetUserByPnrNo(string pnrNo)
         {
@@ -110,7 +110,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpPut("pnr")]
         public IActionResult UpdateUserStatusOnEventArea(string pnrNo)
         {
