@@ -33,6 +33,8 @@ namespace DataAccess.Concrete.EntityFramework
                     loc = new LocationInfoForActivities
                     {
                         Id = loc.Id,
+                        CityId = loc.City.Id,
+                        CountryId = loc.City.Country.Id,
                         Name = loc.Name,
                         CityName = loc.City.CityName,
                         CountryName = loc.City.Country.CountryName
@@ -74,6 +76,8 @@ namespace DataAccess.Concrete.EntityFramework
                     {
                         Id = loc.Id,
                         Name = loc.Name,
+                        CityId = loc.City.Id,
+                        CountryId = loc.City.Country.Id,
                         CityName = loc.City.CityName,
                         CountryName = loc.City.Country.CountryName
                     }
