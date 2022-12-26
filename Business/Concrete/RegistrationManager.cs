@@ -26,17 +26,16 @@ namespace Business.Concrete
     {
         IRegistrationDal _registrationDal;
         IAuthHelper _authHelper;
-
         IActivityService _activityService;
-        ICertificateDal _certificateDal;
+        ICertificateService _certificateService;
 
 
-        public RegistrationManager(IRegistrationDal registrationDal, IAuthHelper authHelper, IActivityService activityService, ICertificateDal certificateDal)
+        public RegistrationManager(IRegistrationDal registrationDal, IAuthHelper authHelper, IActivityService activityService, ICertificateService certificateService)
         {
             _registrationDal = registrationDal;
             _authHelper = authHelper;
             _activityService = activityService;
-            _certificateDal = certificateDal;
+            _certificateService = certificateService;
         }
 
 
@@ -108,20 +107,16 @@ namespace Business.Concrete
             //Business code
             var register = _registrationDal.Get(r => r.UserId == registration.UserId && r.ActivityId == registration.ActivityId);
 
-            var result = ExceptionHandler.HandleWithNoReturn(() =>
+
+            if (!register.isUserOnEventPlace)
             {
                 _registrationDal.Delete(register);
-            });
-            if (!result)
-            {
-                return new ErrorResult(TurkishMessage.ErrorMessage);
+                var activity = _activityService.GetById(registration.ActivityId).Data;
+                var newParticipiant = activity.Participiant + 1;
+                _activityService.UpdateParticipiant(registration.ActivityId, newParticipiant);
+                return new SuccessResult(TurkishMessage.RegistrationDeleted);
             }
-
-            var activity = _activityService.GetById(registration.ActivityId).Data;
-            var newParticipiant = activity.Participiant + 1;
-            _activityService.UpdateParticipiant(registration.ActivityId, newParticipiant);
-
-            return new SuccessResult(TurkishMessage.RegistrationDeleted);
+            return new ErrorResult("Etkinlik alanına giriş yaptığınız için kaydınızı silemezsiniz.");
         }
 
 
@@ -212,6 +207,8 @@ namespace Business.Concrete
             var currentUserId = _authHelper.GetCurrentUser(token).Data.Id;
             var result = ExceptionHandler.HandleWithReturn<int, List<UserRegisteredEventsInfo>>((int x) =>
             {
+
+
                 return _registrationDal.GetRegisteredEvents(x);
             }, currentUserId);
 
@@ -262,7 +259,7 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<UserInfoForBarcodeReaderPerson>(TurkishMessage.UserAlreadyOnEventArea);
             }
-            
+
             updateRegistration.isUserOnEventPlace = true;
 
             _registrationDal.Update(updateRegistration);
@@ -271,21 +268,21 @@ namespace Business.Concrete
             var registrationActivityId = Convert.ToInt32(updateRegistration.ActivityId);
             var registrationUserId = Convert.ToInt32(updateRegistration.UserId);
 
-            var certificate = new Certificate(){
+            var certificate = new CertificateForView()
+            {
                 ActivityId = registrationActivityId,
                 UserId = registrationUserId,
                 GivenDate = DateTime.Now,
                 ExpiryDate = DateTime.Now.AddYears(1),
             };
 
-            var isCertificateExists = _certificateDal.Get(c => c.UserId == registrationUserId && c.ActivityId == registrationActivityId) != null;
+            var isCertificateExists = _certificateService.Get(registrationUserId, registrationActivityId).Data;
             //Central Management System
             var certificateResult = ExceptionHandler.HandleWithNoReturn(() =>
             {
-    
-                if (!isCertificateExists)
+                if (isCertificateExists == null)
                 {
-                    _certificateDal.Add(certificate);
+                    _certificateService.Add(certificate);
                 }
             });
 

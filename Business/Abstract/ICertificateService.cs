@@ -13,10 +13,11 @@ namespace Business.Abstract
     public interface ICertificateService
     {
         IDataResult<List<Certificate>> GetAll();
+        IDataResult<Certificate> Get(int userId, int activityId);
         IDataResult<UserCertificateInfo> GetByCertificateId(int certificateId);
         IDataResult<List<UserCertificateInfo>> GetCertificatesForUser(string token);
         //IDataResult<UserCertificateInfo> GetCertificates(int activityId, string token);
-        IResult Add(Certificate certificate);
+        IResult Add(CertificateForView certificate);
         IResult Delete(int certificateId);
         IResult Update(CertificateForView certificate);
 

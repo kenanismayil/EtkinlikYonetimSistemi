@@ -23,23 +23,28 @@ namespace Business.Concrete
     public class CertificateManager : ICertificateService
     {
         ICertificateDal _certificateDal;
-        //IUserService _userservice;
-        IRegistrationService _registrationService;
         IAuthHelper _authHelper;
 
-        public CertificateManager(ICertificateDal certificateDal, IRegistrationService registrationService, IAuthHelper authHelper)
+        public CertificateManager(ICertificateDal certificateDal, IAuthHelper authHelper)
         {
             _certificateDal = certificateDal;
-            //_userservice = userService;
             _authHelper = authHelper;
-            _registrationService = registrationService;
         }
 
         [ValidationAspect(typeof(CertificateValidator))]
         [CacheRemoveAspect("ICertificateService.Get")]
-        public IResult Add(Certificate certificate)
+        public IResult Add(CertificateForView certificate)
         {
             //Business code
+            var certificateForView = new Certificate()
+            {
+                Id = certificate.Id,
+                UserId = certificate.UserId,
+                ActivityId = certificate.ActivityId,
+                GivenDate = certificate.GivenDate,
+                ExpiryDate = certificate.ExpiryDate,
+                CertificateImage = certificate.CertificateImage
+            };
 
             var isCertificateExists = _certificateDal.Get(c => c.UserId == certificate.UserId && c.ActivityId == certificate.ActivityId) != null;
             //Central Management System
@@ -48,7 +53,7 @@ namespace Business.Concrete
     
                 if (!isCertificateExists)
                 {
-                    _certificateDal.Add(certificate);
+                    _certificateDal.Add(certificateForView);
                 }
             });
             if (!result)
@@ -64,13 +69,14 @@ namespace Business.Concrete
         public IResult Update(CertificateForView certificate)
         {
             //Business code
-            var regData = _registrationService.GetRegisterInfoByUserAndActivityId(certificate.UserId, certificate.ActivityId);
+            //var regData = _registrationService.GetRegisterInfoByUserAndActivityId(certificate.UserId, certificate.ActivityId);
+            var certificateData = _certificateDal.GetByCertificateId(certificate.Id);
 
             var certificateForView = new Certificate()
             {
                 Id = certificate.Id,
-                UserId = regData.Data.UserId,
-                ActivityId = regData.Data.ActivityId,
+                UserId = certificate.UserId,
+                ActivityId = certificate.ActivityId,
                 GivenDate = certificate.GivenDate,
                 ExpiryDate = certificate.ExpiryDate,
                 CertificateImage = certificate.CertificateImage
@@ -79,7 +85,7 @@ namespace Business.Concrete
             //Central Management System
             var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
-                _certificateDal.Update(certificateForView);
+                //_certificateDal.Update(certificateForView);
             });
             if (!result)
             {
@@ -183,6 +189,18 @@ namespace Business.Concrete
             }
 
             return new SuccessDataResult<List<UserCertificateInfo>>(result.Data, TurkishMessage.SuccessMessage);
+        }
+
+        public IDataResult<Certificate> Get(int userId, int activityId)
+        {
+            //Business code
+
+            var result = _certificateDal.Get(c => c.UserId == userId && c.ActivityId == activityId);
+
+
+
+            //var result = _certificateDal.GetByCertificateId(certificateId);
+            return new SuccessDataResult<Certificate>(result, TurkishMessage.SuccessMessage);
         }
 
         //public IDataResult<UserCertificateInfo> GetCertificates(string token)
