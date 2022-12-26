@@ -68,18 +68,15 @@ namespace Business.Concrete
                 CreatedTime = DateTime.Now
             };
 
-            IResult result = BusinessRules.Run(CheckIfActivityNameExists(activityData.Title));
-
-            //result -> kurala uymayan
-            //result null değilse, yani kurala uymayan bir durum oluşmuşsa, o zaman result kendisi döner. ErrorResult dönecektir.
-            if (result != null)
+            var result = ExceptionHandler.HandleWithNoReturn(() =>
             {
-                return result;
+                _activityDal.Add(activityData);
+            });
+            if (!result)
+            {
+                return new ErrorResult(TurkishMessage.ErrorMessage);
             }
-
-            //Kurala uymayan bir durum oluşmamışsa aktivite veritabanına başarılı şekilde eklenir.
-            activityData.CreatedTime = DateTime.Now;
-            _activityDal.Add(activityData);
+            
             return new SuccessResult(TurkishMessage.ActivityAdded);
         }
 
@@ -104,7 +101,6 @@ namespace Business.Concrete
         }
 
         //Validation
-        [ValidationAspect(typeof(ActivityValidator))]
         [CacheRemoveAspect("IActivityService.Get")]
         public IResult Update(ActivityCreatingByAdmin activity, string token)
         {
@@ -121,21 +117,20 @@ namespace Business.Concrete
                 Participiant = activity.Participiant,
                 ActivityDate = activity.ActivityDate,
                 CityId = activity.CityId,
-                CountryId = activity.CountryId
+                CountryId = activity.CountryId,
+                CreatedTime = activity.CreatedTime,
+                Id = activity.Id
             };
 
-            IResult result = BusinessRules.Run(CheckIfActivityNameExists(activityData.Title));
+            var result = ExceptionHandler.HandleWithNoReturn(() => {
+                _activityDal.Update(activityData);
+            });
 
-            //result -> kurala uymayan
-            //result null değilse, yani kurala uymayan bir durum oluşmuşsa, o zaman result kendisi döner. ErrorResult dönecektir.
-            if (result != null)
+            if(!result)
             {
-                return result;
+                return new ErrorResult(TurkishMessage.ErrorMessage);
             }
 
-            //Kurala uymayan bir durum oluşmamışsa aktivite veritabanına başarılı şekilde eklenir.
-            activityData.CreatedTime = DateTime.Now;
-            _activityDal.Update(activityData);
             return new SuccessResult(TurkishMessage.ActivityUpdated);
         }
 
@@ -237,22 +232,5 @@ namespace Business.Concrete
 
         //    return new SuccessDataResult<Activity>(TurkishMessage.SuccessMessage);
         //}
-
-
-
-        //İş kuralı parçacığı olduğu için ve sadece bu manager altında kullanacağım iş kuralı parçacığını buraya yazıyorum. Ekleme ve güncellemede kod tekrarlılığını önlemiş oldum.
-
-
-        private IResult CheckIfActivityNameExists(string activityName)
-        {
-            //Aynı isimde aktivite eklenemez
-            //Any() -> _activityDal.GetAll(a => a.ActivityName == activityName)'e uyan kayıt var mı anlamına gelen metottur.
-            var result = _activityDal.GetAll(a => a.Title == activityName).Any();
-            if (result)
-            {
-                return new ErrorResult(TurkishMessage.ActivityNameAlreadyExists);
-            }
-            return new SuccessResult();
-        }
     }
 }
