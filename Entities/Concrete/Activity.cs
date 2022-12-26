@@ -23,7 +23,6 @@ namespace Entities.Concrete
         public int Participiant { get; set; }
 
         public DateTime CreatedTime { get; set; }
-        public DateTime AppDeadLine { get; set; }
         public DateTime ActivityDate { get; set; }
 
         //Foreign key
