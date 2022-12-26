@@ -13,7 +13,6 @@ namespace Entities.Concrete
     {
         public int Id { get; set; }
         public string PnrNo { get; set; }
-
         public bool isUserOnEventPlace { get; set; } = false;
         public int? UserId { get; set; }
         public int? ActivityId { get; set; }

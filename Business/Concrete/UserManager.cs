@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Business.BusinessAspcets.Autofac;
 using Business.Constants.Messages;
+using Business.Constants.PathConstants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
@@ -8,11 +9,13 @@ using Core.BusinessRuleHandle;
 using Core.Entities.Concrete;
 using Core.Utilities.Business;
 using Core.Utilities.ExceptionHandle;
+using Core.Utilities.FileHelper;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using Core.Utilities.Security.Hashing;
 using DataAccess.Abstract;
 using Entities.DTOs;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,13 +27,13 @@ namespace Business.Concrete
     public class UserManager : IUserService
     {
         IUserDal _userDal;
-        IRoleTypeService _roleTypeService;
+        IFileHelper _fileHelper;
 
 
-        public UserManager(IUserDal userDal, IRoleTypeService roleTypeService)
+        public UserManager(IUserDal userDal, IFileHelper fileHelper)
         {
             _userDal = userDal;
-            _roleTypeService = roleTypeService;
+            _fileHelper = fileHelper;
         }
 
         public IDataResult<RoleType> GetClaim(User user)
@@ -76,7 +79,7 @@ namespace Business.Concrete
         }
 
         //[SecuredOperation("super_admin")]
-        public IResult Update(UserForInfoChange userForInfoChange)
+        public IResult Update(UserForInfoChange userForInfoChange, IFormFile file)
         {
             //Business Codes
             var userData = _userDal.Get(u => u.Id == userForInfoChange.Id);
@@ -86,6 +89,8 @@ namespace Business.Concrete
             userData.Email = userForInfoChange.Email;
             userData.DateOfBirth = userForInfoChange.DateOfBirth;
             userData.Phone = userForInfoChange.Phone;
+
+            userForInfoChange.UserPhoto = _fileHelper.Update(file, PathConstants.ImagesPath + userForInfoChange.UserPhoto, PathConstants.ImagesPath);
             userData.UserPhoto = userForInfoChange.UserPhoto;
 
             _userDal.Update(userData);
@@ -154,18 +159,6 @@ namespace Business.Concrete
             userData.DateOfBirth = user.DateOfBirth;
             userData.Phone = user.Phone;
             userData.RoleTypeId = user.RoleTypeId;
-
-            //var role = _roleTypeService.GetById(userData.RoleTypeId);
-
-            //if (role != null)
-            //{
-            //    userData.RoleTypeId = roleId;
-            //}
-            //else
-            //{
-            //    return new ErrorResult(TurkishMessage.ErrorMessage);
-            //}
-
 
             _userDal.Update(userData);
             return new SuccessResult(TurkishMessage.UserRoleUpdatedBySuperAdmin);

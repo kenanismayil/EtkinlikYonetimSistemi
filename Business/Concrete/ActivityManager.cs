@@ -210,27 +210,5 @@ namespace Business.Concrete
 
             return new SuccessDataResult<ActivityForView>(result.Data, TurkishMessage.SuccessMessage);
         }
-
-        //public IDataResult<Activity> GetCurrentAttendiesCount(int activityId)
-        //{
-        //    //Activity tablosuna maksimum katılımcı sayısı da eklenmesi gerekiyor.
-
-        //    var activityData = _activityDal.GetAll(a => a.Id == activityId).Count;
-
-
-
-        //    var registeredToActivity = _registrationService.GetById(activityId);
-
-        //    int currentUserCount, maxUserCount;
-        //    currentUserCount = registeredToActivity.Data.User.Id;
-
-        //    if (activityData.)
-        //    {
-
-        //    }
-
-
-        //    return new SuccessDataResult<Activity>(TurkishMessage.SuccessMessage);
-        //}
     }
 }

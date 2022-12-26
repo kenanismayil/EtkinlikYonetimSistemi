@@ -61,6 +61,7 @@ namespace Business.Constants.Messages
         public static string CertificateAdded = "Sertifika yapildi";
         public static string CertificateDeleted = "Sertifika silindi";
         public static string CertificateUpdate = "Sertifika güncellendi";
+        public static string CertificateImageUpdate = "Sertifika resmi başarılı bir şekilde güncellendi.";
         public static string CertificateNameInvalid = "Sertifika ismi gecersiz";
         public static string CertificateListed = "Sertifikalar listelendi";
         public static string GivenDateListed = "Verilme tarihleri listelendi";
@@ -75,6 +76,8 @@ namespace Business.Constants.Messages
         public static string RegistrationListed = "Kayıtlar listelendi";
         public static string RegistrationDateListed = "Kayıt tarihleri listelendi";
         public static string UserAlreadyOnEventArea = "Kullanıcı zaten etkinlik alanına giriş yapmış";
+        public static string NotRegisterDeleteOnEventPlace = "Etkinlik alanına giriş yaptığınız için kaydınızı silemezsiniz.";
+
 
         //City magic string
         public static string CityAdded = "Şehir eklendi";

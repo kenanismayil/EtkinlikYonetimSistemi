@@ -116,7 +116,7 @@ namespace Business.Concrete
                 _activityService.UpdateParticipiant(registration.ActivityId, newParticipiant);
                 return new SuccessResult(TurkishMessage.RegistrationDeleted);
             }
-            return new ErrorResult("Etkinlik alanına giriş yaptığınız için kaydınızı silemezsiniz.");
+            return new ErrorResult(TurkishMessage.NotRegisterDeleteOnEventPlace);
         }
 
 

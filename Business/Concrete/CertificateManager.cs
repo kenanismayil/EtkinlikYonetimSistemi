@@ -113,7 +113,7 @@ namespace Business.Concrete
                 return new ErrorResult(TurkishMessage.ErrorMessage);
             }
 
-            return new SuccessResult("Resim başarılı bir şekilde güncellendi.");
+            return new SuccessResult(TurkishMessage.CertificateImageUpdate);
         }
 
         [CacheRemoveAspect("ICertificateService.Get")]
@@ -150,8 +150,6 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<List<Certificate>>(TurkishMessage.ErrorMessage);
             }
-
-
             return new SuccessDataResult<List<Certificate>>(result.Data, TurkishMessage.CertificateListed);
         }
 
@@ -169,8 +167,6 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<UserCertificateInfo>(result.Data, TurkishMessage.ErrorMessage);
             }
-
-            //var result = _certificateDal.GetByCertificateId(certificateId);
             return new SuccessDataResult<UserCertificateInfo>(result.Data, TurkishMessage.SuccessMessage);
         }
 
@@ -196,25 +192,8 @@ namespace Business.Concrete
             //Business code
 
             var result = _certificateDal.Get(c => c.UserId == userId && c.ActivityId == activityId);
-
-
-
-            //var result = _certificateDal.GetByCertificateId(certificateId);
             return new SuccessDataResult<Certificate>(result, TurkishMessage.SuccessMessage);
         }
-
-        //public IDataResult<UserCertificateInfo> GetCertificates(string token)
-        //{
-        //    var currentUser = _authHelper.GetCurrentUser(token).Data;
-
-
-        //    var result = _certificateDal.GetCertificates(activityId);
-
-        //    return new SuccessDataResult<UserCertificateInfo>(result, TurkishMessage.SuccessMessage);
-        //}
-
-
-
 
 
         //İş kuralları

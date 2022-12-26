@@ -1,6 +1,7 @@
 ﻿using Core.Entities.Concrete;
 using Core.Utilities.Results.Abstract;
 using Entities.DTOs;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +20,7 @@ namespace Business.Abstract
         IDataResult<UserForView> GetUserForView(User user);
         IResult Add(User user);
         IResult Delete(string id);
-        IResult Update(UserForInfoChange userForInfoChange);
-
+        IResult Update(UserForInfoChange userForInfoChange, IFormFile file);
         IResult UpdateUserInfoBySuperAdmin(User user);
 
         //IDataResult<List<UserDetailDto>> GetUserDetails();

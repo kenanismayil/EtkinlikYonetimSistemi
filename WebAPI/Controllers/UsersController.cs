@@ -2,6 +2,7 @@
 using Core.Entities.Concrete;
 using Entities.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -52,9 +53,9 @@ namespace WebAPI.Controllers
 
         [HttpPut("update")]
         [Authorize]
-        public IActionResult Update(UserForInfoChange user)
+        public IActionResult Update(UserForInfoChange user, IFormFile file)
         {
-            var result = _userService.Update(user);
+            var result = _userService.Update(user, file);
             if (result.Success)
             {
                 return Ok(result);
