@@ -25,7 +25,9 @@ namespace DataAccess.Concrete.EntityFramework
         {
             using (ActivityContext context = new ActivityContext())
             {
-                var result = context.Activities.Join(context.Locations, activity => activity.LocationId, loc => loc.Id, (activity, loc) => new
+                // get upcoming activities
+                var now = DateTime.Now.Date;
+                var result = context.Activities.Where(x => x.ActivityDate > now).Join(context.Locations, activity => activity.LocationId, loc => loc.Id, (activity, loc) => new
                 {
                     activity,
                     loc = new LocationInfoForActivities
