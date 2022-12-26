@@ -78,7 +78,7 @@ namespace WebAPI.Controllers
 
         [Authorize]
         [HttpPost("add")]
-        public IActionResult Add(Certificate certificate)
+        public IActionResult Add(CertificateForView certificate)
         {
             var result = _certificateService.Add(certificate);
             if (result.Success)
